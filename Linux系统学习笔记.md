@@ -163,9 +163,10 @@
 
 可以通过cat命令查看内容
 
-语法：`cat Linux路径`
+语法：`cat [-n] [-A] Linux路径`
 
-- `cat`命令没有选项，只有必填参数，参数表示：被查看文件的路径，相对、绝对、特殊路径符均可使用
+- `-n`   显示行号
+- `-A`   显示所有符号
 
 ##### **(2)`more`命令**
 
@@ -391,6 +392,7 @@
 - **:w** -- 保存文件。
 - **:q** -- 退出 Vim 编辑器。
 - **:q!** -- 强制退出Vim 编辑器，不保存修改。
+- **:set nu** -- 显示行号
 
 ---
 
@@ -651,7 +653,7 @@ Linux系统中可以添加多个用户和用户组，且一个用户可以加入
 
 查看指定端口占用情况
 
-语法：`netstat -anp|grep 端口号\进程号`
+语法：`netstat -(anp|tlnp)|grep 端口号\进程号`
 
 ---
 
@@ -666,6 +668,7 @@ Linux系统中可以添加多个用户和用户组，且一个用户可以加入
 - `-e`   显示出全部进程
 - `-f`   展示全部信息
 - `-l`   长格式
+- `pa -aux | grep 进程名   常用于查找进程
 
 #### 2.kill命令
 
@@ -790,7 +793,7 @@ Linux系统中可以添加多个用户和用户组，且一个用户可以加入
 
 #### 1.rz命令
 
-将宿主机上的文件传输至Linux系统中
+将宿主机上的文件上传至Linux系统中
 
 语法：`rz`
 
@@ -799,6 +802,23 @@ Linux系统中可以添加多个用户和用户组，且一个用户可以加入
 将Linux系统中的文件传输至宿主机中
 
 语法：`sz 文件路径`
+
+#### 3.scp命令
+
+将宿主机上的文件上传或下载至Linux系统中
+
+语法：`scp [选项] [源文件] [目标]`
+
+| 选项      | 说明                       | 示例                                       |
+| :-------- | :------------------------- | :----------------------------------------- |
+| `-P 端口` | 指定 SSH 端口              | `scp -P 2222 file user@host:path`          |
+| `-r`      | 递归复制目录               | `scp -r dir user@host:path`                |
+| `-p`      | 保留文件属性（时间、权限） | `scp -p file user@host:path`               |
+| `-C`      | 压缩传输                   | `scp -C largefile user@host:path`          |
+| `-q`      | 安静模式（不显示进度）     | `scp -q file user@host:path`               |
+| `-v`      | 详细模式（调试）           | `scp -v file user@host:path`               |
+| `-l 限速` | 限制带宽（Kbit/s）         | `scp -l 100 file user@host:path`           |
+| `-i 密钥` | 使用指定密钥文件           | `scp -i ~/.ssh/id_rsa file user@host:path` |
 
 ---
 
@@ -867,6 +887,155 @@ Linux系统中可以添加多个用户和用户组，且一个用户可以加入
 语法：`setsid ./脚本名`
 
 让脚本在一个完全独立的会话中运行
+
+---
+
+### 三十四.会话控制
+
+#### 1.查看当前所有会话
+
+语法：`who`
+
+#### 2.关闭指定会话
+
+语法：`pkill -t pts/n`
+
+- `n`   数字，指定会话
+
+#### 3.将指定会话替换为实际终端
+
+语法：`pkill -u pts/n`
+
+- `n`   数字，指定会话
+
+---
+
+### 三十五.文本处理
+
+```
+# sort - 去重
+sort file.txt                    # 默认按行首字母排序
+sort -n file.txt                 # 按数值排序
+sort -r file.txt                 # 反向排序
+sort -u file.txt                 # 排序并去重
+
+sort -t: -k3 -n /etc/passwd      # 按第三列(UID)数值排序
+sort -t, -k2,2 -k1,1 file.csv    # 先按第二列，再按第一列
+sort -f file.txt                 # 忽略大小写
+sort -R file.txt                 # 随机排序
+```
+
+```
+# 注意：uniq通常需要先排序
+sort file.txt | uniq             # 去重
+sort file.txt | uniq -c          # 统计重复次数
+sort file.txt | uniq -d          # 只显示重复的行
+sort file.txt | uniq -u          # 只显示不重复的行
+
+# 配合其他选项
+sort file.txt | uniq -i          # 忽略大小写
+sort file.txt | uniq -f 2        # 跳过前2个字段比较
+```
+
+```
+# head - 查看开头
+head file.txt                    # 前10行
+head -n 20 file.txt              # 前20行
+head -c 100 file.txt             # 前100个字节
+
+# tail - 查看结尾
+tail file.txt                    # 后10行
+tail -n 20 file.txt              # 后20行
+tail -f /var/log/syslog          # 实时跟踪日志（重要！）
+
+# 组合使用
+head -n 100 file.txt | tail -n 20  #
+查看第81-100行
+```
+
+---
+
+### 三十六.定时任务
+
+#### 1.at命令
+
+语法：`at 时间`
+
+| 时间格式   | 解释                 |
+| ---------- | -------------------- |
+| HH:MM      | 小时:分钟            |
+| YYYY-mm-dd | 年-月-日             |
+| noon       | 中午12点             |
+| midnight   | 晚上12点             |
+| teatime    | 下午茶时间，下午四点 |
+| tomorrow   | 明天                 |
+| now+1min   | 一分钟后             |
+
+- `ctrl+D`   提交任务
+- `at -l`   列出等待中的作业
+- `at -d 任务编号`   删除指定任务
+- `at -c 任务编号`   查看任务的具体命令
+
+---
+
+### 三十七.邮件
+
+#### 1.启动邮箱服务
+
+1. 检查服务器端口,25号邮件端囗是否打开,(centOS5 是 sendmail,centOS6,centOS7是postfix服务)
+
+`netstat -tlnp | grep :25`
+
+2. 如果未启动25号端口则需要启动postfix服务
+
+`vim /etc/postfix/main.cf`
+
+3. 修改文件中的如下参数：
+
+`inet_interfaces = all`
+`inet_protocols = all`
+
+4. 接着启动postfix服务
+
+`systemctl start postfix`
+
+#### 2.mali命令
+
+用于检查邮件,输入命令后可以通过输入邮件编号查看指定邮件
+
+查看邮件：
+
+- `mail`   进入邮件列表
+- `数字`   查看第N封邮件
+- `d 数字`   删除第N封邮件
+
+- `q`   退出并报存已读邮件到mbox
+- `x`   退出不更改
+
+发送邮件：
+
+- `mail -s "主题" 用户名@主机名 < 文件.txt(读取文本文件中的内容并发送)`
+- `echo "正文" | mail -s "主题" 用户名@主机名`
+- `mail -s "主题" 用户名@主机名`   输入正文，然后`Ctrl+D`结束
+
+#### 3.malix命令
+
+语法：
+
+`mailx -s "邮件主题" 用户名@主机名`   输入正文，然后`Ctrl+D`结束或者`.`后`ENTER`发送
+
+`echo "正文" | mailx -s "主题" 用户名@主机名`
+
+#### 4.邮件存储位置
+
+新邮件存放位置:
+
+`/var/spool/mail/用户名`
+
+已读邮件存放位置（退出时按q保存）:
+
+`~/mbox`
+
 
 ---
 
