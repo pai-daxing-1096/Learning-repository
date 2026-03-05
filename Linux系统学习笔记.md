@@ -79,6 +79,7 @@
 	- `-a`:表示all的意思，即列出全部文件(包括**隐藏**[^2]的文件/文件夹)
 	- `-l`:表示以列表的形式展示内容，并展示更多信息
 	- `-h`:表示以易于阅读的形式，列出文件大小，如K、M、G
+	- `-i`:用于检查文件inode
 
 > 可以组合使用，例如：`ls -lah` 或 `ls -alh` 都等同于 `ls -l -a -h`
 
@@ -509,12 +510,13 @@ Linux系统中可以添加多个用户和用户组，且一个用户可以加入
 
 用于自动化安装配置Linux软件
 
-语法：`yum [-y] install | remove | search 软件名称`
+语法：`yum [-y] install | remove | search | update 软件名称`
 
 - `-y`   自动确认，无需手动确认安装或卸载流程
 - `install`   安装
 - `remove`   卸载
 - `search`   搜索
+- `update`   更新
 
 ---
 
@@ -534,7 +536,7 @@ Linux系统中可以添加多个用户和用户组，且一个用户可以加入
 
 ---
 
-### 二十三.软链接
+### 二十三.软链接和硬链接
 
 类似快捷方式
 
@@ -547,7 +549,7 @@ Linux系统中可以添加多个用户和用户组，且一个用户可以加入
 - `-s`   创建软链接
 - `参数1`   被链接的文件或者文件夹
 - `参数2`   要链接去的目的地
-- `readlink 软链接路径`   查看软链接本身的内容oo63\77\6\777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777776666
+- `readlink 软链接路径`   查看软链接本身的内容
 
 ---
 
@@ -682,9 +684,44 @@ Linux系统中可以添加多个用户和用户组，且一个用户可以加入
 语法：`ps [-e -f -l]`
 
 - `-e`   显示出全部进程
+- `e`   列出进程信息时添加每个进程所在的环境变量
 - `-f`   展示全部信息
+- `f`   以ASCLL码显示进程之间的关系
 - `-l`   长格式
-- `pa -aux | grep 进程名   常用于查找进程
+- `a`   显示当前终端下的所有进程，包括其他用户的进程信息
+- `u`   以用户为主的格式显示进程信息
+- `x`   显示所有进程
+
+ps常用组合
+
+- `ps -ef | grep nginx`
+- `ps aux | grep mysql`
+- `ps -y 用户名`   指定查看某个用户的进程
+- `ps -eH`   显示进程树信息
+- `ps -eo pid,agrs,psr`   自定义输出信息
+
+参数解释：
+
+- `USER`   进程属于哪个用户
+- `PID`   进程ID号
+- `%CPU`   CPU的百分比使用情况
+- `%MEM`   内存的百分比使用情况
+- `VSZ`   该进程使用的swap内存单位
+- `RSS`   表示进程所占用的内存量
+- `TTY`   这个进程所在的终端信息
+- `STAT`   表示进程现在的状态
+	- `S`   进程睡眠中，可以被唤醒
+	- `s`   这个进程含有子进程
+	- `R`   进程正在运行中
+	- `D`   此进程不可中断睡眠
+	- `T`   此进程已停止
+	- `Z`   该进程已为僵尸进程，父进程异常崩溃
+	- `+`   前台进程
+	- `N`   低优先级进程
+	- `<`   高优先级进程
+	- `L`   该进程已被锁定
+- `TIME`   进程运行的时间
+- `CMD`   进程执行的命令是什么
 
 #### 2.kill命令
 
@@ -693,6 +730,12 @@ Linux系统中可以添加多个用户和用户组，且一个用户可以加入
 语法：`kill [-9] 进程ID`
 
 - `-9`   代表强制关闭进程
+
+#### 3.tty命令
+
+语法：`tty`
+
+用于查看当前使用的终端
 
 ---
 
@@ -743,6 +786,16 @@ Linux系统中可以添加多个用户和用户组，且一个用户可以加入
 语法：`df [-h]`
 
 - `-h`   更加人性化的单位显示
+- `-T`   检查分区使用了什么文件系统格式
+- `-i`   检查inode数量
+
+#### 3.lsblk命令
+
+查看当前设备信息
+
+语法：`lsblk`
+
+- `-f`   检查分区使用和什么文件系统格式
 
 #### 3.iostat命令
 
@@ -764,6 +817,14 @@ Linux系统中可以添加多个用户和用户组，且一个用户可以加入
 - `DEV`   查看网络接口
 - `num1`   刷新间隔
 - `num2`   刷新次数
+
+#### 5.查询
+
+- **磁盘分区相关**（fdisk、gdisk、parted、lsblk、partprobe）
+- **LVM 相关**（pvcreate、vgcreate、lvcreate、pvs、vgs、lvs、vgextend、lvextend）
+- **文件系统相关**（mkfs.ext4、mount、umount、df -h、blkid）
+- **swap 相关**（mkswap、swapon、swapoff、free -h）
+- **系统查询**（lsblk、fdisk -l、 parted print）
 
 ---
 
@@ -1376,10 +1437,10 @@ o  - 创建新的DOS分区表
 
 bash
 
-```
+```shell
 # 1. 创建分区
 sudo fdisk /dev/sdb
-# 依次输入：n → p → 1 → 回车（默认起始） → +10G → w
+# 依次输入：n → p → l → 回车（默认起始） → +10G → w
 
 # 2. 删除分区
 sudo fdisk /dev/sdb
@@ -1387,6 +1448,11 @@ sudo fdisk /dev/sdb
 
 # 3. 查看而不修改
 sudo fdisk -l /dev/sda
+
+# 4. 重读分区表
+partprobe /dev/sdb
+
+partx -a /dev/sdb
 ```
 
 
@@ -1399,13 +1465,16 @@ sudo fdisk -l /dev/sda
 
 bash
 
-```
+```shell
 # 进入交互模式
 sudo parted /dev/sdX
 
 # 非交互模式执行命令
 sudo parted /dev/sdX mklabel gpt
 sudo parted /dev/sdX print
+
+#查看分区详细信息
+sudo parted -l
 ```
 
 
@@ -1432,12 +1501,13 @@ quit           - 退出
 
 bash
 
-```
+```shell
 # 1. 创建GPT分区表并分区
 sudo parted /dev/sdb
 (parted) mklabel gpt
-(parted) mkpart primary ext4 0% 50%
-(parted) mkpart primary ext4 50% 100%
+# 可以使用数字也可以直接输入百分比n%
+(parted) mkpart primary 0 500
+(parted) mkpart logical 501 10000
 (parted) print
 (parted) quit
 
@@ -1451,8 +1521,580 @@ sudo parted /dev/sdb resizepart 1 30GB
 sudo parted /dev/sdb set 1 boot on
 ```
 
+---
+
+### 四十四.stat命令
+
+查看文件的inode信息
+
+语法：
+
+```shell
+stat 文件名
+```
+
+- `-c`   自定义输出
+- `-t`   简洁输出
+- `-f`   显示文件系统状态
+
+**输出示例：**
+
+```
+  File: download.sh
+  Size: 1234       Blocks: 8          IO Block: 4096   regular file
+Device: fd01h/64769d    Inode: 1234567     Links: 1
+Access: (0755/-rwxr-xr-x)  Uid: ( 1000/   pai)   Gid: ( 1000/   pai)
+Access: 2024-10-15 10:30:45.123456789 +0800 #最近访问
+Modify: 2024-10-15 09:15:30.987654321 +0800 #最近更改
+Change: 2024-10-15 09:15:30.987654321 +0800 #最近改动
+ Birth: 2024-10-14 20:00:00.000000000 +0800 #创建时间
+```
+
+**关键字段详解**
+
+| 字段         | 含义                  | 重要用途                               |
+| :----------- | :-------------------- | :------------------------------------- |
+| **File**     | 文件名                | 确认查看的是哪个文件                   |
+| **Size**     | 文件大小（字节）      | 检查文件是否完整                       |
+| **Blocks**   | 占用的磁盘块数        | 计算实际磁盘占用                       |
+| **IO Block** | 文件系统块大小        | 优化读写性能                           |
+| **Device**   | 设备号                | 确认文件在哪个磁盘                     |
+| **Inode**    | inode 编号            | 识别硬链接、文件唯一标识               |
+| **Links**    | 硬链接数量            | 知道有多少文件名指向这个文件           |
+| **Access**   | 权限（数字和符号）    | 查看读写执行权限                       |
+| **Uid/Gid**  | 所有者/组             | 知道谁拥有这个文件                     |
+| **Access**   | 最后访问时间（atime） | 监控文件访问频率                       |
+| **Modify**   | 最后修改时间（mtime） | 知道文件内容何时被修改                 |
+| **Change**   | 最后改变时间（ctime） | 知道元数据（权限等）何时改变           |
+| **Birth**    | 创建时间              | 知道文件何时创建（某些文件系统不支持） |
 
 ---
+
+### 四十五.文件系统格式化
+
+#### 1.mkfs命令
+
+语法：`mkfs.格式化命令 指定要格式化的分区`
+
+- ```shell
+	mkfs.ext4 #常用
+	```
+
+- ```
+	mkfs.xfs
+	```
+
+- ```
+	mkfs.btrfs
+	```
+
+- ```
+	mkfs.fat
+	```
+
+- ```
+	mkfs.ntfs
+	```
+
+- `-i`   mkfs.ext4 -i 16384 /dev/sdb1 # 每16KB分配一个inode
+
+- `-N`   mkfs.ext4 -N 100000 /dev/sdb1    # 指定inode数量
+
+删除文件系统标识
+
+```
+wipefs -a /dev/vg/lv1
+```
+
+#### 2.检查文件系统
+
+语法：`sudo fsck /dev/sdx`
+
+- 强制检查：sudo e2fsck - /dev/sdx
+- `-t`   修复
+
+#### 3.查看分区的详细参数
+
+语法：
+
+```shell
+# 对于ext4分区
+sudo tune2fs -l /dev/sda1 | head -30
+
+# 对于XFS分区
+sudo xfs_info /dev/sda1
+
+sudo blkid /dev/sdb1
+
+sudo file -s /dev/sdb1
+```
+
+---
+
+### 四十六.文件挂载
+
+#### 1.mount命令
+
+语法：
+
+```shell
+mount 要挂载的设备 挂载点
+```
+
+- `-l`   查看当前设备挂载情况
+- `-t`   指定设备的文件系统类型
+- `-o`   添加挂载的功能选项
+	- `async` 允许缓存，增加了设备性能，但是损失了数据安全性
+	- `sync`   直接写入，损失了设备性能，但是增加了数据安全性
+	- `atime / noatime`   当文件被访问、修改后是否更新时间戳，可以稍微提升磁盘IO速度
+	- `auto / noauto`   可以使用-a参数自动挂载或不自动挂载
+	- `defaults`   使用默认参数
+	- `exec / noexec`   是否允许执行挂载点中的可执行命令，如果关闭则无法执行可执行脚本，增加磁盘安全性
+	- `ro`   只读
+	- `rw`   读写
+	- `att2`   在磁盘上存储内连扩展属性，提升设备性能
+	- `inode64`   允许在文件系统中的任意位置创建inode
+	- `noquota`   强制关闭文件系统的限额功能
+	- `defaults`   使用默认配置
+
+> 示例：
+>
+> mount -o ro 要挂载的设备 挂载点
+
+- `-r`   只读挂载，不让写入
+- `-w`   读写挂载，运行挂载后进行写入
+
+永久生效：
+
+```
+vim /etc/fstab
+
+写入：
+指定硬盘 挂载点 文件系统 功能选项 0（挂载点备份） 0（磁盘检查）
+mount -a 读取挂载情况
+```
+
+
+
+#### 2.umount命令
+
+取消文件挂载
+
+语法：
+
+`umount 挂载点/挂载的设备`
+
+##### **延迟卸载（lazy unmount）**
+
+bash
+
+```
+# 立即从文件系统层次结构中移除，但设备真正卸载要等所有进程完成访问
+sudo umount -l /mnt/data
+# 或
+sudo umount --lazy /mnt/data
+
+# 适用场景：
+# - 有进程正在访问文件系统，但你想立即让挂载点不可用
+# - 比如：NFS 服务器维护
+```
+
+##### **强制卸载**
+
+bash
+
+```
+# 尝试强制卸载（可能损坏数据，慎用！）
+sudo umount -f /mnt/data
+# 或
+sudo umount --force /mnt/data
+
+# 注意：-f 不是在所有情况下都有效
+# 例如，本地 ext4 文件系统不支持强制卸载
+```
+
+##### **卸载所有特定类型的文件系统**
+
+bash
+
+```
+# 卸载所有 NFS 挂载
+sudo umount -a -t nfs
+
+# 卸载所有 ext4 文件系统
+sudo umount -a -t ext4
+
+# 卸载所有挂载（除了必要的）
+sudo umount -a
+```
+
+#### 3.fuser命令
+
+##### **查找阻止卸载的进程**
+
+```
+# 使用 fuser 查看哪些进程在使用挂载点
+sudo fuser -m /mnt/data
+# 输出：/mnt/data: 1234c 5678c 9012c
+
+# 查看详细信息
+sudo fuser -mv /mnt/data
+# 输出：
+#                      USER        PID ACCESS COMMAND
+# /mnt/data:           root       1234 ..c..  bash
+#                      alice      5678 ..c..  vim
+
+# 使用 lsof 查看打开的文件
+sudo lsof /mnt/data
+sudo lsof +f -- /mnt/data
+```
+
+##### **杀死占用进程**
+
+bash
+
+```
+# 使用 fuser 杀死所有使用挂载点的进程
+sudo fuser -km /mnt/data
+# -k: kill, -m: 指定挂载点
+
+# 然后再次尝试卸载
+sudo umount /mnt/data
+```
+
+### 四十七.swap交换分区
+
+将后台软件的内存写入硬盘，只保留部分基本需求，从而释放其本身占用的物理内存，用到其它软件中，保证不会有软件因为内存不足而崩溃
+
+```
+gdisk 指定硬盘
+p 查看分区情况
+n 创建分区
++....M/G分配空间
+82 指定swap分区类型
+mkswap swap分区 分区格式化
+swapon swap分区 启动
+swapoff swap分区 关闭
+```
+
+---
+
+### 四十八.free命令
+
+查看系统内存的使用状态
+
+语法：
+
+```
+free 参数
+```
+
+- `-h`   人性化显示
+- `-b`   指定bytes单位显示
+- `-k`   指定KB单位显示
+- `-m`   指定MB单位显示
+- `-g`   指定GB单位显示
+- `-s n`   每隔n秒刷新一次
+- `-c n`   刷新n次后退出
+
+---
+
+### 四十九.检查与清理文件系统缓存
+
+#### 1.fsck命令
+
+语法：
+
+`fsck 参数 /dev/sdX`
+
+参数：
+
+- `-y`   自动同意回答
+
+- `-f`   强制检查（xfs_repair无此选项）
+- `-n`   自动拒绝回答，即以阅读模式打开
+- `-v`   详细输出
+- `-p`   自动修复（xfs_repair无此选项）
+
+> 特殊用法：
+>
+> `fsck -A`   检查所有文件系统
+
+> [!NOTE]
+>
+> ext文件系统可以使用：`e2fsck`
+>
+> xfs文件系统可以使用：`xfs_repair`
+
+> [!IMPORTANT]
+>
+> 正需要修复时，必须使用 `xfs_repair` 工具，且要求文件系统处于**未挂载**状态
+
+#### 2.sync命令
+
+将内存缓冲区写入磁盘中
+
+语法：
+
+```
+sync
+```
+
+临时释放缓存的命令
+
+`echo 1 > /proc/sys/vm/drop_caches   或    sysctl -w vm.drop_caches=1`
+
+将删除缓存生效，释放cache，变为真值(1)
+
+`echo 2 > /proc/sys/vm/drop_caches   或    sysctl -w vm.drop_caches=2`
+
+清除目录缓存和inodes
+
+`echo 3 > /proc/sys/vm/drop_caches   或    sysctl -w vm.drop_caches=3`
+
+清楚内存页的缓存
+
+---
+
+### 五十.LVM技术
+
+语法：
+
+```shell
+#创建物理卷（pv）
+pvcreate /dev/sdx /dev/sdx
+         要创建为逻辑卷的盘或分区
+
+#创建卷组（vg）
+vgcreate vg /dev/sdb2 /dev/sdc1 /dev/sdd1
+        名称 要分进卷组的物理卷
+        
+#创建逻辑卷（lv）
+lvcreate vg --name lv1 --size 10G
+     要使用的卷组 逻辑卷的名称 逻辑卷的大小
+     
+#查看物理卷
+pvs
+
+#查看卷组
+vgs
+
+#查看逻辑卷
+lvs
+
+#增加逻辑卷大小
+lvextend /dev/mapper/vg-vg1 --size 15G
+要增加容量的逻辑卷地址（可用df -h查询）要增加的大小
+lvextend /dev/mapper/vg-vg1 -l +100%FREE
+                         要增加的大小（百分比形式）
+
+#减小逻辑卷大小
+umount /dev/vg/lv1   #取消挂载
+e2fsck -f /dev/vg/lv1   #强制检查文件系统
+resize2fs /dev/vg/lv1 5G   #将文件系统缩小至5G
+lvreduce -L 5G /dev/vg/lv1   #将逻辑卷缩小至5G
+
+#把新的物理卷加入逻辑卷
+vgextend 卷组名 物理卷设备路径
+
+#删除逻辑卷
+lvremove /dev/vg/lv1
+
+#删除卷组
+vgremove vg
+	    卷组名
+
+#删除物理卷
+pvremove /dev/sdb2 /dev/sdc1 /dev/sdd1
+
+#迁移数据
+pvmove /dev/sdb2
+
+#从vg（卷组）中移除PV（逻辑卷）
+vgreduce vg /dev/sdb2
+        卷组名 物理卷
+        
+#重新读取信息
+resize2fs /dev/mapper/vg1-lv1（ext文件格式系统）
+xfs_growfs /dev/mapper/vg1-vg1（xfs文件格式系统）
+
+#查看数据分布
+lvdisplay -m
+
+#创建快照卷
+lvcreate -s -n lv_data_snap -L 5G /dev/vg/lv_data
+
+#查看快照
+lvs -a -o+snap_percent
+
+#将快照挂在为只读
+mkdir /mnt/snap
+mount /dev/vg/lv_data_snap /mnt/snap -o ro
+
+#恢复至快照
+lvconvert --merge /dev/vg/lv_data_snap
+
+#删除快照
+lvremove /dev/vg/lv_data_snap
+
+#创建完后可以对逻辑卷进行文件系统格式化，然后挂载就可以使用了
+```
+
+1️⃣ RAID0（条带化，无冗余，提升性能）
+
+- **最小 PV 数**：2
+
+- **特点**：数据被分块并行写入多块盘，读写性能高，但无容错，坏一块盘数据全丢。
+
+- **创建命令**：
+
+	```
+	lvcreate --type raid0 -L 5G -n lv_raid0 vg
+	```
+
+	如果想指定条带数量和大小（可选）：
+
+	```
+	lvcreate --type raid0 -i 2 -I 64k -L 5G -n lv_raid0 vg
+	```
+
+	- `-i 2`：条带数（等于 PV 数）
+	- `-I 64k`：条带大小
+
+
+2️⃣ RAID1（镜像，完全冗余）
+
+- **最小 PV 数**：2（可以是 2 个以上，实现多副本镜像）
+
+- **特点**：数据完全拷贝到多块盘，读性能提升，写性能略有下降，空间利用率 1/n（n 为副本数）。
+
+- **创建 2 副本镜像**：
+
+	```
+	lvcreate --type raid1 -L 5G -n lv_raid1 vg
+	```
+
+- **创建 3 副本镜像**（需要至少 3 个 PV）：
+
+	```
+	lvcreate --type raid1 -m 2 -L 5G -n lv_raid1_3copy vg
+	```
+
+	`-m 2` 表示创建 2 个额外镜像副本，加上原始数据共 3 份。
+
+
+3️⃣ RAID5（条带化 + 分布式奇偶校验，兼顾性能与冗余）
+
+- **最小 PV 数**：3
+
+- **特点**：数据和校验信息分布在各盘，允许坏一块盘，空间利用率 (n-1)/n。
+
+- **创建命令**：
+
+	```
+	lvcreate --type raid5 -L 8G -n lv_raid5 vg
+	```
+
+	也可以指定条带大小：
+
+	```
+	lvcreate --type raid5 -I 64k -L 8G -n lv_raid5 vg
+	```
+
+
+4️⃣ RAID6（双奇偶校验，更高容错）
+
+- **最小 PV 数**：4
+
+- **特点**：允许同时坏两块盘，空间利用率 (n-2)/n，写性能稍差于 RAID5。
+
+- **创建命令**：
+
+	```
+	lvcreate --type raid6 -L 10G -n lv_raid6 vg
+	```
+
+	需要确保 VG 中至少有 4 个 PV。如果你的 VG 只有 3 个 PV，则无法创建 RAID6。
+
+
+5️⃣ RAID10（镜像 + 条带化，高性能 + 冗余）
+
+- **最小 PV 数**：4（必须是偶数，且至少 2 组镜像）
+
+- **特点**：数据先镜像再条带化，兼顾读写性能和高容错（每组镜像内可坏一块盘）。
+
+- **创建命令**：
+
+	```
+	lvcreate --type raid10 -L 10G -n lv_raid10 vg
+	```
+
+	可以指定条带数和镜像副本数（默认自动优化）：
+
+	```
+	lvcreate --type raid10 -i 2 -m 1 -L 10G -n lv_raid10 vg
+	```
+
+	- `-i 2`：条带组数（相当于 2 对镜像）
+	- `-m 1`：每个数据块有 1 个额外镜像副本（即 2 副本）
+
+---
+
+### 五十一.RAID技术
+
+#### 1.mdadm命令
+
+语法：
+
+```shell
+mdadm -Cv /dev/md0 -a yes -n 4 -l 10 /dev/vg/lv1 ...
+```
+
+- `-C`   表示创建RAID阵列
+- `-v`   显示创建过程
+- `/dev/md0`   表示raid阵列的名称
+- `-a yes`   自动创建阵列设备文件
+- `-n 4`   表示用4块硬盘创建阵列
+- `-l 10`   表示指定raid的级别
+- `/dev/vg/lv1 ...`   即将使用的硬盘的名称
+- `-x 1`   备份盘数量
+
+**附加：**
+
+- `-D`   检查磁盘阵列的详细信息
+
+	- > `mdadm -D /dev/md0`
+
+- `-f`   从阵列组中删除某块硬盘
+
+	- > `mdadm /dev/md0 -f /dev/sdd`
+
+- `-a`   向阵列组中添加某块硬盘
+
+	- > `mdadm /dev/md0 -a /dev/sdd`
+	
+- `-S`   停止raid服务
+
+  - > `mdadm -S /dev/md0`
+
+-  置空超级块，删除raid
+
+  - `mdadm --misc --zero-superblock /dev/sdb1`
+
+- 删除配置文件
+
+  - `rm /etc/mdadm.conf``
+  - ``vim /etc/fstab`   删除开机自动挂载
+
+
+> [!NOTE]
+>
+> 在创建完成后应当对/dev/md0进行文件系统格式化，然后再挂载后就可以进行正常使用
+
+
+---
+
+
 
 #### 以下是脚注：
 
