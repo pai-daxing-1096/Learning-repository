@@ -1,16 +1,124 @@
+> [!IMPORTANT]
+>
+> # 知识点补漏
+>
+> - ❌ **DNS 服务配置**（只有 nslookup 命令，没有 /etc/resolv.conf、bind 搭建等）
+> - ❌ **HTTP 服务**（Apache/Nginx 安装配置、虚拟主机、HTTPS）
+> - ❌ **LAMP/LNMP 环境搭建**（Linux + Apache/Nginx + MySQL + PHP）
+> - ❌ **防火墙**（iptables/firewalld）
+> - ❌ **网络排查工具**（traceroute/mtr、tcpdump、nc/telnet）
+> - ❌ **日志管理**（rsyslog、logrotate、journalctl）
+> - ❌ **rsync 同步工具**
+
 # Linux系统学习笔记
+
+#### 1.Linux简介
+
+#### **Linux操作系统=**Linux内核+一套系统调用的API接口
+
+**Linux系统架构：**
+
+硬件→Linux内核→系统调用接口→shell+函数库→应用程序
+
+1. 操作系统内核直接参考硬件规格写成，所以同一个操作系统程序不能安装在不一样的硬件架构上，主流的架构有 x86 架构和主要用于手机与平板设备的 ARM 架构
+
+2. 操作系统只是管理整个硬件资源，包括 CPU 、内存、输入输出设备及文件系统等。如果没有其他应用程序辅助，操作系统只能是让电脑主机 Ready 而已，并没有其他功能。
+
+3. 应用程序的开发都是参照操作系统提供的 API ，所以该应用程序只能在该操作系统上面运行，不能在其他操作系统上运行，这就是为什么大家在下载应用软件的时候会让你选择是什么平台的安装
+
+#### 2.Linux快捷键
+
+1. `TAB`   按一次将会补全当前命令，按两次将会列出所有可能
+2. `CTRL + C`   立刻终止当前命令
+3. `CTRL + D`   退出当前登录
+4. `CTRL + L`   清空屏幕
+5. `CTRL + A`   使光标跳至最前方
 
 ---
 
-### 一.获取CentOS系统的地址
+### 一.ssh
 
-#### 1.在终端中输入命令` ifconfig`以获得网络地址信息，用于配置Finalshell的SSH连接
+#### 1.ssh密钥配置
 
-**注：现代版本已改为在终端中输入命令 `ip addr` 或 `ip a` 以获得网络地址信息**
+##### (1)在本地电脑生成密钥对
 
-#### 2.连接通过ip和用户名虚拟机
+```
+ssh-keygen -t ed25519 -C "你的注释（如 Linux_ssh）"
+```
 
-语法：`ssh 用户名@ip地址`
+- 一路回车（或设置密码短语 passphrase）
+- 生成两个文件：
+	- **私钥**：`C:\Users\24846\.ssh\id_ed25519`（**绝不要发给别人**）
+	- **公钥**：`C:\Users\24846\.ssh\id_ed25519.pub`（需要上传到服务器）
+
+##### (2)查看并复制公钥内容
+
+```
+type C:\Users\24846\.ssh\id_ed25519.pub
+```
+
+- 选中输出的整行内容（以 `ssh-ed25519 AAAA...` 开头），复制到剪贴板。
+
+##### (3)登录服务器（使用密码）
+
+```
+ssh pai@8.141.85.194
+```
+
+- 输入 `pai` 用户的密码。
+
+##### (4)在服务器上创建 `.ssh` 目录并设置权限
+
+```
+mkdir -p ~/.ssh
+chmod 700 ~/.ssh
+```
+
+- `~` 代表当前用户的家目录（这里是 `/home/pai`）。
+
+##### (5)将公钥写入 `authorized_keys` 文件
+
+```
+echo "粘贴你刚刚复制的公钥内容" >> ~/.ssh/authorized_keys
+```
+
+或者使用 `vim ~/.ssh/authorized_keys` 手动粘贴。
+
+##### (6)设置 `authorized_keys` 文件权限
+
+```
+chmod 600 ~/.ssh/authorized_keys
+```
+
+#### 2.关闭ssh密码登录
+
+##### (1)备份配置文件
+
+```
+sudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config.backup
+```
+
+##### (2)使用 `vim` 或 `nano` 等文本编辑器打开配置文件。
+
+```
+sudo vim /etc/ssh/sshd_config
+```
+
+##### (3)修改并确认参数
+在文件中找到并修改或添加以下三个关键参数：
+
+- **`PasswordAuthentication`**
+	- 作用：这是控制密码登录的总开关。
+	- 设置：找到此行，将其值改为 `no`。如果该行被注释（行首有`#`），请删除 `#`。
+	- `PasswordAuthentication no`
+- **`PubkeyAuthentication`**
+	- 作用：确认密钥登录功能已开启。
+	- 设置：找到此行，确保其值为 `yes`。若不存在则添加。
+	- `PubkeyAuthentication yes`
+- **`ChallengeResponseAuthentication`**
+	- 作用：禁用此参数可进一步增强安全性，避免密码认证通过其他方式被激活。
+	- 设置：找到此行，确保其值为 `no`。
+	- `ChallengeResponseAuthentication no`
 
 ---
 
@@ -86,6 +194,20 @@
 - Linux路径是此命令可选的参数
 
 当不使用选项和参数，直接使用ls命令本体，表示：以平铺形式，列出当前工作目录[^1]下的内容
+
+#### 3.主机名
+
+##### (1)查看当前主机名
+
+语法：
+
+`hostnamectl`
+
+##### (2)修改主机名（永久修改）
+
+语法：
+
+`sudo hostnamectl set-hostname 新主机名`
 
 ---
 
@@ -185,6 +307,19 @@
 - `less`命令同样没有选项，只有必填参数，参数表示：被查看文件的路径，相对、绝对、特殊路径符均可使用
 - 可以使用**`空格`**向下翻一页，**`b`**向上翻一页,**`Enter`**翻一行，**`q`**退出，**`/关键词`**搜索内容,**`Page Up/Page Down`**逐行滚动
 
+##### (4)`file`命令
+
+输出文件的类型，例如*ASCII text*，表示这是一个ASCII编码的文本文件。
+
+语法：`file example.txt`
+
+- `-b`：仅显示文件类型，不显示文件名。
+- `-c`：显示详细的检查过程，有助于排错。
+- `-f <文件列表>`：从指定的文件中读取文件名列表，并逐一检查。
+- `-L`：检查符号链接指向的实际文件类型。
+- `-i`：显示文件的MIME类型，这对于网络传输非常有用。
+- `-z`：尝试读取压缩文件的内容。
+
 ---
 
 ### 八.文件复制、移动和删除命令
@@ -228,6 +363,10 @@
 
 - `参数1`、`参数2`、……、`参数N表示要删除的文件或文件夹路径，**按照空格隔开**
 
+> [!IMPORTANT]
+>
+> 可以使用延伸版`zless`直接查看被.gz打包的文件
+
 ---
 
 ### 九.通配符
@@ -268,6 +407,8 @@
 
 - 普通用户需要配置root认证才可以使用
 - 执行`visudo`命令，然后在文件末尾添加：`用户名 ALL=(ALL)    NOPASSWD:ALL`后使用`wq`退出即可
+	- 如果需要输入密码则将NOPASSWD:ALL改为ALL即可
+
 
 ---
 
@@ -283,9 +424,7 @@
 
 可以使用`find`命令去搜索指定文件
 
-语法：`find 起始路径 -name “被查找文件名”`
-
-​            `find 起始路径 -size +/-n[kMG]`
+语法：`find 起始路径 -name “被查找文件名” -size +/-n[kMG]`
 
 - `+、-`   表示大于小于
 - `n`   表示大小数字
@@ -418,10 +557,15 @@ Linux系统中可以添加多个用户和用户组，且一个用户可以加入
 
 创建用户
 
-语法：`useradd [-g 已存在的用户组名] [-d HOME路径]`
+语法：`useradd [-g 已存在的用户组名] [-d HOME路径] [-r] [-s /usr/sbin/nologin] [-m] 用户名`
 
 - `[-g 已存在的用户组]`   将用户添加至指定的用户组，若未指定则创建同名的用户组并加入
 - `[-d HOME路径]`   指定用户的HOME路径，若未指定，则默认添加至`\HOME\用户名`
+- `[-r]`   创建系统用户
+- `[-s /usr/sbin/nologin]`   禁止该用户登录shell
+	- `/bin/bash`   允许登录shell
+
+- `[-m]`   系统用户默认不创建家目录，使用该选项则创建
 
 #### 4.userdel命令
 
@@ -439,13 +583,27 @@ Linux系统中可以添加多个用户和用户组，且一个用户可以加入
 
 - `用户名`   若指定，则查看指定用户的信息，反之则查看自身的用户信息
 
-#### 6.usermod
+> cat /etc/group即可查看所有用户信息
+
+#### 6.usermod命令
 
 将指定用户转移至指定用户组
 
-语法：`usermod -aG 用户组名 用户名`
+语法：`usermod -aG [-s /sbin/nologin] 用户组名 用户名`
 
 - **是用户组名接用户名，而不是用户名到用户组名**
+- `-s /sbin/nologin`   禁止该用户登录shell
+
+#### 7.passwd命令
+
+用于修改用户密码
+
+语法：`passwd [参数] 用户名`
+
+- `-d`   删除用户密码，可以快速封禁某用户
+- `-l`   锁定指定用户，使其无法再次登录
+- `-u`   解锁指定用户，使其能再次登录
+- `-x`   设置密码的最大有效期
 
 ---
 
@@ -526,13 +684,20 @@ Linux系统中可以添加多个用户和用户组，且一个用户可以加入
 
 操控服务
 
-语法：`systemctl start | stop | status | enable | disable 服务的名称`
+语法：`systemctl start | stop | status | enable | disable | daemon-reload服务的名称`
 
 - `start`   启动
 - `stop`   关闭
 - `status`   查看状态
 - `enable`   开启开机自启
 - `disable`   关闭开机自启
+- `daemon-reload`   通知 systemd 重新加载所有服务单元文件（包括 `/usr/lib/systemd/system/` 和 `/etc/systemd/system/` 下的文件）
+	-  在此之前应当先对服务单元文件进行操作
+		- `sudo rm -f /usr/lib/systemd/system/glances.service`
+			- **作用**：删除 systemd 服务单元文件（glances.service）。
+			- **效果**：服务定义被永久移除，systemd 不再知道这个服务的存在。
+			- **适用时机**：当你确认该服务文件已无用（例如指向不存在的程序、配置错误、不再需要该服务）时使用。
+
 
 ---
 
@@ -616,15 +781,142 @@ Linux系统中可以添加多个用户和用户组，且一个用户可以加入
 
 语法:`hostnamectl srt-hostname 主机名`
 
+#### 3.Rocky Linux 9 静态 IP 配置（你刚刚完成的）
+
+##### (1)`nmcli` 命令行（推荐）
+
+```
+# 1. 查看网卡名称
+nmcli device status
+# 或 ip addr
+
+# 2. 设置静态 IP（以 ens160 为例，IP 192.168.88.100/24，网关 192.168.88.2）
+sudo nmcli connection modify ens160 ipv4.method manual \
+ipv4.addresses 192.168.88.100/24 ipv4.gateway 192.168.88.2 \
+ipv4.dns "114.114.114.114 8.8.8.8"
+
+# 3. 重启连接
+sudo nmcli connection down ens160 && sudo nmcli connection up ens160
+
+# 4. 验证
+ip addr show ens160
+ping -c 4 www.baidu.com
+```
+
+##### (2)编辑配置文件（手动）
+
+```
+# 1. 编辑网卡配置文件（注意路径和文件名）
+sudo vi /etc/NetworkManager/system-connections/ens160.nmconnection
+
+# 2. 修改 [ipv4] 部分为：
+[ipv4]
+method=manual
+address1=192.168.88.100/24,192.168.88.2
+dns=114.114.114.114;8.8.8.8
+
+# 3. 保存后重载配置
+sudo nmcli connection reload
+sudo nmcli connection up ens160
+```
+
+##### (3)验证命令
+
+```
+ip addr show ens160          # 查看 IP
+ip route show                # 查看网关
+ping -c 4 www.baidu.com      # 测试外网
+```
+
+#### 4.CentOS 7 静态 IP 配置
+
+CentOS 7 使用传统的 `network-scripts` 方式，配置文件在 `/etc/sysconfig/network-scripts/ifcfg-eth0`（网卡名通常为 `eth0` 或 `ens33`）。
+
+##### (1)`nmcli` 命令行（与 Rocky 类似，但 CentOS 7 也支持）
+
+```
+# 查看网卡名
+nmcli device status
+
+# 设置静态 IP
+sudo nmcli connection modify eth0 ipv4.method manual \
+ipv4.addresses 192.168.88.100/24 ipv4.gateway 192.168.88.2 \
+ipv4.dns "114.114.114.114 8.8.8.8"
+
+# 重启连接
+sudo nmcli connection down eth0 && sudo nmcli connection up eth0
+```
+
+##### (2)编辑配置文件（传统方式）
+
+```
+# 1. 编辑网卡配置文件
+sudo vi /etc/sysconfig/network-scripts/ifcfg-eth0
+
+# 2. 修改或添加以下内容：
+TYPE=Ethernet
+BOOTPROTO=static          # 改为 static
+NAME=eth0
+DEVICE=eth0
+ONBOOT=yes                # 开机自启
+IPADDR=192.168.88.100     # 静态 IP
+NETMASK=255.255.255.0     # 子网掩码
+GATEWAY=192.168.88.2      # 网关
+DNS1=114.114.114.114      # 首选 DNS
+DNS2=8.8.8.8              # 备用 DNS
+
+# 3. 重启网络服务
+sudo systemctl restart network
+
+# 或使用 nmcli 重启
+sudo nmcli connection reload
+sudo nmcli connection up eth0
+```
+
+##### (3)验证命令（与 Rocky 相同）
+
+```
+ip addr show eth0
+ip route show
+ping -c 4 www.baidu.com
+```
+
 ---
 
 ### 二十六.网络请求和下载
 
 #### 1.ping命令
 
+主要用于监测主机网络状态
+
 语法:`ping [-c num] ip或主机名`
 
 - `-c`   设置检查的次数
+
+```shell
+[pai@iZ2zeit3hjref5eauvl6roZ ~]$ ping pythoncv.cn
+ping: pythoncv.cn: Name or service not known
+```
+
+> [!IMPORTANT]
+>
+> 当出现以上情况时，有三种可能：
+>
+> 1.域名错误
+>
+> 2.机器无法上网
+>
+> 3.无法进行DNS解析
+>
+> > 检查linux的DNS客户端配置文件：`/etc/resolv.conf`，确保文件中有DNS服务器的地址
+> >
+> > `nameserver 114.114.114.114`
+> >
+> > `nameserver 223.5.5.5`
+>
+> 当ping远程主机的时候，出现如下报错就是你自己的机器无法上外网了：
+>
+> ping 123.206.16.61 # ping一个正确存在的公网主 p 地址，还是出现 "Destination Host UnreachabIe" 报错说明你的网络配置有问题了，得正确配置ip信息，以及路由网关地址
 
 #### 2.nslookup命令
 
@@ -636,14 +928,24 @@ Linux系统中可以添加多个用户和用户组，且一个用户可以加入
 
 帮助用户在命令行内下载网络文件
 
-语法：`wget [-b] [-c] [-t num] url`
+语法：`wget [参数] url`
+
+- `-O 指定下载地址/指定名称`    指定下载到本地的地址和名称  
+- `--limit-rate=1K`   指定下载速度，速度为1KB/S
+- `--user-agent="要伪装的客户端信息"`   伪装客户端信息（伪装成安卓系统、伪装成ipad系统）
 
 - `-b`   后台下载，会将日志写入当前工作目录中的wget-log文件
 - `-c`   断点续传，继续执行下载命令
-- `-t`   设置重试次数 
-- `url`   下载链接
+- `-t num`   设置重试次数 
+- `url`   下载链接 
+- `-q`   安静输出
+- `-T num`   指定网站的超时时间（即超过多少时间即视为网站无法连接）
+- `--spider`   不下载任何文件，主要用于监测服务端是否存活
+	- `wget -T 3 -t 1 --spider 指定ip或域名`   发起检测
+	- `echo $?`   查看返回值，也就是上一个命令的执行情况，0为正常执行，1~255为错误执行
 
-#### 4.curl命令
+
+#### 	4.curl命令
 
 发送http网络请求，用于下载文件或者获取文件信息
 
@@ -652,6 +954,34 @@ Linux系统中可以添加多个用户和用户组，且一个用户可以加入
 - `-O`   大写，用于下载文件，使用服务器原始文件名
 - `-o`   小写，用于下载文件，使用自定义保存文件名,**一般用这个**
 - `url`    要发起请求的网络地址
+
+#### 5.telnet命令
+
+检查远程机器的端口是否打开
+
+语法：
+
+`telnet ip地址 端口号`
+
+#### 6.ssh命令
+
+用于连接远程主机
+
+语法：
+
+`ssh 用户名@ip地址 [参数] ["需要远程执行的命令"]`
+
+- `-p 端口号`   指定端口远程连接
+
+#### 7.traceroute命令
+
+详细解析路由地址
+
+语法：
+
+`traceroute [-n] ip地址`
+
+- `-n`   取消域名解析
 
 ---
 
@@ -671,7 +1001,97 @@ Linux系统中可以添加多个用户和用户组，且一个用户可以加入
 
 查看指定端口占用情况
 
-语法：`netstat -(anp|tlnp)|grep 端口号\进程号`
+语法：`netstat [参数]`
+
+- `-a`   显示所有的套接字（socket：ip+端口号）信息
+- `-n`   显示数字地址信息而非主机名
+- `-t`   显示出TCP的连接情况
+- `-u`   显示出UDP的连接情况
+- `-n`   不进行DNS解析（直接显示ip）
+- `-l`   只显示正在监听中的套接字
+- `-p`   显示出套接字所属的进程和进程名情况
+- `-i`   显示出所有网络接口的情况
+
+```shell
+Active Internet connections (servers and established)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State
+tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN
+tcp        0      0 0.0.0.0:61208           0.0.0.0:*               LISTEN
+tcp        0      0 127.0.0.1:25            0.0.0.0:*               LISTEN
+tcp        0      0 172.27.108.103:80       113.108.237.222:60677   SYN_RECV
+tcp        0      0 172.27.108.103:80       113.108.237.222:4940    SYN_RECV
+tcp        0      0 172.27.108.103:80       113.108.237.222:12442   SYN_RECV
+tcp        0      0 172.27.108.103:80       113.108.237.224:64099   SYN_RECV
+tcp        0      0 172.27.108.103:80       113.108.237.224:28319   SYN_RECV
+tcp        0      0 172.27.108.103:80       113.108.237.222:18064   SYN_RECV
+tcp        0      0 172.27.108.103:40610    100.100.100.10:443      TIME_WAIT
+tcp        0      0 172.27.108.103:80       113.108.237.224:60552   SYN_RECV
+tcp        0      0 172.27.108.103:80       113.108.237.224:24284   SYN_RECV
+tcp        0      0 172.27.108.103:80       113.108.237.222:40539   SYN_RECV
+tcp        0      0 172.27.108.103:80       113.108.237.222:12526   SYN_RECV
+tcp        0      0 172.27.108.103:33506    100.100.30.25:80        ESTABLISHED
+tcp        0      0 172.27.108.103:35330    100.100.100.10:80       TIME_WAIT
+tcp        0      0 172.27.108.103:80       113.108.237.222:48575   SYN_RECV
+tcp        0      0 172.27.108.103:80       113.108.237.224:1328    SYN_RECV
+tcp        0      0 172.27.108.103:80       113.108.237.224:7904    SYN_RECV
+tcp        0      0 172.27.108.103:80       113.108.237.224:10344   SYN_RECV
+tcp        0    208 172.27.108.103:22       49.77.241.213:37549     ESTABLISHED
+```
+
+- `Proto`   套接字使用的协议
+- `Recv-Q`   接收队列，连接这个套接字的用户还未拷贝的字节数，即内核接收缓冲区中**等待应用程序读取**的数据字节数
+- `Send-Q`   发送队列，远程主机还未确认的字节数，即内核发送缓冲区中**已发送但还未收到对方确认**的数据字节数。
+- `Local Address`   套接字本地的地址和端口号
+- `Foreign Address`   套接字的远程主机地址和端口号
+- `State`   状态
+	- `ESTABLISHED`   套接字有一个有效连接。
+	- `SYN_SENT`   套接字尝试建立一个连接。
+	- `SYN_RECV`   从网络上收到一个连接请求。
+	- `FIN_WAIT1`   套接字已关闭，连接正在断开。
+	- `FIN_WAIT2`   连接已关闭，套接字等待远程方中止。
+	- `TIME_WAIT`   在关闭之后，套接字等待处理仍然在网络中的分组。
+	- `CLOSED`   套接字未用。
+	- `CLOSE_WAIT`   远程方已关闭，等待套接字关闭。
+	- `LAST_ACK`   远程方中止，套接字已关闭，等待确认。
+	- `LISTEN`   套接字监听进来的连接。如果不设置 --listening(-l)或者--all(-a)选项，将不显示出来这些连接。
+	- `CLOSING `  套接字都已关闭，而还未把所有数据发出。
+	- `UNKNOWN`   套接字状态未知。
+
+```shell
+Kernel Interface table
+Iface             MTU    RX-OK RX-ERR RX-DRP RX-OVR    TX-OK TX-ERR TX-DRP TX-OVR Flg
+eth0             1500 46672304      0      0 0      97790624      0      0      0 BMRU
+lo              65536     2310      0      0 0          2310      0      0      0 LRU
+```
+
+- `Iface`   网络设备的名称
+- `MTU`   最大的传输单元，单位是字节
+- `RX-OK/TX-OK`   正确接受了多少数据包，发送了多少数据包
+- `RX-ERR/TX-ERR`  接收、发送数据包的时候，丢弃了多少数据包
+- `RX-OVR\TX-OVR`   由于错误遗失了多少数据包
+- `Flg`   标记
+	- `L`   表示回环地址
+	- `R`   表示这个网络接口正在运行中
+	- `U`   接口正在处于活动的状态
+	- `B`   设置了广播地址
+	- `M`   接受所有的数据包
+	- `O`   表示在该接口上禁止arp
+	- `P`   表示端对端的连接
+
+> [!NOTE]
+>
+> 当RX-ERR和TX-ERR为0时，说明网络情况良好
+
+常用组合：
+
+`netstat -tlnp |grep 端口号\进程号`   查看机器上正在进行的指定端口情况
+
+`netstat -rn`   显示系统路由表情况，等同于`route -n`
+
+`netstat -anp|grep 端口号\进程号`   显示所有状态的连接，适用于分析网络情况
+
+`netstat -tun | grep ESTAB`   当前连接到服务器的情况
 
 ---
 
@@ -694,8 +1114,8 @@ Linux系统中可以添加多个用户和用户组，且一个用户可以加入
 
 ps常用组合
 
-- `ps -ef | grep nginx`
-- `ps aux | grep mysql`
+- `ps -ef | grep nginx`   注重进程关系或者脚本处理使用
+- `ps aux | grep mysql`   注重资源管理使用
 - `ps -y 用户名`   指定查看某个用户的进程
 - `ps -eH`   显示进程树信息
 - `ps -eo pid,agrs,psr`   自定义输出信息
@@ -730,12 +1150,91 @@ ps常用组合
 语法：`kill [-9] 进程ID`
 
 - `-9`   代表强制关闭进程
+- `-l`   列出所有终止信号
+- `-0 pid`   并不发送信号，只检查所对应pid的程序是否存在，存在则返回值为0，反之为1，可以用`echo $?`获取返回值
+
+##### (1).killall命令
+
+根据**进程名**杀死所有匹配的进程（kill命令一次只能杀死一个进程）
+
+语法：
+
+`killall 参数 进程名称`
+
+- `-9`   强制杀死进程
+- `-I`   忽略大小写
+- `-i`   交互模式，即杀死进程前需要征求确认
+- `-u`   指定某个用户启动的进程
+	- `killall -u 用户名`   杀死该用户下启动的所有进程
+	- `killall -u 用户名 进程名`   杀死该用户下启动的指定进程
+- `-v`   显示执行结果
+
+##### (2).pkill命令
+
+根据**进程名**或其他属性（如完整命令行、用户等）杀死匹配的进程
+
+语法：
+
+`pkill 参数 进程名称`
+
+| **`-P`** | 匹配父进程 ID 列出的进程（一般用来杀子进程）                 |
+| -------- | ------------------------------------------------------------ |
+| **`-t`** | 匹配指定终端上运行的进程，常用于踢出登录用户（例如 `pkill -t pts/1`） |
+| **`-u`** | 匹配指定用户启动的进程                                       |
+| **`-f`** | 使用完整的命令行进行匹配，而不仅仅是进程名                   |
+| **`-9`** | 发送 `SIGKILL` 信号，强制终止进程                            |
 
 #### 3.tty命令
 
 语法：`tty`
 
 用于查看当前使用的终端
+
+#### 4.pstree命令
+
+语法：
+
+`pstree`
+
+用于查看进程树的命令，能够清晰表达程序之间的层级关系
+
+#### 5.pgrep命令
+
+通过程序的名字去查询相关进程，如果程序正在运行则会返回PID
+
+语法：
+
+`pgrep 参数 要查询的进程的名称` 
+
+- `-l`   显示出进程名称
+
+#### 6.jobs命令
+
+使用快捷键`ctrl+z`可以向前台发送挂起信号，使用jobs命令可以查看被挂起的进程
+
+语法：
+
+`jobs`
+
+###### (1).fg命令
+
+恢复指定（被挂起的）作业
+
+语法：
+
+`fg %X`
+
+- `X`   X为作业号
+
+###### (2).bg命令
+
+让作业在后台运行
+
+语法：
+
+`bg %X`
+
+- `X`   X为作业号
 
 ---
 
@@ -745,39 +1244,162 @@ ps常用组合
 
 通过`top`命令查看CPU、内存使用情况，每隔5s刷新一次，使用`q`或者ctrl+c退出
 
-语法：`top`
+语法：`top 参数`
 
-- **top:**命令名称
-- **14:39:58:**当前系统时间
-- **up 6 min:**启动了6分钟
-- **2 users:**2个用户登录
-- **load:**1、5、15分钟负载
-- **Tasks:**175个进程
-- **1 running:**1个进程子在运行，
-- **174 sleeping**:174个进程睡眠，0个停止进程，0个僵尸进程
-- **%Cpu(s):**CPU使用率
-- ==**us:**用户CPU使用率==
-- ==**sy:**系统CPU使用率==
-- **ni:**高优先级进程占用CPU时间百分比，
-- **id:**空闲CPU率
-- **Wa:IO**等待CPU占用率
-- **hi:**CPU硬件中断率
-- **si:**CPU软件中断率
-- **st:**强制等待占用CPU率
-- **Kib Mem:**物理内存
-- **total:**总量
-- ==**free:**空闲==
-- ==**used:**使用==
-- **buff/cache:** buff和cache占用
-- **KibSwap:**虚拟内存（交换空间)
-- **total:**总量
-- **free:**空闲
-- **used:**使用
-- **buff/cache:** buff和cache占用
+- `-c`   显示进程命令的绝对路径（也可也进入top进程后按c启动）
+- `-d X`   设置top进程刷新的时间，X秒刷新一次
+- `-n X`   设置top进程刷新的次数，X次后结束
+- `-p pid`   使top进程单独观察某进程的信息
+- `-b`   批处理模式（Batch Mode），与 `-n` 结合使用可将输出重定向到文件，例如 `top -b -n 1 > top.txt`，也可也在脚本中使用`变量名=$(top -b -n 1)`直接获取数据
 
-![image-20251127172750517](C:/Users/24846/AppData/Roaming/Typora/typora-user-images/image-20251127172750517.png)
+```shell
+top - 18:13:54 up 88 days,  4:12,  1 user,  load average: 0.00, 0.00, 0.00
+Tasks:  97 total,   1 running,  96 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  0.0 us,  0.0 sy,  0.0 ni, 99.7 id,  0.0 wa,  0.2 hi,  0.2 si,  0.0 st
+MiB Mem :   1871.0 total,    825.2 free,    346.0 used,    859.9 buff/cache
+MiB Swap:      0.0 total,      0.0 free,      0.0 used.   1524.9 avail Mem
 
-![image-20251127172844960](C:/Users/24846/AppData/Roaming/Typora/typora-user-images/image-20251127172844960.png)
+    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+ 133288 root      20   0  143456  28636  19396 S   0.3   1.5 164:47.54 AliYunDunMonito
+      1 root      20   0  103672  10664   7684 S   0.0   0.6   0:52.35 systemd
+      2 root      20   0       0      0      0 S   0.0   0.0   0:00.09 kthreadd
+      3 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 rcu_gp
+      4 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 rcu_par_gp
+      6 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 kworker/0:0H-kblockd
+      8 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 mm_percpu_wq
+      9 root      20   0       0      0      0 S   0.0   0.0   0:00.00 rcu_tasks_rude_
+     10 root      20   0       0      0      0 S   0.0   0.0   0:00.00 rcu_tasks_trace
+     11 root      20   0       0      0      0 S   0.0   0.0   0:01.31 ksoftirqd/0
+     12 root      20   0       0      0      0 I   0.0   0.0   3:08.61 rcu_sched
+     13 root      rt   0       0      0      0 S   0.0   0.0   0:00.68 migration/0
+     14 root      20   0       0      0      0 S   0.0   0.0   0:00.00 cpuhp/0
+     15 root      20   0       0      0      0 S   0.0   0.0   0:00.00 cpuhp/1
+     16 root      rt   0       0      0      0 S   0.0   0.0   0:00.49 migration/1
+     17 root      20   0       0      0      0 S   0.0   0.0   0:01.00 ksoftirqd/1
+     19 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 kworker/1:0H-events_highpri
+     21 root      20   0       0      0      0 S   0.0   0.0   0:00.00 kdevtmpfs
+     22 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 netns
+     23 root      20   0       0      0      0 S   0.0   0.0   0:00.00 kauditd
+     26 root      20   0       0      0      0 S   0.0   0.0   0:00.54 khungtaskd
+     27 root      20   0       0      0      0 S   0.0   0.0   0:00.00 oom_reaper
+     28 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 writeback
+     29 root      20   0       0      0      0 S   0.0   0.0   0:20.95 kcompactd0
+     30 root      25   5       0      0      0 S   0.0   0.0   0:00.00 ksmd
+     31 root      39  19       0      0      0 S   0.0   0.0   0:35.47 khugepaged
+     32 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 memcg_wmark
+     33 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 memcg_pgcache_l
+     47 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 cryptd
+     82 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 kintegrityd
+     83 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 kblockd
+     84 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 blkcg_punt_bio
+     85 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 tpm_dev_wq
+     86 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 md
+     87 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 edac-poller
+     88 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 devfreq_wq
+     89 root     -51   0       0      0      0 S   0.0   0.0   0:00.00 watchdogd
+     90 root       0 -20       0      0      0 I   0.0   0.0   0:04.88 kworker/1:1H-events_highpri
+    123 root      20   0       0      0      0 S   0.0   0.0   0:01.36 kswapd0
+    124 root      39  19       0      0      0 S   0.0   0.0   0:00.00 zombie_memcg_re
+    125 root      20   0       0      0      0 S   0.0   0.0   0:00.00 kidled
+    127 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 kthrotld
+    128 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 acpi_thermal_pm
+    130 root       0 -20       0      0      0 I   0.0   0.0   0:06.54 kworker/0:1H-events_highpri
+    131 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 kmpath_rdacd
+```
+
+- `top - 18:13:54 up 88 days,  4:12,  1 user,  load average: 0.00, 0.00, 0.00`
+
+	- **`14:39:58:`**   当前系统时间
+	- **`up 6 min: `**   启动了6分钟
+	- **`2 users:`**   2个用户登录
+	- **`load average:`**   分别为1、5、15分钟的系统负载情况
+
+- ``Tasks:  97 total,   1 running,  96 sleeping,   0 stopped,   0 zombie``
+  - **`Tasks:  97 total`**   一共有97个进程
+  - **`1 running:`**   1个进程子在运行，
+  - **`97 sleeping`**:   96个进程正在睡眠
+  - **`0 stopped:`**   0个进程已经停止
+  - **`0 zombie`**   0个进程为僵尸进程
+
+- `%Cpu(s):  0.0 us,  0.0 sy,  0.0 ni, 99.7 id,  0.0 wa,  0.2 hi,  0.2 si,  0.0 st`
+  - **`%Cpu(s):`**   CPU使用率
+
+  - **`us:`**   用户占用的CPU百分比情况
+
+  - **`sy:`**   系统内核空间占用的CPU百分比情况
+
+  - **`ni:`**   用户空间进程中被**手动调整过优先级**（通过 `nice` 或 `renice`）的进程所占用的 CPU 时间百分比
+  	- **注意**：`nice` 值范围是 -20~19，值越低优先级越高。`ni` 统计的是 **nice 值非默认值（非 0）** 的进程的 CPU 占用，无论它们是变高优先级还是变低优先级
+
+  - **`id:`**   空闲的CPU百分比情况
+
+  - **`wa:`**   等待输入输出的CPU百分比情况
+
+  - **`hi:`**   CPU硬件中断率
+
+  - **`si:`**   CPU软件中断率
+
+  - **`st:`**   强制等待占用CPU率
+
+- `MiB Mem :   1871.0 total,    825.2 free,    346.0 used,    859.9 buff/cache`
+  - **`MiB Mem:`**   物理内存
+
+  - **`total:`**   物理内存总大小
+
+  - **`free:`**   空闲的内存总量
+
+  - **`used:`**   已使用的内存总量
+
+  - **`buff/cache:`**   缓冲区和缓存的占用[^5][^6]
+
+- `MiB Swap:      0.0 total,      0.0 free,      0.0 used.   1524.9 avail Mem`
+	- **`Mib Swap:`**   虚拟内存（交换空间)
+
+	- **`total:`**   虚拟内存总大小
+
+	- **`free:`**   空闲的内存总量
+
+	- **`used:`**   已使用的内存总量
+
+	- **`avail Mem`**   **在不交换的情况下，系统可用的物理内存估算值**（包括可回收的 cache/buffer）
+
+- `PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND`
+	- **`PID:`**   进程ID号
+
+	- **`USER:`**   执行进程的用户
+
+	- **`PR:`**   进程的优先级高低
+
+	- **`NI:`**   **nice值**，nice值越低表示优先级越高
+		- **注意**：`nice` 值范围是 -20~19，值越低优先级越高。`ni` 统计的是 **nice 值非默认值（非 0）** 的进程的 CPU 占用，无论它们是变高优先级还是变低优先级
+
+	- **`VIRT:`**   表示进程使用的虚拟内存总量
+		- VIRT=swap(交换空间) +RES
+
+	- **`RES:`**   进程使用的物理内存大小
+
+	- **`SHR:`**   共享内存大小
+
+	- **`S:`**   表示进程的状态
+
+	- **`%CPU:`**   CPU的使用百分比情况
+
+	- **`%MEM:`**   内存的使用百分比情况
+
+	- **`TIME+ COMMAND:`**   运行的时间和命令
+
+
+###### (1).补充
+
+- `P`：按 CPU 使用率降序排序（默认）。
+- `M`：按内存使用率降序排序。
+- `T`：按运行时间累加排序。
+- `k`：终止一个进程（会提示输入 PID）。
+- `r`：修改进程的 nice 值。
+- `1`：展开/折叠每个 CPU 核心的使用情况。
+- `H`：显示线程（默认显示进程）。
+- `W`：将当前设置保存到 `~/.toprc`，下次启动自动应用
+- `z`:   打开颜色
 
 #### 2.df命令
 
@@ -818,7 +1440,173 @@ ps常用组合
 - `num1`   刷新间隔
 - `num2`   刷新次数
 
-#### 5.查询
+#### 5.glances命令
+
+相较于top更为强大的性能监测工具
+
+语法：
+
+`glances`
+
+##### (1)快捷键：
+
+- `q`   退出工具
+- `h`   显示帮助信息
+- `c`   以CPU占用率排序
+- `m`   以内存占用率排序
+- `i`   以io速率排序
+- `p`   以进程名排序
+- `d`   打开或关闭磁盘读写情况
+- `f`   打开或关闭文件系统剩余空间情况
+
+##### (2)server模式
+
+让一台主机实时监控多台服务器的glances
+
+语法（要监控的服务器）：
+
+`glances -s -B 本服务器ip`
+
+语法（要进行监控的主机）：
+
+`glances -c 要监控的服务器的ip`
+
+---
+
+#### 6.mpsta命令
+
+查看整体 CPU 使用情况
+
+语法：
+
+```
+mpstat [选项] [间隔] [次数]
+```
+
+- **间隔**：每隔多少秒输出一次
+- **次数**：总共输出几次
+
+常用示例：
+
+查看所有 CPU 核心的平均使用率（每秒一次，共输出 3 次）
+
+```
+mpstat -P ALL 1 3
+```
+
+- `-P ALL` 显示每个 CPU 核心的详细数据，不加则只显示所有核心的平均值。
+
+输出字段说明
+
+| 字段      | 含义                      |
+| :-------- | :------------------------ |
+| `%user`   | 用户态进程占用 CPU 百分比 |
+| `%system` | 内核态占用百分比          |
+| `%iowait` | 等待 I/O 完成的 CPU 时间  |
+| `%idle`   | 空闲 CPU 百分比           |
+
+**脚本化示例**：获取整体 CPU 空闲率
+
+```
+mpstat 1 1 | awk 'NR==4 {print 100 - $NF}'
+```
+
+（注意 `$NF` 是最后一列，即 `%idle`）
+
+------
+
+#### 7.pidstat命令
+
+按进程监控资源
+
+基本语法
+
+```
+pidstat [选项] [间隔] [次数]
+```
+
+常用选项
+
+| 选项     | 作用                                 |
+| :------- | :----------------------------------- |
+| `-u`     | 监控 CPU 使用率（默认）              |
+| `-r`     | 监控内存使用（`%MEM`、`VSZ`、`RSS`） |
+| `-d`     | 监控磁盘 I/O（读写速率）             |
+| `-t`     | 显示线程信息                         |
+| `-h`     | 隐藏表头，使输出更干净               |
+| `-p PID` | 只监控指定进程                       |
+
+实用示例
+
+1. 监控所有进程的 CPU 使用率（每秒一次，共 2 次）
+
+```
+pidstat -u 1 2
+```
+
+输出中第 8 列是 `%CPU`，第 11 列是进程名。
+
+2. 只显示非零 CPU 的进程（适合脚本）
+
+```
+pidstat -u 1 1 -h | awk '$8 != 0.00 {print $11, $8}'
+```
+
+- `-h` 去掉表头，让 awk 更容易处理。
+
+3. 监控内存使用（按 RSS 排序）
+
+```
+pidstat -r 1 1 | sort -k7 -rn | head -10
+```
+
+- `-r` 显示内存，第 7 列是 `RSS`（实际物理内存）。
+
+4. 监控磁盘 I/O（每秒读写速率）
+
+```
+pidstat -d 1 2
+```
+
+- 输出中第 6 列是 `kB_rd/s`（读速率），第 7 列是 `kB_wr/s`（写速率）。
+
+------
+
+#### 8.mpsta与pidstat组合使用
+
+一次采集多种指标
+
+```
+#!/usr/bin/env bash
+# 采集 CPU 非零进程
+pidstat -u 1 1 -h | awk '$8 != 0.00 {print "cpu", $11, $8}'
+# 采集内存非零进程
+pidstat -r 1 1 -h | awk '$6 != 0.00 {print "mem", $11, $6}'
+# 采集磁盘 I/O 进程
+pidstat -d 1 1 -h | awk '$6 != 0.00 {print "io", $11, $6, $7}'
+```
+
+#### 9.iotop命令
+
+语法：
+
+`iotop [选项]`
+
+常用参数：
+
+- **`-b`**：批处理模式（关键！），关闭交互界面，直接输出文本。
+- **`-n NUM`**：采样次数（例如 `-n 1` 只输出一次，适合脚本）。
+- **`-d SEC`**：采样间隔（秒）。
+- **`-o`**：只显示正在产生 I/O 的进程（大大减少输出）。
+- **`-k`**：以 KB 为单位显示读写速度。
+- **`-t`**：添加时间戳（自动启用 `-b`）。
+- **`-q`**：精简输出，去掉表头（可用多次 `-qqq` 更精简）
+
+> [!CAUTION]
+>
+> `iotop` 通常需要 `sudo` 权限
+
+#### 10.查询
 
 - **磁盘分区相关**（fdisk、gdisk、parted、lsblk、partprobe）
 - **LVM 相关**（pvcreate、vgcreate、lvcreate、pvs、vgs、lvs、vgextend、lvextend）
@@ -882,7 +1670,7 @@ ps常用组合
 
 #### 3.scp命令
 
-将宿主机上的文件上传或下载至Linux系统中
+将宿主机上的文件上传或下载至Linux系统中（如果需要向windows发送文件建议在windows中拉取linux的文件）
 
 语法：`scp [选项] [源文件] [目标]`
 
@@ -946,10 +1734,26 @@ ps常用组合
 
 忽略挂起信号
 
-语法：`nohub ./脚本名 &`
+语法：
+
+`nohub ./脚本名 [&]`
+
+`nohub 命令 [&]`
+
+- `[&]`   允许后续继续在此终端进程操作
 
 - 终端关闭后脚本依然会继续执行
 - 默认输出到`nohub.out`文件
+
+##### (1).linux黑洞文件
+
+语法：
+
+```shell
+nohub ping baidu.com > baocun.txt 2>&1 &
+```
+
+把程序的标准错误输出和标准输出都输出到baocun.txt文件中
 
 #### 3.disown命令
 
@@ -1948,7 +2752,7 @@ lvremove /dev/vg/lv_data_snap
 
 - **创建命令**：
 
-	```
+	```shell
 	lvcreate --type raid0 -L 5G -n lv_raid0 vg
 	```
 
@@ -2094,11 +2898,514 @@ mdadm -Cv /dev/md0 -a yes -n 4 -l 10 /dev/vg/lv1 ...
 
 ---
 
+### 五十二.防火墙
 
+常用命令：
+
+```shell
+#显示当前区域所有规则
+firewall-cmd --list-all
+
+#临时放行http服务
+firewall-cmd --add-service=http
+
+#移除对http服务的放行
+firewall-cmd --remove-service=http
+
+#持久放行http服务（写入配置文件）
+firewall-cmd --add-service=http --permanent
+
+#持久放行tcp/2222端口
+firewall-cmd --add-port=2222/tcp --permanent
+
+#移除对tcp/2222端口的放行
+firewall-cmd --remove-port=2222/tcp --permanent
+
+#重新加载服务
+firewall-cmd --reload
+
+#查看已开放的服务
+firewall-cmd --list-services
+
+#查看已开放的端口
+firewall-cmd --list-ports
+
+#查看所有富规则
+firewall-cmd --list-rich-rules
+
+```
+
+firewall的富规则：
+
+```
+#--add-rich-rule选项
+1.拒绝来自主机192.168.0.1的流量对http服务的访问：
+firewall-cmd [ --permanent ] --add（将add改为：remove即为删除）-rich-rule 'rule family=ipv4 source address=192.168.0.1/32 service name=http reject'
+2.拒绝来自网段192.168.0.0/24的流量对TCP20-22端口的访问：
+firewall-cmd [ --permanent ] --add-rich-rule 'rule family=ipv4 source address=192.168.0.0/24 port port=20-22 protocol=tcp drop'
+```
+
+- `--permanent`   永久保存，即写入配置文件
+
+---
+
+### 五十三.linux系统的运行级别
+
+##### 1.runlevel命令
+
+读取系统的/var/run/utmp 系统定位的运行级别
+
+语法：
+
+`runlevel`
+
+##### 2.init命令
+
+init是linux进程的初始化工具，是所有linnux进程的父进程，进程的id号默认为1
+
+语法：
+
+`init 级别`
+
+常见级别：
+
+- 0 关机
+- 1 单用户模式
+- 2 多用户模式，无网络模式
+- 3 完全的多用户模式，有网模式
+- 4 用户自定义级别
+- 5 图形化页面的多用户模式
+- 6 重启机器
+
+---
+
+### 五十四.模型
+
+| OSI七层模型 | TCP/IP 4层模型 | 层概念             | 层功能                                            | 主要协议                    |
+| ----------- | -------------- | ------------------ | ------------------------------------------------- | --------------------------- |
+| 物理层      | 链路层         | 物理链路层         | 以二进制的数据形式在物理媒介上进行传输数据        | ISO@2100等                  |
+| 数据链路层  | 链路层         | 物理链路层         | 传输有地址的帧及错误检测功能                      | CSLIP、PPP、ARP等           |
+| 网络层      | 网络层         | 网络               | 为数据包选择路由                                  | IP、ICMP、BGP、OSPF等       |
+| 传输层      | 传输层         | 传输               | 提供端对端的接口 IP port                          | TCP、UDP                    |
+| 会话层      | 应用层         | 最接近用户的应用层 | 解除或建立与别的节点的会话关系                    | 没有协议                    |
+| 表示层      | 应用层         | 最接近用户的应用层 | 数据格式化、代码转化、数据加密                    | 没you协议                   |
+| 应用层      | 应用层         | 最接近用户的应用层 | 提供文件传输、邮件服务、邮件共享、web、域名服务等 | HTTP、SNMP、FTP、NFS、DNS等 |
+
+##### 应用层介绍：
+
+任务：
+主要是通过进程间的数据交互来完成特定的网络应用对于不同的网络应用需要使用不同的网络协议
+
+- 域名解析系统用的是DNS协议
+- web服务用的是万维网HTTP协议
+- 邮件传输需要用的是SMTP协议
+
+> 我们把应用层交互的数据称之为**报文**
+
+应用层重要概念：
+
+###### (1)域名解析系统（DNS domain name system）
+
+DNS是互联网的一个分布式数据库，主要存储IP和域名的对应关系，能够让普通用户更方便的使用互联网而不用记住繁琐的IP地址号码。
+
+###### (2)HTTP协议（HyperText Transfer PRotocol）
+
+超文本传输协议，是互联网上最为应用广泛的一种网络协议，所有的www万维网都得遵循这个标准。
+
+设计HTTP协议的初衷是为了方便发布和接收HTML文件。
+
+##### 传输层的概念
+
+任务：
+
+传输层作用是向两台主机之间的进程提供数据传输。
+
+传输协议主要有以下两种：
+
+###### (1)传输控制协议（TCP传输）
+
+提供面向连接的，可靠的数据传输服务
+
+> 即需要被传输方给予传输方一个明确的回应确认
+
+###### (2)用户数据协议（UDP传输）
+
+提供无连接的，尽到他自己最大的努力进行数据传输，但是不保证数据安全性
+
+> 即无需被传输方给予传输方一个明确的回应确认
+
+区别：
+
+- UDP是无连接的，TCP是面向连接的（类似打电话，需要双方都接通才能进行对话）。
+- UDP只尽力传输，不保证数据可靠性。TCP安全性很高，有：两个传输的端点、是点对点、一对一的形式。
+- UDP是没有报文的，TCP是有可靠的报文交互，传输的数据：无差错、不重复、不丢失。
+- UDP支持一对一、一对多、多对一、多对多的交互通信（例如：聊天室）
+
+---
+
+### 五十五.ifconfig命令
+
+配置网卡IP信息等网络参数信息
+
+查看显示网络接口信息
+
+临时性的配置IP地址、子网掩码、广播地址、网关信息
+
+语法：
+
+`ifconfig [接口] [选项] [地址]`
+
+更多用法：
+
+- `ifconfig eth0 up/down`   关闭/打开网卡eth0
+
+- `ifconfig eth0`   仅查看网卡eth0的信息
+
+- `ifconfig eth0:0 192.168.88.130 netmask 255.255.255.0 up`   添加了新的ip地址，一个网卡别名eth0:0  ，ip地址192.168.88.130,子网掩码255.255.255.0
+
+	- `ip地址/24`   /24可以指代子网掩码255.255.255.0
+
+	- > [!CAUTION]
+		>
+		> `ip addr add 192.168.88.160/24 dev eth0`   是更现代的修改方式
+
+- `ifconfig eth0 hw ether 00:0c:29:13:10:CF`   修改机器的MAC地址（需要先停止网卡）
+
+ifconfig示例：
+
+```shell
+eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 172.27.108.103  netmask 255.255.240.0  broadcast 172.27.111.255
+        inet6 fe80::216:3eff:fe48:f9fc  prefixlen 64  scopeid 0x20<link>
+        ether 00:16:3e:48:f9:fc  txqueuelen 1000  (Ethernet)
+        RX packets 43635690  bytes 7224357263 (6.7 GiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 89238386  bytes 6938703398 (6.4 GiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
+        inet 127.0.0.1  netmask 255.0.0.0
+        inet6 ::1  prefixlen 128  scopeid 0x10<host>
+        loop  txqueuelen 1000  (Local Loopback)
+        RX packets 2306  bytes 128792 (125.7 KiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 2306  bytes 128792 (125.7 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+```
+
+- `inet`   ip地址
+- `netmask`   子网掩码
+- `broadcast`   广播地址
+- `RX packets`   网卡收到的流量数据包大小
+- `TX packets`   网卡发出的流量数据包大小
+- `lo`    是本地回环接口，固定 IP 127.0.0.1，用于本机内部通信。
+
+> 网络配置文件目录：
+>
+> `/etc/sysconfig/network-scripts/`
+>
+> 可以在里面进行永久配置
+
+> [!IMPORTANT]
+>
+> `ifconfig` 属于 `net-tools` 工具包，已停止维护。建议逐步迁移到 `ip` 命令（如 `ip addr`、`ip link` 等），但鉴于仍有大量旧系统和脚本使用，了解 `ifconfig` 仍有必要。
+
+---
+
+### 五十六.route命令
+
+route程序可以对linux内地ip路由表进行操作
+
+语法：
+
+`route [参数]`
+
+- `show`   查看路由表
+
+- `-n`   解析网关地址，直接显示ip而并非DNS地址
+- `del default`   删除网关地址
+- `add default gw 网关地址`   添加网关地址
+
+```shell
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+0.0.0.0         172.27.111.253  0.0.0.0         UG    100    0        0 eth0
+172.27.96.0     0.0.0.0         255.255.240.0   U     100    0        0 eth0
+```
+
+- `Destination`   网络号，表示network
+- `Gateway`   网关地址
+- `Genmask`   子网掩码地址
+- `Flags`   路由标记，标记当前网络状态
+	- `U`   Up运行状态
+	- `UG`   表示这是一个网关路由器
+	- `H`   表示该网关为一个主机
+	- `!`   表示这个路由已经禁止
+
+---
+
+### 五十七.ip命令
+
+强大的网络管理工具，是ifconfig和route的上位替代
+
+语法：
+
+`ip 参数`
+
+- `addr show`   查看显示网络设备信息
+
+	- `address show`   查看显示网络设备详细信息
+	- `a`   可以直接简写为a  
+
+- `address add\del 自定义ip地址 dev eth0`   添加\删除ip地址（临时修改）
+
+- `address add\del 自定义ip地址 dev eth0 label eth0:1`   添加网卡别名eth0:1
+
+	- > 修改后可以用命令`ifconfig`查看到
+
+- `link show dev eth0`   查看显示指定网络设备信息
+
+- `-s`   显示网络设备详细的数据包收发大小情况
+
+- `link set eth0 up\down`   开启\关闭指定网卡
+
+- `link set eth0 address 00:0c:29:13:10:11`   修改网卡MAC地址信息
+
+- `route`   查看路由表信息
+
+	- ```shell
+		default via 172.27.111.253 dev eth0 proto dhcp src 172.27.108.103 metric 100   # 默认网关
+		172.27.96.0/20 dev eth0 proto kernel scope link src 172.27.108.103 metric 100   # 直连网络
+		```
+
+- `route add default via 网关地址 dev eth0`   修改网关地址
+
+- ` route get ip地址`   测试该ip地址有哪条路由
+
+- `route del 路由地址`   删除路由
+
+- `neighbour`   ip检查arp缓存（显示网络邻居信息），检查MAC地址信息
+
+	- `arp -n`   等同于此命令
+
+> [!NOTE]
+>
+> 上述代码中`eth0`为网卡名称，来源于阿里云虚拟机，在VMware中通常为ens33
+
+---
+
+### 五十八.使用Python调用shell脚本
+
+语法：
+
+`result = subprocess.run(['命令','参数'],capture_output=True,text=True,check=True,timeout=秒数,input=字符串)`
+
+| `capture_output=True` | 捕获标准输出和标准错误           | `result = subprocess.run(['ls', '-l'], capture_output=True)` |
+| --------------------- | -------------------------------- | ------------------------------------------------------------ |
+| `text=True`           | 将输出转为字符串（否则是字节串） | `result = subprocess.run(['ls', '-l'], capture_output=True, text=True)` |
+| `check=True`          | 如果返回码非0，抛出异常          | `subprocess.run(['false'], check=True)` → 报错               |
+| `timeout=秒数`        | 超时终止进程                     | `subprocess.run(['sleep', '10'], timeout=2)` → 超时异常      |
+| `input=字符串`        | 向进程的标准输入发送数据         | `subprocess.run(['grep', 'hello'], input="hello world", text=True, capture_output=True)` |
+
+示例：
+
+```python
+import subprocess
+
+try:
+    result = subprocess.run(
+        ['ls', '/nonexist'],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        universal_newlines=True,   # Python 3.6 兼容写法（capture_output=True）
+        check=True,
+        timeout=5
+    )
+    print("标准输出:", result.stdout)
+except subprocess.CalledProcessError as e:
+    print("命令失败，返回码:", e.returncode)
+    print("错误输出:", e.stderr)
+except subprocess.TimeoutExpired:
+    print("命令执行超时")
+```
+
+---
+
+### 五十九.用户级安装 Python 包
+
+作用
+
+将 Python 包安装到**当前用户的家目录**，而不是系统全局目录（如 `/usr/lib/python3.6/site-packages`）。
+
+优点
+
+- **无需 `sudo` 权限**：普通用户即可执行。
+- **环境隔离**：不影响系统 Python 环境，避免依赖冲突。
+- **安全**：不会污染系统级目录，便于卸载（直接删除 `~/.local` 相关目录即可）。
+
+安装位置（默认）
+
+- **包文件**：`~/.local/lib/python3.x/site-packages/`
+- **可执行命令**：`~/.local/bin/`
+- **配置文件**：`~/.config/` 等
+
+常用命令
+
+```
+# 安装包到当前用户环境
+pip install --user 包名
+
+# 升级包
+pip install --user --upgrade 包名
+
+# 卸载包（需知道包名）
+pip uninstall 包名
+```
+
+注意事项
+
+- 如果系统 Python 版本较旧，`pip` 可能不支持 `--user`，升级 `pip` 即可。
+- 使用 `--user` 安装的可执行程序，需要将 `~/.local/bin` 添加到 `PATH` 环境变量中才能直接运行。
+- **`yum` / `dnf` 没有 `--user` 选项**，因为它们只能全局安装系统级软件。
+
+---
+
+### 六十.指定服务监听的网络接口
+
+作用
+
+告诉网络服务（如 Glances、Nginx、HTTP 服务）**监听哪一个 IP 地址**，从而控制哪些网络可以访问该服务。
+
+常见取值
+
+| 取值                | 含义                                      | 安全性                         |
+| :------------------ | :---------------------------------------- | :----------------------------- |
+| `--bind 127.0.0.1`  | 只监听本地回路（localhost），仅本机可访问 | **最安全**                     |
+| `--bind 0.0.0.0`    | 监听所有网络接口（包括公网、内网、本地）  | **最危险**（可能暴露给互联网） |
+| `--bind 具体公网IP` | 只监听指定的公网 IP                       | 较安全，但仍需配合防火墙       |
+
+示例（以 Glances 为例）
+
+```
+# 仅本地访问（推荐配合 Nginx 反向代理）
+glances -w --bind 127.0.0.1
+
+# 允许所有来源（不推荐，除非有严格的安全组限制）
+glances -w --bind 0.0.0.0
+
+# 只监听特定内网 IP（比如 10.0.0.1）
+glances -w --bind 10.0.0.1
+```
+
+最佳实践
+
+- **内部服务**（如数据库、监控面板）应绑定 `127.0.0.1`，通过反向代理或安全组对外暴露。
+- **公开服务**（如 Web 网站）可以绑定 `0.0.0.0`，但必须配合安全组规则和密码认证。
+- 不要依赖 `--bind` 作为唯一安全手段，应结合防火墙/安全组和认证机制。
+
+关联参数
+
+- `--port`：指定监听的端口（默认 61208）。
+- `--username` / `--password`：为 Web 服务添加访问密码。
+
+---
+
+### 六十一.service文件编写
+
+#### (1)创建service文件
+
+语法：
+
+`sudo vim /etc/systemd/system/自定义进程名.service`
+
+#### (2)在文件中写入内容
+
+语法：
+
+```shell
+[Unit]
+# Description：服务的描述，随便写，方便识别。
+Description=Flask Backend Service
+
+# After=network.target：确保在网络启动之后才启动本服务（因为你的 Flask 需要监听端口）。
+After=network.target
+
+[Service]
+# User=app：以 app 用户身份运行
+User=app
+
+# Group=app：以 app 用户组身份运行（如果 app 用户的默认组不是 app，可以改成实际组名，例如 pai）。
+Group=app
+
+# WorkingDirectory=/home/app/backend：设置工作目录。如果你的 app.py 里用了相对路径（如 open('config.txt')），这个很重要。
+WorkingDirectory=/home/app/backend
+
+# Environment="PATH=..."：非常重要。因为 app 用户通过 pip install --user 安装的 flask 在 /home/app/.local/bin 下，但 systemd 启动时的 PATH 环境变量默认不包含这个路径。加上这行后，python3 和 flask 相关的命令才能被找到。你也可以不加 PATH，而直接用绝对路径调用 python3（例如 /usr/bin/python3），但推荐设置 PATH 以便脚本内部调用其他命令时也能找到。
+Environment="PATH=/home/app/.local/bin:/usr/local/bin:/usr/bin"
+
+# ExecStart=/usr/bin/python3 /home/app/backend/app.py：启动命令。使用绝对路径指定 Python 解释器和脚本。
+ExecStart=/usr/bin/python3 /home/app/backend/app.py
+
+# Restart=always：如果进程退出（崩溃、正常退出、被杀死），总是自动重启。
+Restart=always
+
+# RestartSec=5：重启前等待 5 秒，避免频繁重启。
+RestartSec=5
+
+[Install]
+# WantedBy=multi-user.target：表示系统启动到多用户模式时（正常开机）启动此服务。
+WantedBy=multi-user.target
+```
+
+#### (3)保存后应当执行以下命令
+
+```shell
+# 重新加载 systemd 配置
+sudo systemctl daemon-reload
+
+# 启动服务
+sudo systemctl start flask-backend
+
+# 设置开机自启
+sudo systemctl enable flask-backend
+
+# 查看状态（确认是 active (running)）
+sudo systemctl status flask-backend
+```
+
+#### (4)管理服务的常用命令
+
+```
+sudo systemctl start flask-backend      # 启动
+sudo systemctl stop flask-backend       # 停止
+sudo systemctl restart flask-backend    # 重启
+sudo systemctl status flask-backend     # 查看状态
+sudo systemctl enable flask-backend     # 开机自启
+sudo systemctl disable flask-backend    # 取消自启
+sudo journalctl -u flask-backend -f  	# 实时查看日志
+```
+
+---
 
 #### 以下是脚注：
 
 [^1]:每个Linux操作用户在Linux系统的个人账户目录，路径在：/home/用户名
 [^2]:以`.`开头的，表示是Linux系统的隐藏文件/文件夹（只要以.开头，就能自动隐藏）
-[^3]:Linux命令可以使用`；`和`&&`进行分隔。其中`；`是“无论前一个命令成功还是失败，都会执行下一个命令”；而`&&`是“只有前一个命令成功后才会执行下一个命令，如果中途有命令出错，则会停止运行，不再执行后面的命令”
+[^3]:Linux命令可以使用`；`和`&&`以及`||`进行分隔。其中`；`是“无论前一个命令成功还是失败，都会执行下一个命令”；而`&&`是“只有前一个命令成功后才会执行下一个命令，如果中途有命令出错，则会停止运行，不再执行后面的命令”，而`||`是“前一个命令失败才实习下一个命令”
+
 [^4]:`./`表示”当前目录下的指定位置，如 `./project`“；`../` 表示”上一级目录下的指定位置，如 `../documents`”
+[^5]:Buffer（缓冲区）
+
+**Buffer** 主要用于**块设备**（如磁盘、SD 卡等）的**原始数据**缓存。
+
+- 它缓存的是**文件系统的元数据**（如 inode、superblock）以及直接读写块设备时（例如使用 `dd` 读取 `/dev/sda`）的数据块。
+- 当应用程序读写磁盘分区或直接操作设备时，数据会先经过 Buffer，然后再写入设备或从设备读取。
+- Buffer 的目的是**减少对物理磁盘的直接访问次数**，通过合并小的写入操作来提升性能。
+
+[^6]: Cache（页缓存）
+
+**Cache** 通常指 **Page Cache（页缓存）**，用于缓存**文件系统中的文件内容**。
+
+- 当你读取一个文件时，内核会把文件内容缓存在 Page Cache 中，下次再读同一文件就直接从内存返回，无需访问磁盘。
+- 写操作时，数据也会先写入 Page Cache（标记为脏页），再由内核线程（如 pdflush）异步写回磁盘。
+- Cache 针对的是**文件数据**，以内存页（通常 4KB）为单位进行管理。

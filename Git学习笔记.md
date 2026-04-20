@@ -95,7 +95,13 @@
 
 将文件推送至远程仓库
 
-语法：`git push` 
+语法：`git push [<远程仓库名>] [<本地分支名>:<远程分支名>]`
+
+拓展：
+
+- `git push -u origin 分支名`   设置上游分支
+- `git reset HEAD~1`   撤回本地最新的提交
+- `git push --force-with-lease`   安全地更新远程（先检查是否为最新状态，若不是则拒绝）
 
 ---
 
