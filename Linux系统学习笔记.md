@@ -188,6 +188,7 @@ sudo vim /etc/ssh/sshd_config
 	- `-l`:表示以列表的形式展示内容，并展示更多信息
 	- `-h`:表示以易于阅读的形式，列出文件大小，如K、M、G
 	- `-i`:用于检查文件inode
+	- `-t`:按照文件修改的时间来排序
 
 > 可以组合使用，例如：`ls -lah` 或 `ls -alh` 都等同于 `ls -l -a -h`
 
@@ -219,8 +220,10 @@ sudo vim /etc/ssh/sshd_config
 
 语法:`cd [Linux路径]`
 
-- `cd`命令无需选项，只有参数，表示要切在哪个目录下
-- `cd`命令直接执行，不写参数，**表示回到用户的Home目录**
+- `~`   **回到用户的Home目录**，也可以不填
+- `.`   当前目录
+- `..`   回到上一级位置
+- `-`   回到上一次所在的目录（RELinux命令）
 
 #### 2.pwd命令
 
@@ -272,11 +275,16 @@ sudo vim /etc/ssh/sshd_config
 
 ### 七.文件操作命令
 
-#### 1.使用touch命令创建文件
+#### 1.使用touch命令创建文件和修改文件时间戳
 
-可以通过`touch`命令创建**文件**
+可以通过`touch`命令创建**文件**或修改时间戳
 
-语法：`touch Linux路径`
+语法：`touch [-c] [-a -m] [-t 年月日时分(202604132213)] Linux路径`
+
+- `-c`   不存在则创建
+- `-a`   刷新最近访问时间和最近改动时间
+- `-m`   刷新最近访问、最近更改和最近改动的时间
+- `-t 时间`   修改时间戳至指定时间，可以使用`-a`配合，也可以不写，会默认`-a`
 
 #### 2.使用cat、more和less查看文件内容
 
@@ -288,6 +296,8 @@ sudo vim /etc/ssh/sshd_config
 
 - `-n`   显示行号
 - `-A`   显示所有符号
+
+> 可以连续读取多个文件
 
 ##### **(2)`more`命令**
 
@@ -319,6 +329,30 @@ sudo vim /etc/ssh/sshd_config
 - `-L`：检查符号链接指向的实际文件类型。
 - `-i`：显示文件的MIME类型，这对于网络传输非常有用。
 - `-z`：尝试读取压缩文件的内容。
+
+#### 3.`stat`命令
+
+检查文件的属性
+
+语法：
+
+`stat 文件路径`
+
+示例：
+
+```shell
+[pai@AliYunLinux ~]$ stat download.sh 
+  文件：download.sh
+  大小：2003            块：8          IO 块：4096   普通文件
+设备：fd03h/64771d      Inode：786471      硬链接：1
+权限：(0664/-rw-rw-r--)  Uid：( 1000/     pai)   Gid：( 1000/     pai)
+最近访问：2026-04-19 23:29:15.421877660 +0800	#最近一次访问文件的时间
+最近更改：2026-04-13 20:03:43.454613676 +0800	#最近一次修改内容的时间
+最近改动：2026-04-13 20:03:43.456613704 +0800    #最近一次修改内容或属性的时间，内容和属性发生变化都会导致此时间戳改变
+创建时间：2026-04-13 20:03:43.454613676 +0800
+```
+
+
 
 ---
 
@@ -429,6 +463,38 @@ sudo vim /etc/ssh/sshd_config
 - `+、-`   表示大于小于
 - `n`   表示大小数字
 - `kMG`   表示大小单位，`k`表示`kb`,`M`表示`Mb`，`G`表示`Gb`
+
+#### 3.whoami/who am i命令
+
+语法：
+
+`whoami`
+
+查询当前正在登录的用户
+
+语法：
+
+`who am i`
+
+查询当前正在登录的用户的详细信息
+
+示例：
+
+```shell
+pai          pts/1                2026-04-25 23:57 (49.95.193.74)
+当前登录的用户 当前登录用户登录的shell 该用户登录的时间    该用户登录的ip
+```
+
+#### 4.uname命令
+
+用于查询当前的操作系统
+
+语法：
+
+`uname [-a]`
+
+- `-a`   显示当前内核的详细信息
+- `-r`   显示当前内核的版本
 
 ---
 
@@ -1448,7 +1514,7 @@ MiB Swap:      0.0 total,      0.0 free,      0.0 used.   1524.9 avail Mem
 
 `glances`
 
-##### (1)快捷键：
+##### (1)快捷键
 
 - `q`   退出工具
 - `h`   显示帮助信息
@@ -1792,47 +1858,67 @@ nohub ping baidu.com > baocun.txt 2>&1 &
 ---
 
 ### 三十五.文本处理
+#### 1.sort命令
+排序
+语法：
+`sort [-n -r -u] 文件路径`
+- sort file.txt                    # 默认按行首字母排序
+- sort -n file.txt                 # 按数值排序
+- sort -r file.txt                 # 反向排序
+- sort -u file.txt                 # 排序并去重
+- sort -t: -k3 -n /etc/passwd      # 按第三列(UID)数值排序
+- sort -t, -k2,2 -k1,1 file.csv    # 先按第二列，再按第一列
+- sort -f file.txt                 # 忽略大小写
+- sort -R file.txt                 # 随机排序
+> 可以接收管道符传入的信息
 
-```
-# sort - 去重
-sort file.txt                    # 默认按行首字母排序
-sort -n file.txt                 # 按数值排序
-sort -r file.txt                 # 反向排序
-sort -u file.txt                 # 排序并去重
+#### 2.uniq命令
+去重
+语法：
+`uniq [-c -d -u]`
 
-sort -t: -k3 -n /etc/passwd      # 按第三列(UID)数值排序
-sort -t, -k2,2 -k1,1 file.csv    # 先按第二列，再按第一列
-sort -f file.txt                 # 忽略大小写
-sort -R file.txt                 # 随机排序
-```
+- sort file.txt | uniq             # 去重
+- sort file.txt | uniq -c          # 统计重复次数
+- sort file.txt | uniq -d          # 只显示重复的行
+- sort file.txt | uniq -u          # 只显示不重复的行
+> 可以接收管道符传入的信息
 
-```
-# 注意：uniq通常需要先排序
-sort file.txt | uniq             # 去重
-sort file.txt | uniq -c          # 统计重复次数
-sort file.txt | uniq -d          # 只显示重复的行
-sort file.txt | uniq -u          # 只显示不重复的行
+> [!CAUTION]
+>
+> uniq通常需要先排序
 
-# 配合其他选项
+###### (1)配合
+
 sort file.txt | uniq -i          # 忽略大小写
 sort file.txt | uniq -f 2        # 跳过前2个字段比较
-```
 
-```
-# head - 查看开头
+#### 3.head
+
+查看开头
+
+语法：
+
+`head [-n -c] 文件路径`
+
 head file.txt                    # 前10行
 head -n 20 file.txt              # 前20行
 head -c 100 file.txt             # 前100个字节
 
-# tail - 查看结尾
+#### 4.tail
+
+查看结尾
+
+语法：
+
+`tail [-n -f] 文件路径`
+
 tail file.txt                    # 后10行
 tail -n 20 file.txt              # 后20行
 tail -f /var/log/syslog          # 实时跟踪日志（重要！）
 
-# 组合使用
+##### (1)组合使用
 head -n 100 file.txt | tail -n 20  #
 查看第81-100行
-```
 
 ---
 
