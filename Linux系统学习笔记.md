@@ -516,7 +516,7 @@ pai          pts/1                2026-04-25 23:57 (49.95.193.74)
 
 语法：`wc [-c -m -l -w] 文件路径`
 
-- `-c`   统计bytes数量（行数）
+- `-c`   统计字节数量
 - `-m`   统计字符数量
 - `-l`   统计行数
 - `-w`   统计单词数量
@@ -1862,12 +1862,14 @@ nohub ping baidu.com > baocun.txt 2>&1 &
 排序
 语法：
 `sort [-n -r -u] 文件路径`
+
 - sort file.txt                    # 默认按行首字母排序
-- sort -n file.txt                 # 按数值排序
+- sort -n file.txt                 # 按数值、字母顺序排序
 - sort -r file.txt                 # 反向排序
-- sort -u file.txt                 # 排序并去重
-- sort -t: -k3 -n /etc/passwd      # 按第三列(UID)数值排序
-- sort -t, -k2,2 -k1,1 file.csv    # 先按第二列，再按第一列
+- sort -u file.txt                 # 去重
+- sort -t: file.txt                 #指定字段分隔符为:
+- sort -k1,1 file.txt             # 从第一列开始到第一列结束，按所给出的列进行排序
+	- sort -t, -k2,2 -k1,1 file.csv    # 先按第二列，再按第一列
 - sort -f file.txt                 # 忽略大小写
 - sort -R file.txt                 # 随机排序
 > 可以接收管道符传入的信息
@@ -1919,6 +1921,15 @@ tail -f /var/log/syslog          # 实时跟踪日志（重要！）
 ##### (1)组合使用
 head -n 100 file.txt | tail -n 20  #
 查看第81-100行
+
+#### 5.cut
+
+剪切
+
+语法：
+
+- cut -d file.txt           #指定:为分隔符
+- cut -f1 file.txt          #只要第一列
 
 ---
 
