@@ -62,7 +62,7 @@
 
 查看修改的版本
 
-语法：`git log`
+语法：`git log --oneline`
 
 拓展：
 
@@ -121,7 +121,7 @@
 
 语法：`git branch 分支名`
 
-### 3.git checkout
+### 3.git switch
 
 切换分支
 
@@ -138,6 +138,10 @@
 合并分支
 
 语法：`git merge 被合并的分支名`
+
+### 5.git restore
+
+
 
 ---
 
