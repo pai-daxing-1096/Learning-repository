@@ -847,7 +847,7 @@ Linux系统中可以添加多个用户和用户组，且一个用户可以加入
 
 语法:`hostnamectl srt-hostname 主机名`
 
-#### 3.Rocky Linux 9 静态 IP 配置（你刚刚完成的）
+#### 3.Rocky Linux 9 静态 IP 配置
 
 ##### (1)`nmcli` 命令行（推荐）
 
