@@ -705,7 +705,7 @@ Linux系统中可以添加多个用户和用户组，且一个用户可以加入
 
 创建用户
 
-语法：`useradd [-g 已存在的用户组名] [-d HOME路径] [-r] [-s /usr/sbin/nologin] [-m] 用户名`
+语法：`useradd [-g 已存在的用户组名] [-r] [-m] [-d HOME路径] [-s /usr/sbin/nologin] 用户名`
 
 - `[-g 已存在的用户组]`   将用户添加至指定的用户组，若未指定则创建同名的用户组并加入
 - `[-d HOME路径]`   指定用户的HOME路径，若未指定，则默认添加至`\HOME\用户名`
@@ -1132,9 +1132,13 @@ ping: pythoncv.cn: Name or service not known
 
 语法：
 
-`traceroute [-n] ip地址`
+`traceroute [-n -w <超时时间> -q <探测次数> -m <最大跳数> -4/6] ip地址`
 
 - `-n`   取消域名解析
+- `-w`   设置等待响应的超时时间
+- `-q`   设置每跳发送的探测包数量
+- `-m`   设置探测的最大跳数
+- `-4/6`   强制使用IPv4或IPv6进行追踪
 
 ---
 
@@ -1870,7 +1874,7 @@ pidstat -d 1 1 -h | awk '$6 != 0.00 {print "io", $11, $6, $7}'
 - 终端关闭后脚本依然会继续执行
 - 默认输出到`nohub.out`文件
 
-##### (1).linux黑洞文件
+##### (1)Linux黑洞文件
 
 语法：
 
@@ -1902,7 +1906,7 @@ nohub ping baidu.com > baocun.txt 2>&1 &
 
 `jobs`
 
-###### (1).fg命令
+###### (1)	fg命令
 
 恢复指定（被挂起的）作业
 
@@ -1912,7 +1916,7 @@ nohub ping baidu.com > baocun.txt 2>&1 &
 
 - `X`   X为作业号
 
-###### (2).bg命令
+###### (2)bg命令
 
 让作业在后台运行
 

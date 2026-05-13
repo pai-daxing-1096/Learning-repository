@@ -166,3 +166,26 @@ rm -rf /etc/systemd/system/docker.service.d
 rm -f /etc/systemd/system/docker.servic
 ```
 
+---
+
+### 四.docker pull命令
+
+拉取一个镜像、仓库
+
+语法：
+
+`docker pull [OPTIONS] NAME[:TAG|@DIGEST]`
+
+- `OPTIONS`   参数
+- `NAME`   镜像名称
+- `:TAG`   版本号
+- `@DIGEST`   哈希值
+
+| OPTIONS                   | 作用                       | 示例                                                  | 结果                                                         |
+| ------------------------- | -------------------------- | ----------------------------------------------------- | ------------------------------------------------------------ |
+| 无                        | 无                         | `docker pull nginx:latest`                            | 拉取官方nginx镜像的最新版本                                  |
+| 无                        | 无                         | `docker pull nginx@80b1813d991d`                      | 拉取官方nginx镜像哈希值为80b1813d991d的版本                  |
+| `-a`或`--all-tags`        | 下载所有镜像               | `docker pull -a nginx`                                | 拉取官方nginx镜像的所有版本                                  |
+| `--disable-content-trust` | 跳过镜像验证（默认不跳过） | `docker pull --disable-content-trust nginx777:latest` | 拉取非官方nginx777镜像的最新版本，并且跳过验证               |
+| `--platform string`       | 拉去其它架构的版本         | `docker pull --platform linux/arm64 ubuntu:20.04`     | 拉取官方ubuntu镜像的arm64架构的20.04版本                     |
+| `-q`                      | 不显示过程                 | `docker pull -q nginx:latest`                         | 拉取官方nginx镜像的latest版本，但是是静默拉取，不显示进度条等过程信息 |
