@@ -181,11 +181,57 @@ rm -f /etc/systemd/system/docker.servic
 - `:TAG`   版本号
 - `@DIGEST`   哈希值
 
-| OPTIONS                   | 作用                       | 示例                                                  | 结果                                                         |
-| ------------------------- | -------------------------- | ----------------------------------------------------- | ------------------------------------------------------------ |
-| 无                        | 无                         | `docker pull nginx:latest`                            | 拉取官方nginx镜像的最新版本                                  |
-| 无                        | 无                         | `docker pull nginx@80b1813d991d`                      | 拉取官方nginx镜像哈希值为80b1813d991d的版本                  |
-| `-a`或`--all-tags`        | 下载所有镜像               | `docker pull -a nginx`                                | 拉取官方nginx镜像的所有版本                                  |
-| `--disable-content-trust` | 跳过镜像验证（默认不跳过） | `docker pull --disable-content-trust nginx777:latest` | 拉取非官方nginx777镜像的最新版本，并且跳过验证               |
-| `--platform string`       | 拉去其它架构的版本         | `docker pull --platform linux/arm64 ubuntu:20.04`     | 拉取官方ubuntu镜像的arm64架构的20.04版本                     |
-| `-q`                      | 不显示过程                 | `docker pull -q nginx:latest`                         | 拉取官方nginx镜像的latest版本，但是是静默拉取，不显示进度条等过程信息 |
+| OPTIONS                   | 作用                       | 示例                                                         | 结果                                                         |
+| ------------------------- | -------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| 无                        | 无                         | `docker pull <镜像名称>:<版本号>`                            | 拉取指定镜像的指定版本                                       |
+| 无                        | 无                         | `docker pull centos@sha256:80b1813d991d...(64位)`            | 拉取centos镜像哈希值为80b1813d991d(64位)的版本               |
+| `-a`或`--all-tags`        | 下载所有镜像               | `docker pull -a <镜像名称>`                                  | 拉取指定镜像的所有版本                                       |
+| `--disable-content-trust` | 跳过镜像验证（默认不跳过） | `docker pull --disable-content-trust <仓库名/镜像名称>:<版本号>` | 拉取非官方镜像的指定版本，并且跳过验证                       |
+| `--platform string`       | 拉去其它架构的版本         | `docker pull --platform linux/arm64 <镜像名称>:<版本号>`     | 拉取官方指定镜像的arm64架构的指定版本                        |
+| `-q`                      | 不显示过程                 | `docker pull -q <镜像名称>:<版本号>`                         | 拉取指定镜像的指定版本，但是是静默拉取，不显示进度条等过程信息 |
+
+---
+
+### 五.docker images
+
+显示本地镜像
+
+语法：
+
+`docker images [OPTIONS] [REPOSITORY[:TAG]]`
+
+- `[OPTIONS]`   参数
+- `[REPOSITORY]`    仓库名/镜像名
+- `[:TAG]`   版本号
+
+| OPTIONS       | 作用                                                         | 示例                                              | 结果                                                         |
+| ------------- | ------------------------------------------------------------ | ------------------------------------------------- | ------------------------------------------------------------ |
+| `-a`或`--all` | 显示所有镜像（默认不显示中间层镜[^1]像）                     | `docker images -a`                                | 显示本地的所有镜像                                           |
+| `--digests`   | 显示DIGEST（远程仓库中镜像+版本对应的哈希值）                | `docker images --digests`                         | 显示镜像在镜像清单中所对应的64位哈希值                       |
+| `-f`          | 显示指定规则所包括的镜像                                     | `docker images -f since=<镜像名称>:<版本号>`      | 显示指定镜像前面的所有镜像                                   |
+| `--format`    | 格式化输出                                                   | `docker images --format {{.Repository}}:{{.Tag}}` | 只显示出镜像的名称和版本号（`{{.列总称}}`，`:`为分隔符）     |
+| `--no-trunc`  | 显示出IMAGE ID（本地中镜像+版本对应的哈希值）的64位而非前12位 | `docker images --no-trunc`                        | 显示出本地镜像的64位哈希值                                   |
+| `-q`          | 只显示IMAGE ID的前12位哈希值                                 | `docker images -q`                                | 只显示出本地镜像的前12位哈希值，不显示REPOSITORY、TAG、CREATED和SIZE（可以配合`--no-trunc`显示出64位） |
+
+| 规则      | 作用                                 | 示例                                          | 结果                                                         |
+| --------- | ------------------------------------ | --------------------------------------------- | ------------------------------------------------------------ |
+| since     | 列出所有创建时间晚于 `centos` 的镜像 | `docker images -f since=<镜像名称>:<版本号>`  | 列出所有创建时间晚于指定的镜像的镜像                         |
+| before    | 列出所有创建时间早于 `centos` 的镜像 | `docker images -f before=<镜像名称>:<版本号>` | 列出所有创建时间早于指定的镜像的镜像                         |
+| reference | 按镜像名称过滤（可以使用通配符）     | `docker images -f reference=c*`               | 列出所有以c开头的镜像，可以重复使用：`docker images -f reference=ubuntu:* -f since=ubuntu:20.04`（注意：`since` / `before` 不支持通配符，必须指定具体镜像） |
+| dangling  | 显示出所有悬空镜像                   | `docker images -f dangling=true`              | 显示出所有<none>:<none>` 的镜像                              |
+
+> [!NOTE]
+>
+> `since` / `before` 的判断依据是镜像的 **创建时间（Created）**，而非拉取时间。参数可以使用镜像名（含 tag）或 IMAGE ID
+
+> Digest 是**内容**的哈希，即使标签被覆盖或移动到其他仓库，Digest 不变
+
+> [!IMPORTANT]
+>
+> 当没有指定`:TAG`即版本时，会默认指定latest即最新版本，如果需要查询所有版本应当使用`docker images -f reference=<镜像名>:*`
+
+---
+
+### 注解
+
+[^1]: 即 `<none>:<none>` （版本号和DIGEST为空）且被其他镜像依赖的层
