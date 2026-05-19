@@ -192,7 +192,7 @@ rm -f /etc/systemd/system/docker.servic
 
 ---
 
-### 五.docker images
+### 五.docker images命令
 
 显示本地镜像
 
@@ -229,6 +229,53 @@ rm -f /etc/systemd/system/docker.servic
 > [!IMPORTANT]
 >
 > 当没有指定`:TAG`即版本时，会默认指定latest即最新版本，如果需要查询所有版本应当使用`docker images -f reference=<镜像名>:*`
+
+---
+
+### 六.docker search命令
+
+从docker hub上查看指定名称的镜像
+
+语法：
+
+`docker search [OPTIONS] TERM`
+
+- `[OPTIONS]`   参数
+- `TERM`   用于模糊匹配镜像仓库名称，通常就是你想找的那个镜像的名字或名字中的关键词
+
+示例：
+
+```dockerfile
+[root@AliYunLinux ~]# docker search zookeeper
+NAME                    DESCRIPTION                                      STARS    OFFICIAL    AUTOMATED
+zookeeper               Apache ZooKeeper is an open-source server wh...  1299     [OK]
+wurstmeister/zookeeper                                                   175                  [OK]
+jplock/zookeeper        Builds a docker image for Zookeeper version ...  165                  [OK]
+bitnami/zookeeper       ZooKeeper is a centarlized service for distr...  86                   [OK]
+......
+```
+
+- `NAME`   仓库名/镜像名
+- `DESCRIPTION`   简介
+- `STARS`   收藏数量
+- `OFFICIAL`   是否为官方验证的镜像
+- `AUTOMATED`   是否为自动化镜像
+
+| 参数         | 作用                       | 示例                                   | 结果                                  |
+| ------------ | -------------------------- | -------------------------------------- | ------------------------------------- |
+| -f           | 按指定条件过滤镜像         | `docker search -f stars=100 zookeeper` | 显示出所有收藏数量大于等于100的镜像   |
+| `--limit`    | 最多显示多少行（默认25条） | `docker search --limit=5 zookeeper`    | 只显示出前5条镜像                     |
+| `--no-trunc` | 显示出全部的简介内容       | `docker search --no-trunc zookeeper`   | 显示出简介的全部内容而非使用`...`省略 |
+
+| 过滤条件（主要用于-f参数） | 作用                        | 示例                                       |
+| :------------------------- | :-------------------------- | :----------------------------------------- |
+| `stars=N`                  | 只显示收藏数大于等于N的镜像 | `docker search -f stars=100 nginx`         |
+| `is-official=true`         | 只显示官方认证的镜像        | `docker search -f is-official=true nginx`  |
+| `is-automated=true`        | 只显示自动构建的镜像        | `docker search -f is-automated=true nginx` |
+
+> [!CAUTION]
+>
+> `is-automated=true` 已废弃，建议优先使用 `is-official=true` 和 `stars=N` 进行筛选
 
 ---
 
