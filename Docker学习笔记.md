@@ -261,7 +261,7 @@ bitnami/zookeeper       ZooKeeper is a centarlized service for distr...  86     
 - `OFFICIAL`   是否为官方验证的镜像
 - `AUTOMATED`   是否为自动化镜像
 
-| 参数         | 作用                       | 示例                                   | 结果                                  |
+| OPTIONS      | 作用                       | 示例                                   | 结果                                  |
 | ------------ | -------------------------- | -------------------------------------- | ------------------------------------- |
 | -f           | 按指定条件过滤镜像         | `docker search -f stars=100 zookeeper` | 显示出所有收藏数量大于等于100的镜像   |
 | `--limit`    | 最多显示多少行（默认25条） | `docker search --limit=5 zookeeper`    | 只显示出前5条镜像                     |
@@ -276,6 +276,72 @@ bitnami/zookeeper       ZooKeeper is a centarlized service for distr...  86     
 > [!CAUTION]
 >
 > `is-automated=true` 已废弃，建议优先使用 `is-official=true` 和 `stars=N` 进行筛选
+
+---
+
+### 七.docker rmi命令
+
+删除指定镜像
+
+语法：
+
+`docker rmi [OPTIONS] IMAGE [IMAGE...]`
+
+- `[OPTIONS]`   参数
+- `IMAGE`   本地镜像对应的哈希值（这里也可以使用镜像名代替）
+- `[IMAGE...]`   可连续指定多个镜像
+
+| OPTIONS      | 作用           | 示例                          | 结果                                                         |
+| ------------ | -------------- | ----------------------------- | ------------------------------------------------------------ |
+| `-f`         | 强制删除       | `docker rmi -f nginx`         | 强制删除nginx镜像                                            |
+| `--no-prune` | 不删除下层镜像 | `docker rmi --no-prune nginx` | 只删除指定的镜像本身，如果该镜像是基于其他中间层构建的，那些中间层不会被自动清理（即使现在没有其他镜像使用它们） |
+
+> 特殊用法：
+>
+> `docker rmi -f $(docker images -q)`
+>
+> 删除所有镜像
+
+---
+
+### 八.docker save命令
+
+导出镜像
+
+语法：
+
+`docker save [OPTIONS] IMAGE [IMAGE...]`
+
+- `[OPTIONS]`   参数
+- `IMAGE`   本地镜像对应的哈希值（这里也可以使用镜像名代替）
+- `[IMAGE...]`   可连续指定多个镜像
+
+| OPTIONS | 作用         | 示例                             | 结果                                     |
+| ------- | ------------ | -------------------------------- | ---------------------------------------- |
+| `-o`    | 替代标准输出 | `docker save -o nginx.tar nginx` | 将nginx镜像打包为一个名为nginx.tar的文件 |
+
+> 文件必须为`.tar`或`.tar.gz`后缀
+
+---
+
+### 九.docker load命令
+
+导入镜像
+
+语法：
+
+`docker load [OPTIONS]`
+
+- `[OPTIONS]`   参数
+
+| OPTIONS | 作用       | 示例                          | 结果                                                 |
+| ------- | ---------- | ----------------------------- | ---------------------------------------------------- |
+| `-i`    | 指定文件   | `docker load -i nginx.tar`    | 导入指定镜像                                         |
+| `-q`    | 不显示过程 | `docker load -q -i nginx.tar` | 导入指定镜像，但是是静默导入，不显示进度条等过程信息 |
+
+> 特殊用法：
+>
+> `docker load < nginx.tar` 或 `cat nginx.tar | docker load`与`docker load -i nginx.tar`等价
 
 ---
 
