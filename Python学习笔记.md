@@ -225,7 +225,7 @@ str.lstrip("指定字符")
 #移除字符串尾部的空白字符或指定字符序列
 str.rstrip("指定字符")
 
-#用于将字符串分割成列表
+#用于将字符串分割成列表，最多分割n次
 .split("指定分割符",n)
 
 #用于判断字符串 变量名 是否以指定的子串 '指定字符串' 开头。如果是，返回 True；否则返回 False
@@ -254,6 +254,17 @@ finally:
 	# 无论结果如何必须执行的代码
 	pass
 ```
+
+- `ZeroDivisionError`: 除数为零
+- `IndexError`: 序列索引越界
+- `KeyError`: 字典中键不存在
+- `NameError`: 使用未定义的变量
+- `FileNotFoundError`: 试图打开不存在的文件
+- `ValueError`: 传入无效参数（如将"abc"转int）
+- `TypeError`: 操作或函数类型不匹配
+- `AttributeError`: 对象没有某属性
+- `ImportError`: `import` 语句失败
+- `AssertionError`: `assert` 断言失败
 
 ---
 

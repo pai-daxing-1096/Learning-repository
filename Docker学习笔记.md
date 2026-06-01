@@ -1,4 +1,4 @@
-## Docker学习笔记
+##  Docker学习笔记
 
 ---
 
@@ -342,6 +342,62 @@ bitnami/zookeeper       ZooKeeper is a centarlized service for distr...  86     
 > 特殊用法：
 >
 > `docker load < nginx.tar` 或 `cat nginx.tar | docker load`与`docker load -i nginx.tar`等价
+
+---
+
+### 十.docker run命令
+
+运行指定docker镜像
+
+语法：
+
+`docker run [OPTIONS] IMAGE [COMMAND] [ARG...]`
+
+- `[OPTIONS]`   参数
+- `IMAGE`   本地镜像对应的哈希值（这里也可以使用镜像名代替）
+- `[COMMAND]`   容器启动后运行的可执行程序（/bin/bash、python3…），它会覆盖镜像里预设的CMD指令
+- `[ARG]`   传递给COMMAND的参数（可以有多个）
+
+| OPTIONS      | 作用                                                         | 示例                                                         | 结果                                                         |
+| ------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| `-d`         | 后台运行容器，不占用当前终端，返回容器 ID                    | `docker run -d nginx:latest`                                 | 容器在后台运行，nginx成功启动服务                            |
+| `-it`        | 交互式终端（-i保持 STDIN 打开,-t分配伪终端），通常用来进入容器内部的 Shell | `docker run -it nginx:latest`                                | 前台运行nginx服务，终端被日志输出占用，无法执行其他命令      |
+| `--name`     | 给容器指定一个名字，方便后续管理（否则 Docker 会随机生成名字） | `docker run --name nginx1 nginx:latest`                      | 容器启动成功，容器名称为nginx1                               |
+| `-p`         | 端口映射，宿主机端口:容器端口，将容器服务暴露到宿主机        | `docker run -p 8081:80 nginx:latest`                         | 该容器的8080端口被映射到宿主机的8081端口，外界通过访问宿主机的8081端口来访问容器内服务 |
+| `-P`         | 自动端口映射，将容器内部暴露的端口（EXPOSE）随机映射到宿主机的高位端口 | `docker run -P nginx:latest`                                 | 容器的 80 端口被随机映射到宿主机的高位端口（如 32768）       |
+| `-v`         | 挂载卷，将宿主机目录或数据卷挂载到容器内，实现数据持久化或共享 | `docker run -v /host/data:/app/data centos:centos7`          | 现在容器可以访问宿主机的/host/data目录                       |
+| `--rm`       | 容器退出后自动删除（适合临时任务，避免遗留已停止的容器）     | `docker run --rm nginx:latest`                               | 容器启动成功，当容器被关闭后会自动删除该容器                 |
+| `-e`         | 设置环境变量（键值对），可多次使用                           | `docker run -e MY_ENV=prod -e DEBUG=true ubuntu:20.04 printenv` | 容器内会存在MY_ENV和DEBUG两个环境变量，printenv命令会打印出它们 |
+| `--env-file` | 将宿主机上一个文件里的所有环境变量一次性注入到容器中（从Key=Value 格式） | `docker run --env-file /home/pai/project/.env`               | 将.env中的环境变量注入到容器中                               |
+
+---
+
+### 十一.docker exec命令
+
+用于在已经运行中的容器内部执行额外的命令
+
+语法：
+
+`docker exec [OPTIONS] CONTAINER COMMAND [ARG...]`
+
+- `[OPTIONS]`   参数
+
+- `CONTAINER`   可以是容器 ID 或容器名称
+- `COMMAND`   要在容器内执行的命令（如 `/bin/bash`、`ls`、`python app.py` 等）
+- `[ARG...]`    传递给COMMAND的参数（可以有多个）
+
+| OPTIONS | 作用                                                         | 示例                                                         | 结果                                                    |
+| ------- | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------- |
+| `-it`   | 交互式终端（-i保持 STDIN 打开,-t分配伪终端），通常用来进入容器内部的 Shell | `docker exec -it mycentos /bin/bash`                         | 进入到mycentos容器中（独立进程）                        |
+| `-d`    | 后台运行命令，不阻塞当前终端                                 | `docker exec -d mycentos touch /home/pai/hello.exe`          | 后台进入mycentos容器并执行一次touch命令但当前终端无输出 |
+| `-e`    | 设置环境变量（仅针对本次执行的命令）                         | `docker exec -e MY_ENV=prod -e DEBUG=true mycentos /bin/bash` | 进入mycentos容器的时候注入环境变量                      |
+| `-w`    | 指定进入后所处的工作目录                                     | `docker exec -w /root mycentos /bin/bash`                    | 进入mycentos容器的时候将会直接在/root目录下             |
+| `-u`    | 以指定用户名或 UID 执行命令                                  | `docker exec -u root mycentos /bin/bash`                     | 进入mycentos容器的时候将会切换至root身份                |
+
+> [!NOTE]
+>
+> 1. **容器必须处于 Running 状态**
+> 	如果容器已退出（Exited），docker exec会报错。你需要先用 `docker start <容器>` 重新启动它。
 
 ---
 

@@ -183,17 +183,6 @@ sudo vim /etc/ssh/sshd_config
 - 执行`visudo`命令，然后在文件末尾添加：`用户名 ALL=(ALL)    NOPASSWD:ALL`后使用`wq`退出即可
 	- 如果需要输入密码则将NOPASSWD:ALL改为ALL即可
 
-
----
-
-### 十一.查找命令
-
-#### 1.which命令
-
-可以查看所使用的一系列命令的程序文件存放在哪里
-
-语法：`which 要查找的命令`
-
 #### 2.find命令
 
 可以使用`find`命令去搜索指定文件
