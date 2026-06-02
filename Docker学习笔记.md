@@ -401,6 +401,63 @@ bitnami/zookeeper       ZooKeeper is a centarlized service for distr...  86     
 
 ---
 
+### 十二.docker attach命令
+
+重新进入已启动的容器
+
+语法：
+
+`docker attach [OPTIONS] CONTAINER`
+
+- `[OPTIONS]`   参数
+- `CONTAINER`   可以是容器 ID 或容器名称
+
+> 参数基本用不上
+
+> [!NOTE]
+>
+> 危险操作：Ctrl+C → 会停止容器
+> 安全退出：Ctrl+P Ctrl+Q → 脱离但不停止容器
+
+---
+
+### 十三.docker ps命令
+
+显示所有容器
+
+语法：
+
+`docker ps [OPTIONS]`
+
+- `[OPTIONS]`   参数
+
+| OPTIONS      | 作用                     | 示例                       | 结果                                |
+| ------------ | ------------------------ | -------------------------- | ----------------------------------- |
+| `-a`         | 显示所有的容器           | `docker ps -a`             | 显示出所有容器                      |
+| `-f`         | 显示指定规则所包括的容器 | `docker ps -f "id=abc123"` | 显示出名称为abc123的容器            |
+| `-n`         | 显示最新创建的n个容器    | `docker ps -n 3`           | 显示出最新创建的3个容器             |
+| `-l`         | 显示最新创建的容器       | `docker ps -l`             | 显示出最新创建的那个容器            |
+| `--no-trunc` | 显示完整的CONTAINER ID   | `docker ps --no-trunc`     | 显示出所有容器的完整的CONTAINER ID  |
+| `-q`         | 只显示容器的CONTAINER ID | `docker ps -q`             | 只显示出容器的CONTAINER ID （12位） |
+| `-s`         | 额外显示容器的大小       | `docker ps -s`             | 显示出所有容器的大小                |
+
+| 过滤器 (Filter)      | 说明                                                         | 示例                                                         |
+| :------------------- | :----------------------------------------------------------- | :----------------------------------------------------------- |
+| `id`                 | 根据容器的ID进行筛选。                                       | `docker ps --filter "id=abc123"`                             |
+| `name`               | 根据容器的名称进行筛选，支持正则表达式。                     | `docker ps --filter "name=my-nginx"` `docker ps --filter "name=^/web_"` (匹配以`/web_`开头的容器) |
+| `label`              | 根据容器上的标签（label）进行筛选，可以只写key，也可以写key=value。 | `docker ps --filter "label=version"` `docker ps --filter "label=version=1.0"` |
+| `status`             | 根据容器的当前状态进行筛选。                                 | `docker ps --filter "status=exited"` `docker ps --filter "status=running"` |
+| `ancestor`           | 根据容器所使用的镜像进行筛选，可以用镜像名、标签或ID。       | `docker ps --filter "ancestor=nginx"` `docker ps --filter "ancestor=ubuntu:18.04"` |
+| `before` / `since`   | 筛选出在某个容器之前或之后创建的容器。                       | `docker ps --filter "before=container_1"` `docker ps --filter "since=container_2"` |
+| `volume`             | 筛选出挂载了特定数据卷（volume）或绑定挂载（bind mount）的容器。 | `docker ps --filter "volume=/host/path"` `docker ps --filter "volume=my_volume"` |
+| `network`            | 筛选出连接到了特定网络的容器。                               | `docker ps --filter "network=my-network"`                    |
+| `publish` / `expose` | 筛选出暴露了特定端口的容器。                                 | `docker ps --filter "publish=8080"` `docker ps --filter "expose=3306"` |
+| `health`             | 筛选出具有特定健康检查状态的容器。                           | `docker ps --filter "health=healthy"` `docker ps --filter "health=unhealthy"` |
+| `exited`             | 筛选出退出码为特定值的容器，通常与`--all`一起使用。          | `docker ps --filter "exited=0"`                              |
+| `is-task`            | 筛选出是否为Swarm模式下的任务（Task）容器。                  | `docker ps --filter "is-task=true"`                          |
+
+---
+
 ### 注解
 
 [^1]: 即 `<none>:<none>` （版本号和DIGEST为空）且被其他镜像依赖的层
