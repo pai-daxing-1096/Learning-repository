@@ -232,7 +232,78 @@ str.rstrip("指定字符")
 变量名.startswith('指定字符串')`
 
 #n:指定切割次数
+
+cmp(list1,list2)							#比较列表的两个元素
+len(list)									#列表元素个数
+max(list)									#返回列表的最大值
+min(list)									#返回列表的最小值
+list(seq)									#将元组转化为列表
+sum(list)									#求和
+
+list.append(obj)							#在列表末尾添加新对象
+list.count(obj)								#统计某个元素在列表中出现的次数
+list.extend(seq)							#在列表的末尾一次性追加另一个序列的多个值
+list.index(obj)								#在列表中找出某个值第一个匹配项的索引位置
+list.insert(index,obj)						#将对象插入列表
+list.pop([index=-1])						#移除列表中的一个元素（默认最后一个值），并且返回该元素的值
+list.remove(obj)							#移除列表中某个值的第一个匹配项
+list.reverse()								#反向列表中的元素
+list.sort(key=None,reverse=False)			#对原列表进行排序（key：指定一个函数，该函数从每个元素中提取一个用于比较											   的“键值”，reverse：布尔值，True 表示降序，False（默认）升序）
+list.upper()								#全大写
+list.lower()								#全小写
+list.capitalize()							#首字母大写
+list.title()								#首字母大写(每个单词首字母大写)
+list.islower()								#检查是否全为小写
+list.isdigit()								#检查是否全为数字
+list.isupper()								#检查是否全部大写
+list.isalpha()								#检查是否为字母
+isinstance(object, classinfo)
+'''
+其中object是要检查的对象，classinfo可以是一个数据类型，也可以是由多个数据类型组成的元组。如果object是classinfo中任一类型的实例，或者是其子类的实例，isinstance()将返回True，否则返回False。
+
+例如，检查一个变量是否是整数可以这样写：
+
+a = 2
+print(isinstance(a, int)) # 输出: True
+'''
+
+dict.fromkeys(list)							#去重
+#字符串分割
+chars = ['a', 'b', 'n']
+result = ''.join(chars)   # 使用空字符串 '' 作为分隔符
+print(result)
+
+tuple()   元组
+
+set()   集合
+
+issubclass() 是 Python 内置函数，用于检查类之间的继承关系。
 ```
+
+>```
+>list_end = []
+>list1 = input()
+>list2 = list1.strip("[]")
+>list3 = list2.split(",")
+>for i in list3:
+>    j = int(i)
+>    list_end.append(j)
+>
+>best = []
+>cur = [list_end[0]]
+>
+>for i in range(1, len(list_end)):
+>    if list_end[i] > list_end[i - 1]:
+>        cur.append(list_end[i])
+>    else:
+>        if len(cur) > len(best):
+>            best = cur
+>        cur = [list_end[i]]
+>
+>if len(cur) > len(best):
+>    best = cur
+>print(best)
+>```
 
 ---
 
@@ -582,3 +653,43 @@ else:
 ```
 session.clear()   # 或者 session.pop('user_id')
 ```
+
+---
+
+## 集合（set）常用操作
+
+| 方法                 | 说明                                         |
+| :------------------- | :------------------------------------------- |
+| `s.add(x)`           | 添加元素 x，如果已存在则无变化               |
+| `s.update(iterable)` | 从可迭代对象中添加多个元素（相当于批量添加） |
+| `s.remove(x)`        | 删除元素 x，若不存在则抛出 KeyError          |
+| `s.discard(x)`       | 删除元素 x，若不存在也不报错                 |
+| `s.pop()`            | 随机删除并返回一个元素（集合无序）           |
+| `s.clear()`          | 清空集合                                     |
+| `s.copy()`           | 返回集合的浅拷贝                             |
+| `s.union()`          | 合并两个集合                                 |
+
+**集合运算（返回新集合）**
+
+- `s1 \| s2` 或 `s1.union(s2)`：并集
+- `s1 & s2` 或 `s1.intersection(s2)`：交集
+- `s1 - s2` 或 `s1.difference(s2)`：差集
+- `s1 ^ s2` 或 `s1.symmetric_difference(s2)`：对称差集
+
+------
+
+## 字典（dict）常用操作
+
+| 方法                  | 说明                                                         |
+| :-------------------- | :----------------------------------------------------------- |
+| `d[key] = value`      | 添加或修改键值对                                             |
+| `d.update(d2)`        | 将字典 d2 的键值对合并到 d 中（覆盖同名键）                  |
+| `d.get(key, default)` | 安全获取值，键不存在时返回 default（不报错）                 |
+| `d.pop(key, default)` | 删除并返回 key 对应的值；若不存在且给了 default 则返回 default，否则报错 |
+| `d.popitem()`         | 删除并返回最后插入的键值对（Python 3.7+ 按插入顺序）         |
+| `d.keys()`            | 返回所有键的视图                                             |
+| `d.values()`          | 返回所有值的视图                                             |
+| `d.items()`           | 返回所有 (键, 值) 对的视图                                   |
+| `d.clear()`           | 清空字典                                                     |
+| `d.copy()`            | 浅拷贝字典                                                   |
+| del d[“key”]          | 删除指定键值对                                               |
