@@ -782,6 +782,8 @@ Docker 引擎（服务端）的运维管理命令集
 | `--volumes` | 删除所有未被容器使用的数据卷                 | `docker system prune --volumes`            | 所有未被容器使用的数据卷都会被删除               |
 | `--filter`  | 条件过滤                                     | `docker system prune --filter "until=24h"` | 删除创建超过24小时的资源                         |
 
+> 如果指定镜像所创建的容器依然在运行中则会拒绝删除该镜像和其根据创建的容器
+
 **按标签过滤 (label)**
 
 这个选项非常灵活，可以精细地控制清理范围。它支持两种格式：
@@ -923,9 +925,20 @@ Docker 的实时事件监控命令
 
 ### 五.Dockerfile指令简介
 
-#### 1.FROM
-
-
+```dockerfile
+FROM <image>[:<TAG>] [AS <name>]				#在项目中使用现有的 Dockerfile，可以快速构建自定义镜像
+LABEL <key>=<value> ...							#为生成的镜像添加元数据标签信息
+ENV	<key>=<value> ...							#设置容器内的环境变量
+WORKDIR /...									#设置工作目录
+COPY
+ADD
+RUN ...											#运行指定命令
+ARG
+ONBUILD
+VOL
+CMD ["EXECUTABLE","PARAM1","PARAM2",...]		#调用可执行文件并将后续"PARAMxx"作为可执行参数
+ENTRYPOINT ["EXECUTABLE","PARAM1","PARAM2",...]	#调用可执行文件并将后续"PARAMxx"作为可执行参数
+```
 
 ---
 

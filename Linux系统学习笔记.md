@@ -3549,6 +3549,12 @@ sudo systemctl status flask-backend     # 查看状态
 sudo systemctl enable flask-backend     # 开机自启
 sudo systemctl disable flask-backend    # 取消自启
 sudo journalctl -u flask-backend -f  	# 实时查看日志
+
+curl -o /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo && \
+    yum makecache && \
+    yum install -y vim && \
+    yum clean all
+yum换源
 ```
 
 ---
