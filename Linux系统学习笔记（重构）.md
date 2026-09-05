@@ -1919,7 +1919,7 @@ yum install gcc make pcre-devel openssl-devel zlib-devel -y
 
 ---
 
-### 9.systemd服务
+### 9.系统服务
 
 #### (1)systemctl命令
 
@@ -1979,6 +1979,16 @@ yum install gcc make pcre-devel openssl-devel zlib-devel -y
 >
 > 被 mask 后，不仅手动 `start` 无效，其他服务依赖它启动也会失效，如果 mask 某个服务**务必**告知其他人
 
+> [!CAUTION]
+>
+> 有些服务不支持`systemctl reload`重读配置文件，只能`systemctl restart`重启
+>
+> 可以通过看 unit 文件里有没有 `ExecReload`来判断是否可以使用`systemctl reload`重读
+>
+> ```shell
+> systemctl cat nginx | grep ExecReload
+> ```
+
 #### (2)systemd unit文件
 
 **存放位置**
@@ -2001,7 +2011,9 @@ yum install gcc make pcre-devel openssl-devel zlib-devel -y
 ```shell
 [Unit]
 Description=My Flask App              # 描述
-After=network.target                  # 在网络就绪后才启动
+After=network.target                  # 在网络就绪后才启动（不保证网络可用，强依赖网络得用下面这俩）
+After=network-online.target
+Wants=network-online.target
 Wants=nginx.service                   # 软依赖，nginx 挂了不影响本服务
 
 [Service]
@@ -2116,6 +2128,108 @@ journalctl -u myapp -n 50 --no-pager
 # 检查 unit 文件语法
 systemd-analyze verify /etc/systemd/system/myapp.service
 ```
+
+#### (3)journalctl命令
+
+日志查看工具
+
+语法：
+`journalctl [OPTION]... [MATCH]...`
+
+- `[OPTION]...`：选项（可连续使用多个）
+- `[MATCH]...`：过滤条件，如 `_SYSTEMD_UNIT=nginx.service`
+
+> [!NOTE]
+>
+> journald 是 systemd 自带的日志收集服务，开机就运行
+>
+> 所有通过 systemd 启动的服务，其 stdout/stderr 会被 journald 自动捕获
+>
+> 日志以二进制格式存在 `/var/log/journal/` 下，**不能直接 `cat`**
+>
+> `journalctl` 是读取这些二进制日志的唯一入口
+
+| OPTION           | 作用               | 示例                              | 结果                                                         |
+| :--------------- | :----------------- | :-------------------------------- | :----------------------------------------------------------- |
+| `-u 服务名`      | 查看指定服务的日志 | `journalctl -u nginx`             | 只看 nginx 的日志                                            |
+| `-f`             | 实时跟踪           | `journalctl -u nginx -f`          | 像 `tail -f` 一样实时刷新（不需要考虑日志轮转问题，因为它读取的是 journald 日志流，底层轮转透明） |
+| `-n 行数`        | 只看最近 N 行      | `journalctl -u nginx -n 50`       | 最近 50 行                                                   |
+| `-r`             | 倒序显示           | `journalctl -r -u nginx`          | 最新的在最前面                                               |
+| `--since`        | 从指定时间开始     | `journalctl --since "1 hour ago"` | 最近 1 小时                                                  |
+| `--until`        | 到指定时间为止     | `journalctl --until "2026-09-01"` | 该日期之前的日志                                             |
+| `-p 级别`        | 按日志级别过滤     | `journalctl -p err`               | 只看错误及以上级别                                           |
+| `-k`             | 只看内核日志       | `journalctl -k`                   | 类似 `dmesg`                                                 |
+| `-b`             | 只看本次启动的日志 | `journalctl -b`                   | 当前启动周期                                                 |
+| `-b -1`          | 看上次启动的日志   | `journalctl -b -1`                | 系统重启前发生了什么                                         |
+| `--no-pager`     | 不进入分页模式     | `journalctl -u nginx --no-pager`  | **脚本里必须加**                                             |
+| `-o 格式`        | 指定输出格式       | `journalctl -o json-pretty`       | 结构化输出                                                   |
+| `--disk-usage`   | 查看日志占用磁盘   | `journalctl --disk-usage`         | 看日志吃了多少空间                                           |
+| `--vacuum-size=` | 压缩日志大小       | `journalctl --vacuum-size=500M`   | 将日志压缩到500MB大小（当前活跃文件不会被压缩）              |
+| `--vacuum-time=` | 保留指定天数内日志 | `journalctl --vacuum-time=7d`     | 保留7天的日志                                                |
+| `--rotate`       | 日志轮转           | `journalctl --rotate`             | 强制 journald 立即轮转日志，关闭当前活跃文件并创建新的日志文件 |
+| `--sync`         | 强制落盘           | `journalctl --sync`               | 让所有日志文件强制落盘，即便是缓存中的                       |
+
+> `journalctl --vacuum-size` **永远只会删除已经归档（轮转）的旧文件**，它**绝不会**删除当前正在被系统写入的活跃文件（通常是 `system.journal`
+
+**常用输出格式（`-o` 取值）**
+
+| 格式          | 说明                           | 适用场景         |
+| :------------ | :----------------------------- | :--------------- |
+| `short`       | 默认格式，类似传统 syslog      | 日常查看         |
+| `short-iso`   | 带 ISO 时间戳                  | 需要精确时间时   |
+| `cat`         | 只显示消息，不带时间戳和元数据 | 脚本提取纯文本   |
+| `json-pretty` | JSON 格式，便于程序处理        | 写脚本分析日志时 |
+
+> `journalctl` 默认进入分页模式，在脚本里会卡住等按键。**永远加 `--no-pager`**，这是写自动化脚本的必备习惯
+
+日志级别（`-p` 可用的值）
+
+| 级别      | 含义         | 说明           |
+| :-------- | :----------- | :------------- |
+| `emerg`   | 系统崩溃     | 最高级别       |
+| `alert`   | 必须立即处理 | 严重告警       |
+| `crit`    | 严重错误     | 如磁盘满       |
+| `err`     | 错误         | 服务启动失败等 |
+| `warning` | 警告         | 非致命问题     |
+| `notice`  | 普通但重要   | 正常提示       |
+| `info`    | 一般信息     | 默认级别       |
+| `debug`   | 调试信息     | 最详细         |
+
+> 写 `-p err` 时，会显示 err 及**更高**级别（emerg/alert/crit/err），不包含 warning 和 info。这是过滤，不是精确匹配
+
+**日志持久化**
+
+修改 `/etc/systemd/journald.conf`配置 
+
+```shell
+[Journal]
+# 是否持久化存储到磁盘
+Storage=persistent
+# 对归档（轮转）的旧日志进行 LZ4 或 ZSTD 压缩
+Compress=yes
+# 限制持久化日志的总大小
+SystemMaxUse=2G	日志总量达到此上限后，会自动删除最旧的日志文件
+# 为系统保留的可用空间
+SystemKeepFree=4G	保证磁盘至少有这么多剩余空间，与SystemMaxUse取较小值生效
+# 限制日志的最长保留时间
+MaxRetentionSec=30day	日志超过此时间限制后会被自动清理
+# 限制单个日志文件的大小
+SystemMaxFileSize=128M	单个日志文件超过此大小会触发轮转，生成新文件
+# 强制将日志落盘，避免因为重启而导致丢失日志
+journalctl --sync
+# 修改后，需要重启服务才能生效
+systemctl restart systemd-journald
+```
+
+> 如果设为 `persistent`，日志存到 `/var/log/journal/`，重启不丢
+>
+> 如果设为 `auto`（默认），`auto` 会根据 `/var/log/journal/` 是否存在决定是否持久化。想确保持久化，直接设 `persistent` 并创建目录：
+>
+> ```shell
+> mkdir -p /var/log/journal
+> chown root:systemd-journal /var/log/journal
+> chmod 2755 /var/log/journal
+> ```
 
 ---
 
