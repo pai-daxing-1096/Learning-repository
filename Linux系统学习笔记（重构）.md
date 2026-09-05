@@ -62,7 +62,7 @@
 | ------ | ------------------------------------------------------------ |
 | /bin   | 存放**基本用户命令**，如`ls`、`cp`、`cat`等，这些命令在单用户模式或系统启动早期都必须可用，所有用户都可以执行 |
 | /boot  | 存储**启动系统所需的文件**，包括Linux内核、初始内存盘、引导加载文程序配置文件 |
-| /dev   | 包含**设备文件**，代表设备中的**硬件设备**，如硬盘(`/dev/sda`)、终端(`\dev\tty`)、随机数生成器(`/dev/random`)。应用程序通过读写这些文件来访问硬件 |
+| /dev   | 包含**设备文件**，代表设备中的**硬件设备**，如硬盘(`/dev/sda`)、终端(`/dev/tty`)、随机数生成器(`/dev/random`)。应用程序通过读写这些文件来访问硬件 |
 | /etc   | 存放**系统配置文件**，几乎所有的**全局配置**都位于此，如网络设置(`/etc/network`)、用户账户信息(`/etc/passwd`)、软件包配置(`/etc/yum.conf`) |
 | /home  | **普通用户的个人主目录**所在地，每个用户都有一个子目录(如`/home/pai`)，存放用户的文档、下载、配置(隐藏文件如`.ssh`)等 |
 | /lib   | **存储共享库**和**内核模块**，供`/bin`和`/sbin`中的程序调用，也包含某些驱动程序 |
@@ -818,7 +818,7 @@ cmd1 | cmd2
 # 这会导致脚本漏判错误
 ```
 
-SRE 常用 `set -o pipefail` 来解决：
+​	SRE 常用 `set -o pipefail` 来解决：
 
 ```
 set -o pipefail
@@ -848,7 +848,7 @@ cmd1 | cmd2
 # 正确：stderr 合并到 stdout，然后一起重定向到文件
 cmd > file.log 2>&1
 
-# 错误：stdout 重定向到 file.log 后，stderr 被合并到"当前 stdout"（即终端），文件里没有错误
+# 错误：stdout 重定向到 file.log 后，stderr 被合并到"当前 stdout"（即终端），文件里没有错误（stderr被定向到了stdout原来的输出，也就是屏幕，导致没有进文件）
 cmd 2>&1 > file.log
 ```
 
@@ -949,9 +949,7 @@ echo $var   # 输出 hello
 >
 > `%%` 输出百分号：如果想要输出 `%`，必须写 `%%`，否则 `%` 后面会被当作格式说明符
 
-##### 案例
-
-1. `echo `vs `printf `对比表
+`echo `vs `printf `对比表
 
 | 命令               | 自动换行 | 支持转义       | 适用场景           |
 | :----------------- | :------- | :------------- | :----------------- |
@@ -963,35 +961,151 @@ echo $var   # 输出 hello
 
 ### 5.vi\vim编辑器
 
-#### (1)可以通过`vi` \ `vim`启动编辑器编辑文件
+#### (1)vi命令
 
-语法：`vi 文件路径`
+语法：`vi [OPTION]... FILE...`
 
-语法：`vim 文件路径`
+- `[OPTION]...`   选项（可连续使用多个选项）
+- `FILE...`   文件名（可连续指定多个文件）
 
-- vim兼容了vi的全部功能
-- 如果目标文件不存在，则会创建一个文件进行操作
-- 如果目标文件存在，则会编辑此文件
+> 因为vi编辑器和vim编辑器的基础命令通用，且vim编辑器相较于vi编辑器更加强大，故此处不对vi编辑器作过多解释
+>
+> 但CentOS 7 最小化安装可能只有 `vi`（vim-minimal），功能少。建议 `yum install vim -y` 后统一用 `vim`。但生产环境如果只有 `vi`，所以基本操作必须会
 
-#### (2)vim编辑器的命令模式快捷键
+#### (2)vim命令
 
-- **i** -- 切换到输入模式，在光标当前位置开始输入文本。
-- **esc** --切换到命令模式
-- **x** -- 删除当前光标所在处的字符。
-- **:** -- 切换到底线命令模式，以在最底一行输入命令。
-- **a** -- 进入插入模式，在光标下一个位置开始输入文本。
-- **o**：在当前行的下方插入一个新行，并进入插入模式。
-- **O** -- 在当前行的上方插入一个新行，并进入插入模式。
-- **dd** -- 剪切当前行。
-- **yy** -- 复制当前行。
-- **p**（小写） -- 粘贴剪贴板内容到光标下方。
-- **P**（大写）-- 粘贴剪贴板内容到光标上方。
-- **u** -- 撤销上一次操作。
-- **Ctrl + r** -- 重做上一次撤销的操作。
-- **:w** -- 保存文件。
-- **:q** -- 退出 Vim 编辑器。
-- **:q!** -- 强制退出Vim 编辑器，不保存修改。
-- **:set nu** -- 显示行号
+语法：
+
+`vim [OPTION]... FILE...`
+
+- `[OPTION]...`   选项（可连续使用多个选项）
+- `FILE...`   文件名（可连续指定多个文件）
+
+**三种模式**
+
+| 模式         | 进入方式                 | 作用                       | 怎么退出                                     |
+| :----------- | :----------------------- | :------------------------- | :------------------------------------------- |
+| 命令模式     | 启动 vim 后默认          | 移动光标、复制、删除、撤销 | 按 `i`/`a`/`o` 进插入模式，按 `:` 进底线模式 |
+| 插入模式     | 命令模式下按 `i`/`a`/`o` | 输入文本                   | `Esc` 退回命令模式                           |
+| 底线命令模式 | 命令模式下按 `:`         | 保存、退出、查找替换、设置 | 执行完自动回命令模式，按 `Esc` 取消          |
+
+**命令模式常用键**
+
+##### ①移动
+
+| 键              | 作用           | 备注       |
+| :-------------- | :------------- | :--------- |
+| `h`/`j`/`k`/`l` | 左/下/上/右    | 替代方向键 |
+| `0`             | 行首           |            |
+| `$`             | 行尾           |            |
+| `gg`            | 文件第一行     |            |
+| `G`             | 文件最后一行   |            |
+| `w`             | 下一个单词开头 |            |
+| `b`             | 上一个单词开头 |            |
+| `Ctrl + f`      | 向下翻页       |            |
+| `Ctrl + b`      | 向上翻页       |            |
+
+##### ②编辑
+
+| 键         | 作用               | 备注                                |
+| :--------- | :----------------- | :---------------------------------- |
+| `i`        | 光标前插入         |                                     |
+| `a`        | 光标后插入         |                                     |
+| `I`        | 行首插入           |                                     |
+| `A`        | 行尾插入           |                                     |
+| `o`        | 下方新建一行并插入 |                                     |
+| `O`        | 上方新建一行并插入 |                                     |
+| `x`        | 删除光标处字符     | 相当于 Delete                       |
+| `dd`       | 剪切当前行         | 不是删除！`p` 能粘贴回来            |
+| `yy`       | 复制当前行         |                                     |
+| `p`        | 粘贴到光标下方     |                                     |
+| `P`        | 粘贴到光标上方     |                                     |
+| `u`        | 撤销               |                                     |
+| `Ctrl + r` | 重做               |                                     |
+| `.`        | 重复上一次操作     | 超好用，改一处后按 `.` 自动改下一处 |
+
+##### ③底线命令模式常用命令
+
+| 命令            | 作用                         |
+| :-------------- | :--------------------------- |
+| `:w`            | 保存                         |
+| `:q`            | 退出                         |
+| `:wq` 或 `:x`   | 保存并退出                   |
+| `:q!`           | 不保存强制退出               |
+| `:w!`           | 强制保存（只读文件用）       |
+| `:set nu`       | 显示行号                     |
+| `:set nonu`     | 取消行号                     |
+| `:set hlsearch` | 搜索高亮                     |
+| `:/关键词`      | 搜索，`n` 下一个，`N` 上一个 |
+| `:%s/旧/新/g`   | 全文替换                     |
+| `:行号`         | 跳到指定行，如 `:20`         |
+
+##### ④`~/.vimrc` 配置文件
+
+每次打开 vim 都要手动 `:set nu`，太麻烦。可以写一个配置文件：
+
+```shell
+vim ~/.vimrc
+```
+
+内容：
+
+```shell
+set nu          		# 显示行号
+set hlsearch    		# 搜索高亮
+set pastetoggle=<F2>    # 按下F2后直接开启粘贴模式
+```
+
+> [!CAUTION]
+>
+> 如果你在vim中进行了误操作或者忘了自己刚才在干嘛，**直接使用`q!`不保存退出！！！**（如果因为偷懒而`wq`导致误操作我给你🐎杀了）
+>
+> 绝对不能使用vi或vim编辑`/etc/sudoers`，必须使用`visudo`进行修改
+
+>  vim 配置文件里 `#` 不是注释符，vim 会把整行当成命令，看到 `#` 会报错
+
+#### 案例
+
+1. `.swp` 文件：vim 的“未保存草稿”
+
+​	你编辑文件时 vim 会自动生成一个 `.文件名.swp` 交换文件
+
+​	如果 vim 异常退出（比如 SSH 断开），下次打开会提示：
+
+```shell
+Swap file ".xxx.swp" already exists!
+[O]pen Read-Only  [E]dit anyway  [R]ecover  [D]elete it
+```
+
+​	**选 R** 恢复上次未保存的内容
+
+​	**选 D** 删除交换文件，正常打开
+
+​	如果不想看到这个提示，直接 `rm .xxx.swp` 再重新打开
+
+2. 自动缩进导致的混乱格式
+
+​	在云服务器上改配置时，大概率会从本地复制一段配置，然后在 vim 里右键粘贴。结果就是：
+
+​	缩进越来越深
+​	格式全乱
+​	每行前多出一堆空格
+
+​	**原因**：vim 默认有自动缩进，粘贴时会“帮你”再缩进一次。
+
+​	**解决**：粘贴前在底线模式输入：
+
+```shell
+# 开启粘贴模式
+:set paste
+```
+
+​	粘贴完再：
+
+```shell
+# 关闭粘贴模式
+:set nopaste
+```
 
 ---
 
@@ -1569,6 +1683,439 @@ pai         pts/1        2026-04-25 23:57 (49.95.193.74)
 > 用户级：`~/.bashrc`、`~/.bash_profile`
 >
 > 服务：systemd unit 文件 `UMask=` 参数，或 init 脚本中显式设置
+
+---
+
+### 8.软件安装
+
+#### (1)yum命令
+
+从仓库中安装软件，全自动安装，无需考虑依赖等问题
+
+语法：
+
+`yum [OPTION]... [COMMAND] [PACKAGE]...`
+
+- `[OPTION]...`：选项（可连续使用多个）
+- `[COMMAND]`：操作命令（install/remove/update/search 等）
+- `[PACKAGE]...`：软件包名（可多个）
+
+| OPTION               | 作用         | 备注                           |
+| :------------------- | :----------- | :----------------------------- |
+| `-y`                 | 自动确认     | 脚本里必须加，否则会卡住等输入 |
+| `-q`                 | 安静模式     | 减少输出，脚本里常用           |
+| `--downloadonly`     | 只下载不安装 | 下载到缓存目录                 |
+| `--downloaddir=路径` | 指定下载目录 | 配合 `--downloadonly`          |
+| `--enablerepo`       | 启用指定仓库 | 临时启用某个源                 |
+| `--disablerepo`      | 禁用指定仓库 | 临时禁用某个源                 |
+
+| COMMAND                 | 作用               | 示例                                              | 结果                                                        |
+| :---------------------- | :----------------- | :------------------------------------------------ | :---------------------------------------------------------- |
+| `yum install`           | 安装软件包         | `yum install nginx -y`                            | 自动解决依赖，`-y` 跳过确认                                 |
+| `yum groups install`    | 安装软件组         | `yum groups install "Development Tools"`          | 自动下载Development Tools软件组                             |
+| `yum remove`            | 卸载软件包         | `yum remove nginx -y`                             | 会同时卸载依赖它的包                                        |
+| `yum update`            | 更新所有包         | `yum update -y`                                   | **生产环境慎用**，可能更新内核导致重启                      |
+| `yum update 包名`       | 更新指定包         | `yum update nginx`                                | 只更新 nginx                                                |
+| `yum search`            | 搜索软件包         | `yum search nginx`                                | 按名称/描述搜索                                             |
+| `yum info`              | 查看软件包信息     | `yum info nginx`                                  | 显示版本、大小、简介                                        |
+| `yum list`              | 列出已安装/可用包  | `yum list installed`                              | 列出所有已安装                                              |
+| `yum provides`          | 查某命令属于哪个包 | `yum provides /usr/bin/tree`                      | **超实用**，找不到命令时用（可以使用which命令查找命令路径） |
+| `yum clean all`         | 清理缓存           | `yum clean all`                                   | 缓存损坏或删除缓存时使用（镜像中最好把缓存删了）            |
+| `yum history`           | 查看安装/卸载历史  | `yum history`                                     | 查看安装/卸载历史                                           |
+| `yum history undo 编号` | 回滚指定操作       | `yum history undo 12387`                          | 回滚指定操作                                                |
+| `yum localinstall`      | 自动寻找缺失的依赖 | `yum localinstall nginx-1.20.1-10.el7.x86_64.rpm` | 安装本地rpm文件，并自动从仓库解决依赖                       |
+
+> yum 从仓库下载RPM包，仓库配置在 `/etc/yum.repos.d/.repo`，每个仓库定义了：仓库 URL（http/ftp/file）、是否启用（`enabled=1`）、是否检查签名（`gpgcheck=1`）
+>
+> yum 的本质实际上时 RPM 包的前端管理器，yum 负责找到它们、解决依赖、按顺序安装，所以 yum 可以同时下载指定软件的各种依赖，无需手动配置
+
+**yum换源**
+
+因为CentOS7以及之前的版本均已停止维护，所以其官方源也通常无法使用，因此我们需要更换yum源来保证当前系统可以正常使用yum命令
+
+```shell
+# 备份原配置，防止配置错误导致换源失败（直接拍快照也行）
+cd /etc/yum.repos.d
+cp CentOS-Base.repo CentOS-Base.repo.bak
+# 换成阿里云的yum源
+curl -o /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/CentOS-7.repo
+# 清除旧的yum缓存
+yum clean all
+# 生成新的yum缓存（可选，在配置镜像这种需要尽可能减少大小的时候可以选择不生成yum缓存）
+yum makecache
+```
+
+**EPEL换源**
+
+CentOS7停服后，装 `epel-release` 后默认指向的 EPEL 源也可能慢或失效。换完yum源后，应当顺手给EPEL源也换了
+
+```shell
+# 下载epel-release
+yum install epel-release -y
+# 换成阿里云的EPEL源
+curl -o /etc/yum.repos.d/epel.repo http://mirrors.aliyun.com/repo/epel-7.repo
+# 清除旧的yum缓存
+yum clean all
+# 生成新的yum缓存（可选，在配置镜像这种需要尽可能减少大小的时候可以选择不生成yum缓存）
+yum makecache
+```
+
+> [!WARNING]
+>
+> 生产环境中绝对不要全量更新（yum update -y），如果全量更新导致服务不兼容甚至系统崩溃我给你🐎杀了
+
+#### 案例
+
+1. yum 卡住不动了
+
+	**现象**：`yum install` 一直没反应
+
+	**排查**：
+
+	```shell
+	# 看是否有别的 yum 进程在跑
+	ps aux | grep yum
+	```
+
+	**解决**：如果有残留进程，杀掉后清缓存：
+
+	```shell
+	rm -rf /var/run/yum.pid
+	yum clean all
+	```
+
+#### (2)rpm命令
+
+操作本地RPM包文件，手动安装，需自行解决依赖
+
+语法：
+
+`rpm [OPTION]... [PACKAGE]...`
+
+- `[OPTION]...`：选项（可连续使用多个）
+- `[PACKAGE]...`：软件包名或文件名
+
+| OPTION        | 作用                 | 示例                                      | 结果                                                    |
+| :------------ | :------------------- | :---------------------------------------- | :------------------------------------------------------ |
+| `-qa`         | 列出所有已安装包     | `rpm -qa | grep nginx`                    | 查询 nginx 是否安装                                     |
+| `-q 包名`     | 查指定包是否安装     | `rpm -q nginx`                            | 输出版本号或未安装                                      |
+| `-ql 包名`    | 列出包安装的所有文件 | `rpm -ql nginx`                           | 看 nginx 装在哪                                         |
+| `-qc 包名`    | 只列配置文件         | `rpm -qc nginx`                           | 看 nginx 的配置在哪                                     |
+| `-qf 文件名`  | 查文件属于哪个包     | `rpm -qf /etc/nginx/nginx.conf`           | 反向查询                                                |
+| `-qi 包名`    | 查看包的详细信息     | `rpm -qi nginx`                           | 版本、大小、安装时间                                    |
+| `-ivh 文件名` | 安装 rpm 文件        | `rpm -ivh nginx-1.20.1-10.el7.x86_64.rpm` | 安装 nginx ，但需要手动解决依赖                         |
+| `-Uvh 文件名` | 升级或安装           | `rpm -Uvh nginx-1.20.1-10.el7.x86_64.rpm` | 如果 nginx 已存在则升级                                 |
+| `-e 包名`     | 卸载                 | `rpm -e nginx`                            | 删除了 nginx ，但不同时删除依赖（这里直接使用包名即可） |
+
+> 一般情况下没网才会使用rpm，否则首先推荐使用yum
+
+> [!WARNING]
+>
+> 关于两个rpm的`OPTION `
+>
+> `--nodeps`   告诉rpm忽略依赖关系检查
+>
+> `--force`   强制 rpm 执行操作，即使遇到冲突或错误也继续
+>
+> **除非你很清楚你现在在做什么**，否则绝对不要碰这俩选项，如果因此出现诡异错误我给你🐎杀了
+
+#### (3)编译安装
+
+纯手动古法安装，需要考虑所有问题
+
+```shell
+# 经典三步
+./configure [OPTION]...	# 检查环境，生成 Makefile
+make					# 编译源码
+make install			# 安装到系统目录
+```
+
+| OPTION          | 作用                       | 示例                         |
+| :-------------- | :------------------------- | :--------------------------- |
+| `--prefix=路径` | 指定安装目录               | `--prefix=/usr/local/nginx`  |
+| `--with-xxx`    | 启用某功能                 | `--with-http_ssl_module`     |
+| `--without-xxx` | 禁用某功能                 | `--without-http_gzip_module` |
+| `--help`        | 查看该源码包支持的所有选项 | `./configure --help`         |
+
+> 默认 `--prefix` 是 `/usr/local`，所以不指定的话，软件会装到 `/usr/local/bin`、`/usr/local/lib` 等。但为了干净管理，建议每个源码包指定独立目录，如 `/usr/local/nginx`，方便卸载
+>
+> 当然你无脑塞进`/opt`也没有问题，因为这块就是专门拿来装软件的
+
+> [!TIP]
+>
+> 编译前先 `./configure --help` 查看该源码包支持的所有选项，再决定 `--prefix` 和 `--with/--without` 怎么配
+
+**编译工具链**（提前下载，否则无法进行编译安装）
+
+```shell
+# 直接下载软件组
+yum groups install "Development Tools"
+# 手动下载工具链
+yum install gcc make pcre-devel openssl-devel zlib-devel -y
+```
+
+> 不装 `-devel` 包，configure 直接报错
+
+> [!TIP]
+>
+> 默认单线程make，想要加速可以：
+>
+> ```shell
+> # 自动获取CPU核数从而并行编译，可以显著提高速度
+> ./configure [OPTION]...	# 检查环境，生成 Makefile
+> make -j$(nproc)			# 编译源码（替换此处,但有些老旧的源码包不支持并行编译，可能出现诡异错误）
+> make install			# 安装到系统目录
+> ```
+
+> [!IMPORTANT]
+>
+> 一定要指定路径，一定要指定路径，一定要指定路径！！！
+
+1. 装完不知道装哪了
+
+	**现象**：编译安装完成，但不知道命令在哪
+
+	**原因**：没加 `--prefix`，装到了默认的 `/usr/local`
+
+	**排查**：
+
+	```shell
+	# 找可执行文件
+	find /usr/local -name "nginx"
+	# 或者
+	which nginx
+	```
+
+	**预防**：编译时一定要加 `--prefix=/usr/local/软件名`
+
+2. 卸载源码安装的软件
+
+	**现象**：源码安装没有 `yum remove`，也不知道怎么卸载
+
+	**解决**：
+
+	如果指定了 `--prefix`，直接 `rm -rf /usr/local/软件名`
+
+	如果没有指定，那麻烦了，文件散落在各处，只能手动找
+
+	**预防**：**永远指定 `--prefix`，卸载就是删一个目录**
+
+3. 编译安装后命令不在 PATH 里
+
+	**现象：**编译装完 Nginx 后，直接敲 `nginx` 可能出现 `command not found`
+
+	**原因：**命令被装到了 `/usr/local/nginx/sbin/nginx`中，而 PATH 里只有 `/usr/local/bin`、`/usr/local/sbin` 等
+
+	**解决**：
+
+	```shell
+	# 方案1：软链到 PATH 已有目录
+	ln -s /usr/local/nginx/sbin/nginx /usr/local/bin/nginx
+	
+	# 方案2：把目录加进 PATH（写入 ~/.bashrc）
+	echo 'export PATH=/usr/local/nginx/sbin:$PATH' >> ~/.bashrc
+	source ~/.bashrc
+	```
+
+---
+
+### 9.systemd服务
+
+#### (1)systemctl命令
+
+服务管理
+
+语法：`systemctl [OPTION]... COMMAND [UNIT]...`
+
+- `[OPTION]...`   选项（可连续使用多个）
+- `COMMAND`   操作命令（start/stop/status/enable 等）
+- `[UNIT]...`   服务单元名，如 `nginx.service`、`sshd.service`，`.service` 可省略
+
+| OPTION          | 作用                      | 示例                                     | 结果                                                     |
+| :-------------- | :------------------------ | :--------------------------------------- | -------------------------------------------------------- |
+| `--now`         | 同时执行 start/stop       | `systemctl enable --now nginx`           | 启用 nginx 开机自启并立即启动                            |
+| `--no-pager`    | 不进入分页模式            | `systemctl status --no-pager nginx`      | 输出服务状态的时候不进入分页模式                         |
+| `-l` / `--full` | 显示完整行，不截断        | `systemctl list-units --type=service -l` | 列出所有已加载的 unit时显示完整行                        |
+| `--failed`      | 检查所有启动失败的服务    | `systemctl --failed`                     | 列出所有启动失败的服务                                   |
+| `--user`        | 管理用户级服务（非 root） | `systemctl --user start podman`          | 普通用户可以使用该命令启动 podman 服务，避免污染系统服务 |
+
+> `--now` 可以配合 enable/disable/mask/unmask 使用，立即执行对应的 start/stop，实际上可以理解为：现在就立即执行
+
+| 命令                          | 作用                                     | 示例                                        | 结果/说明                                                    |
+| :---------------------------- | :--------------------------------------- | :------------------------------------------ | :----------------------------------------------------------- |
+| `systemctl start`             | 启动服务                                 | `systemctl start nginx`                     | 立即启动，不持久                                             |
+| `systemctl stop`              | 停止服务                                 | `systemctl stop nginx`                      | 立即停止                                                     |
+| `systemctl restart`           | 重启服务                                 | `systemctl restart nginx`                   | 先 stop 再 start                                             |
+| `systemctl try-restart`       | 仅在服务运行时重启                       | `systemctl try-restart nginx`               | 只有服务已经在运行了才重启                                   |
+| `systemctl reload`            | 重新加载配置                             | `systemctl reload nginx`                    | 不中断服务，只重读配置（有的服务不支持，如果报错了还是得重启） |
+| `systemctl status`            | 查看服务状态                             | `systemctl status nginx`                    | 显示是否运行、PID、最近日志                                  |
+| `systemctl show`              | 查看服务的所有底层属性（比 status 详细） | `systemctl show nginx | grep Memory`        | 查内存限制                                                   |
+| `systemctl enable`            | 设置开机自启                             | `systemctl enable nginx`                    | 创建符号链接                                                 |
+| `systemctl disable`           | 取消开机自启                             | `systemctl disable nginx`                   | 删除符号链接                                                 |
+| `systemctl is-enabled`        | 查是否开机自启                           | `systemctl is-enabled nginx`                | 输出 enabled/disabled/static                                 |
+| `systemctl is-active`         | 查是否正在运行                           | `systemctl is-active nginx`                 | 输出 active/inactive                                         |
+| `systemctl cat`               | 直接查看 unit 文件内容                   | `systemctl cat nginx`                       | 显示 nginx.service 的完整内容                                |
+| `systemctl edit`              | 只覆盖原 unit 配置中的部分参数           | `systemctl edit nginx`                      | 只需要写入你想修改的那几行，不需要写原文件的全部内容         |
+| `systemctl daemon-reload`     | 重新加载 unit 文件                       | `systemctl daemon-reload`                   | **改完 unit 文件必须执行**                                   |
+| `systemctl list-units`        | 列出所有已加载的 unit                    | `systemctl list-units --type=service`       | 只列服务（内存里正在运行/加载的，stop 之后就看不到了）       |
+| `systemctl list-unit-files`   | 列出所有已安装的 unit                    | `systemctl list-unit-files --state=enabled` | 只看自启的（硬盘上静态安装的都能看到，stop 了也能看到）      |
+| `systemctl list-dependencies` | 查看服务的依赖树                         | `systemctl list-dependencies nginx`         | 查看 nginx 服务的依赖树                                      |
+| `systemctl kill`              | 杀掉服务的所有进程                       | `systemctl kill nginx`                      | 比 `stop` 更暴力                                             |
+| `systemctl mask`              | 屏蔽服务，无法启动                       | `systemctl mask nginx`                      | 创建指向 `/dev/null` 的链接                                  |
+| `systemctl unmask`            | 解除屏蔽                                 | `systemctl unmask nginx`                    | 恢复                                                         |
+
+> `systemctl edit nginx`保存退出后，文件实际保存在 `/etc/systemd/system/nginx.service.d/override.conf`
+
+> [!NOTE]
+>
+> `list-units` 可以配合 `--state` 过滤以查看运行状态
+>
+> ```
+> systemctl list-units --state=failed     # 看失败的服务
+> systemctl list-units --state=running    # 看正在运行的服务
+> ```
+
+> [!WARNING]
+>
+> 被 mask 后，不仅手动 `start` 无效，其他服务依赖它启动也会失效，如果 mask 某个服务**务必**告知其他人
+
+#### (2)systemd unit文件
+
+**存放位置**
+
+| 路径                       | 优先级 | 用途                                     |
+| :------------------------- | :----- | :--------------------------------------- |
+| `/usr/lib/systemd/system/` | 低     | 软件包自带的 unit 文件                   |
+| `/run/systemd/system/`     | 中     | 运行时临时 unit，重启消失                |
+| `/etc/systemd/system/`     | **高** | 管理员自定义的 unit 文件，覆盖上面同名的 |
+
+> [!CAUTION]
+>
+> 修改已存在的服务时，优先用 `systemctl edit` 做局部覆盖，不要直接改 `/usr/lib/systemd/system/` 下的原始文件，新建自己的 unit 文件时直接写 `/etc/systemd/system/` 即可
+>
+
+> 不要直接改 `/usr/lib/systemd/system/` 里面的，因为 yum 更新软件包时会覆盖那里的文件，你的修改会丢
+
+**unit 文件结构**
+
+```shell
+[Unit]
+Description=My Flask App              # 描述
+After=network.target                  # 在网络就绪后才启动
+Wants=nginx.service                   # 软依赖，nginx 挂了不影响本服务
+
+[Service]
+Type=simple                           # 进程类型
+User=pai                              # 以哪个用户运行
+Group=pai                             # 以哪个组运行
+WorkingDirectory=/opt/myapp           # 工作目录
+ExecStart=/usr/bin/python3 app.py     # 启动命令
+ExecReload=/bin/kill -HUP $MAINPID    # reload 命令
+Restart=on-failure                    # 失败时自动重启
+RestartSec=5                          # 重启间隔 5 秒
+Environment="FLASK_ENV=production"    # 环境变量
+EnvironmentFile=/etc/myapp/env        # 环境变量建议用这个
+LimitNOFILE=65535                     # 高并发服务必调
+TimeoutStartSec=300					  # 启动超时时间 300 秒，超过则判定失败
+TimeoutStopSec=30					  # 停止超时时间 30 秒，超过则强制杀
+
+[Install]
+WantedBy=multi-user.target            # 开机自启时挂到哪个 target
+```
+
+**[Unit] 段常用参数**
+
+| 参数          | 作用                                 | 示例                       |
+| :------------ | :----------------------------------- | :------------------------- |
+| `Description` | 服务描述                             | `Description=My Flask App` |
+| `After`       | 在指定服务/目标之后启动              | `After=network.target`     |
+| `Before`      | 在指定服务/目标之前启动              | `Before=nginx.service`     |
+| `Requires`    | 强依赖，依赖的服务挂了本服务也停     | `Requires=network.target`  |
+| `Wants`       | 软依赖，依赖的服务挂了本服务不受影响 | `Wants=nginx.service`      |
+
+> `Requires` 是“没有你我不行”，`Wants` 是“有你我更好”。生产环境里**优先用 `Wants`**，避免因为一个非核心依赖挂了导致你的服务也停掉
+
+**[Service] 段关键参数**
+
+| 参数               | 作用               | 备注                                             |
+| :----------------- | :----------------- | :----------------------------------------------- |
+| `Type`             | 进程启动类型       | 见下方表格                                       |
+| `User`             | 运行用户           | **别用 root 跑服务（应当使用专门的系统用户跑）** |
+| `Group`            | 运行组             | 同上                                             |
+| `WorkingDirectory` | 工作目录           | 相对路径在这里生效                               |
+| `ExecStart`        | 启动命令           | **必须用绝对路径**                               |
+| `ExecStop`         | 停止命令           | 可选，默认杀进程                                 |
+| `ExecReload`       | reload 命令        | 可选                                             |
+| `Restart`          | 重启策略           | `on-failure` 最常用                              |
+| `RestartSec`       | 重启间隔秒数       | 防止疯狂重启                                     |
+| `Environment`      | 环境变量           | 可写多行                                         |
+| `EnvironmentFile`  | 从文件读取环境变量 | 敏感信息建议放这里，如密钥、密码                 |
+| `LimitNOFILE`      | 最大文件描述符数   | 高并发服务必调，否则报 Too many open files       |
+| `TimeoutStartSec`  | 启动超时时间（秒） | 默认 90 秒，服务启动慢需调大                     |
+| `TimeoutStopSec`   | 停止超时时间（秒） | 默认 90 秒，服务优雅退出慢需调大                 |
+
+**Type 类型**
+
+| 类型      | 含义                                       | 适用场景                                |
+| :-------- | :----------------------------------------- | :-------------------------------------- |
+| `simple`  | 认为 ExecStart 启动的进程就是主进程        | **默认值**，适合 Flask、Node 等前台进程 |
+| `forking` | ExecStart 启动的进程会 fork 出子进程后退出 | 适合 Nginx 这种经典 daemon 服务         |
+| `oneshot` | 执行一次就退出                             | 适合一次性初始化任务                    |
+| `notify`  | 服务启动完成后会通知 systemd               | 需要服务代码配合                        |
+
+> 如果用 `simple` 启动 Nginx，Nginx 会一直卡着，因为 Nginx 默认是 daemon 模式（fork 出子进程后父进程退出）。正确的是 `Type=forking`。类型和服务的运行方式不匹配，服务就会启动失败或行为异常
+
+**Restart 策略**
+
+| 值            | 含义                           |
+| :------------ | :----------------------------- |
+| `no`          | 不自动重启（默认）             |
+| `on-failure`  | 只有异常退出时才重启           |
+| `always`      | 无论什么原因退出都重启         |
+| `on-abnormal` | 只有信号导致退出时才重启       |
+| `on-success`  | 只有正常退出（退出码 0）才重启 |
+
+> `always` 和 `on-failure` 的区别在于：如果你手动 `systemctl stop` 服务，`always` 会把它拉起来，`on-failure` 不会。**生产环境用 `on-failure` 更多**，避免你想停服务却停不掉
+
+**[Install] 段**
+
+| 参数         | 作用                                             |
+| :----------- | :----------------------------------------------- |
+| `WantedBy`   | 指定挂到哪个 target 下，通常 `multi-user.target` |
+| `RequiredBy` | 强依赖版本，用的少                               |
+
+> `WantedBy=multi-user.target` 是命令行模式的标准写法。如果你不写 `[Install]` 段，`systemctl enable` 会报错，服务无法设置开机自启
+
+> [!NOTE]
+>
+> 改完 unit 文件**必须** reload，systemd 不会自动检测
+
+#### 案例
+
+1. 自己写的 unit 文件启动失败
+
+**现象：**服务起不来
+
+**常见原因：**
+
+- `ExecStart`    路径写错或不是绝对路径
+- `Type` 和实际进程行为不匹配（如 Nginx 用 simple）
+- `User` 指定的用户不存在或无权限
+- 环境变量缺失
+- 改完没执行 `daemon-reload`
+
+**排查：**
+
+```shell
+# 看状态
+systemctl status myapp
+
+# 看日志
+journalctl -u myapp -n 50 --no-pager
+
+# 检查 unit 文件语法
+systemd-analyze verify /etc/systemd/system/myapp.service
+```
 
 ---
 
