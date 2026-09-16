@@ -133,33 +133,6 @@ sudo vim /etc/ssh/sshd_config
 | hh:mm    | 在今天指定的时间执行（24小时制）                | sudo shutdown -h 23:00 |
 | 省略时间 | 若不指定时间，则默认执行时间为+1，即1分钟后执行 | sudo shutdown -h       |
 
----
-
-### 二十二.控制软件的服务
-
-#### 1.systemctl命令
-
-操控服务
-
-语法：`systemctl 参数 服务的名称`
-
-参数：
-
-- `start`   启动
-- `stop`   关闭
-- `status`   查看状态
-- `enable`   开启开机自启
-- `disable`   关闭开机自启
-- `daemon-reload`   通知 systemd 重新加载所有服务单元文件（包括 `/usr/lib/systemd/system/` 和 `/etc/systemd/system/` 下的文件）
-	-  在此之前应当先对服务单元文件进行操作
-		- `sudo rm -f /usr/lib/systemd/system/glances.service`
-			- **作用**：删除 systemd 服务单元文件（glances.service）。
-			- **效果**：服务定义被永久移除，systemd 不再知道这个服务的存在。
-			- **适用时机**：当你确认该服务文件已无用（例如指向不存在的程序、配置错误、不再需要该服务）时使用。
-- `halt`   停止所有进程（不切电源）
-- `poweroff`   停止所有进程并切断电源
-- `reboot`   重启系统
-
 
 ---
 
