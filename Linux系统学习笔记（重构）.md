@@ -2296,6 +2296,197 @@ systemctl restart systemd-journald
 
 ---
 
+### 11.进程管理
+
+#### (1)ps命令
+
+查看进程信息
+
+语法：
+
+`ps [OPTION]...`
+
+- `[OPTION]...`：选项（可连续使用多个）
+
+> 不加任何选项时，只显示**当前终端**的进程
+
+| OPTION（BSD 风格，不带 `-`） | 作用                                     |
+| :--------------------------- | :--------------------------------------- |
+| `a`                          | 显示所有终端上的进程（包括其他用户）     |
+| `u`                          | 显示用户友好的格式（含 `%CPU`、`%MEM`）  |
+| `x`                          | 显示没有控制终端的进程（通常是后台服务） |
+
+| OPTION（UNIX 风格，带 `-`） | 作用                          |
+| :-------------------------- | :---------------------------- |
+| `-e`                        | 显示所有进程                  |
+| `-f`                        | 完整格式（含 PPID、UID、CMD） |
+| `-u 用户`                   | 指定用户                      |
+| `-p PID`                    | 指定 PID                      |
+| `-o 字段`                   | 自定义输出列                  |
+
+| 长选项     | 作用             |
+| :--------- | :--------------- |
+| `--forest` | 树状显示父子关系 |
+| `--sort`   | 排序             |
+
+| 组合命令                                  | 作用                               | 说明                                                         |
+| :---------------------------------------- | :--------------------------------- | :----------------------------------------------------------- |
+| `ps aux`                                  | 查看所有进程（BSD 风格）           | **最常用**，显示所有用户的进程（面向人看，信息丰富）         |
+| `ps -ef`                                  | 查看所有进程（UNIX 风格）          | 显示 PPID，适合看父子关系（面向脚本，格式稳定）              |
+| `ps -ef | grep nginx`                     | 查指定进程                         | 排障最常用组合                                               |
+| `ps -u pai`                               | 查看指定用户的进程                 |                                                              |
+| `ps -p 1234`                              | 查看指定 PID                       |                                                              |
+| `ps -eLf`                                 | 查看线程                           | 显示 LWP（线程 ID）                                          |
+| `ps -ef --forest`                         | 树状显示所有进程                   | `--forest`需配合` -e `才显示全部，单独 `ps --forest` 只显示当前终端的进程，看不到完整进程树 |
+| `ps auxf`                                 | 同上，BSD 风格，末尾`f`即` forest` | `f`只是等价于`--forest`而不是完全相等                        |
+| `ps aux --sort=-%mem`                     | 按内存降序                         | `-` 表示降序，`+` 表示升序。默认 `ps aux` 是按 PID 排序      |
+| `ps aux --sort=-%cpu`                     | 按 CPU 降序                        | 同上                                                         |
+| `ps aux --sort=+pid`                      | 按 PID 升序                        | 同上                                                         |
+| `ps -eo pid,ppid,user,%cpu,%mem,stat,cmd` | 格式化输出                         |                                                              |
+
+> `ps -eLf` 输出中，同一个进程的多个线程 `PID` 相同，`LWP` 不同。`NLWP` 是该进程的线程总数
+>
+> | 该命令多于`ps -ef`的字段 | 说明                                              |
+> | ------------------------ | ------------------------------------------------- |
+> | LWP                      | Light Weight Process，**线程 ID**（每个线程唯一） |
+> | `NLWP`                   | Number of LWPs，该进程的**线程总数**              |
+
+##### ①`ps aux`示例
+
+```shell
+USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root           1  0.0  0.3 169208  6540 ?        Ss    2025   2:13 /usr/lib/systemd/systemd --system --deserialize 19
+root           2  0.0  0.0      0     0 ?        S     2025   0:00 [kthreadd]
+root           3  0.0  0.0      0     0 ?        I<    2025   0:00 [rcu_gp]
+root           4  0.0  0.0      0     0 ?        I<    2025   0:00 [rcu_par_gp]
+root           6  0.0  0.0      0     0 ?        I<    2025   0:00 [kworker/0:0H-kblockd]
+root           8  0.0  0.0      0     0 ?        I<    2025   0:00 [mm_percpu_wq]
+root           9  0.0  0.0      0     0 ?        S     2025   0:00 [rcu_tasks_rude_]
+root          10  0.0  0.0      0     0 ?        S     2025   0:00 [rcu_tasks_trace]
+root          11  0.0  0.0      0     0 ?        S     2025   0:17 [ksoftirqd/0]
+root          12  0.0  0.0      0     0 ?        I     2025  99:41 [rcu_sched]
+root          13  0.0  0.0      0     0 ?        S     2025   0:07 [migration/0]
+root          14  0.0  0.0      0     0 ?        S     2025   0:00 [cpuhp/0]
+root          15  0.0  0.0      0     0 ?        S     2025   0:00 [cpuhp/1]
+root          16  0.0  0.0      0     0 ?        S     2025   0:07 [migration/1]
+root          17  0.0  0.0      0     0 ?        S     2025   0:16 [ksoftirqd/1]
+root          19  0.0  0.0      0     0 ?        I<    2025   0:00 [kworker/1:0H-events_highpri]
+root          21  0.0  0.0      0     0 ?        S     2025   0:00 [kdevtmpfs]
+root          22  0.0  0.0      0     0 ?        I<    2025   0:00 [netns]
+root          23  0.0  0.0      0     0 ?        S     2025   0:00 [kauditd]
+root          26  0.0  0.0      0     0 ?        S     2025   0:02 [khungtaskd]
+root          27  0.0  0.0      0     0 ?        S     2025   0:00 [oom_reaper]
+root          28  0.0  0.0      0     0 ?        I<    2025   0:00 [writeback]
+root          29  0.0  0.0      0     0 ?        S     2025   1:29 [kcompactd0]
+root          30  0.0  0.0      0     0 ?        SN    2025   0:00 [ksmd]
+root          31  0.0  0.0      0     0 ?        SN    2025   1:44 [khugepaged]
+root          32  0.0  0.0      0     0 ?        I<    2025   0:00 [memcg_wmark]
+root          33  0.0  0.0      0     0 ?        I<    2025   0:00 [memcg_pgcache_l]
+root          47  0.0  0.0      0     0 ?        I<    2025   0:00 [cryptd]
+root          82  0.0  0.0      0     0 ?        I<    2025   0:00 [kintegrityd]
+root          83  0.0  0.0      0     0 ?        I<    2025   0:00 [kblockd]
+root          84  0.0  0.0      0     0 ?        I<    2025   0:00 [blkcg_punt_bio]
+root          85  0.0  0.0      0     0 ?        I<    2025   0:00 [tpm_dev_wq]
+root          86  0.0  0.0      0     0 ?        I<    2025   0:00 [md]
+root          87  0.0  0.0      0     0 ?        I<    2025   0:00 [edac-poller]
+root          88  0.0  0.0      0     0 ?        I<    2025   0:00 [devfreq_wq]
+root          89  0.0  0.0      0     0 ?        S     2025   0:00 [watchdogd]
+...
+```
+
+| 字段      | 含义               | 备注                                                         |
+| :-------- | :----------------- | :----------------------------------------------------------- |
+| `USER`    | 进程属主           |                                                              |
+| `PID`     | 进程号             |                                                              |
+| `%CPU`    | CPU 占用百分比     | 这是**自进程启动以来**的平均值，不是瞬时值，想看瞬时 CPU，用 `top`、`htop` 或 `pidstat` |
+| `%MEM`    | 内存占用百分比     |                                                              |
+| `VSZ`     | 虚拟内存大小（KB） | 含已申请未使用的内存                                         |
+| `RSS`     | 常驻内存大小（KB） | **真实占用的物理内存**                                       |
+| `TTY`     | 终端               | `?` 表示无终端（后台服务）                                   |
+| `STAT`    | 进程状态           | 见下方表格                                                   |
+| `START`   | 启动时间           |                                                              |
+| `TIME`    | 累计 CPU 时间      |                                                              |
+| `COMMAND` | 启动命令           |                                                              |
+
+| STAT 字段 | 含义                  | 说明                               |
+| :-------- | :-------------------- | :--------------------------------- |
+| `R`       | Running               | 正在运行或可运行                   |
+| `S`       | Sleeping              | 可中断睡眠，等待事件（**最常见**） |
+| `D`       | Uninterruptible Sleep | **不可中断睡眠**，通常在等 IO      |
+| `Z`       | Zombie                | 僵尸进程，已死但父进程没回收       |
+| `T`       | Stopped               | 被暂停（Ctrl+Z）                   |
+| `s`       | session leader        | 会话首进程（附加标记）             |
+| `l`       | multi-threaded        | 多线程进程（附加标记）             |
+| `+`       | foreground            | 前台进程（附加标记）               |
+| `<`       | high priority         | 高优先级（附加标记）               |
+| `N`       | low priority          | 低优先级（附加标记）               |
+| `L`       | 有页面被锁定在内存中  | 常用于实时/内核线程                |
+| `X`       | 已死                  | 几乎看不到                         |
+| `I`       | 空闲内核线程          | 较新内核中用于标识空闲内核线程     |
+
+> `D` 状态进程**杀不掉**，因为它卡在内核态等 IO，`kill -9` 也没用，只能等 IO 完成或重启。看到大量 `D` 状态，说明磁盘/网络 IO 有瓶颈
+
+##### ②ps -ef示例
+
+```shell
+UID          PID    PPID  C STIME TTY          TIME CMD
+root           1       0  0  2025 ?        00:02:13 /usr/lib/systemd/systemd --system --deserialize 19
+root           2       0  0  2025 ?        00:00:00 [kthreadd]
+root           3       2  0  2025 ?        00:00:00 [rcu_gp]
+root           4       2  0  2025 ?        00:00:00 [rcu_par_gp]
+root           6       2  0  2025 ?        00:00:00 [kworker/0:0H-kblockd]
+root           8       2  0  2025 ?        00:00:00 [mm_percpu_wq]
+root           9       2  0  2025 ?        00:00:00 [rcu_tasks_rude_]
+root          10       2  0  2025 ?        00:00:00 [rcu_tasks_trace]
+root          11       2  0  2025 ?        00:00:17 [ksoftirqd/0]
+root          12       2  0  2025 ?        01:39:41 [rcu_sched]
+root          13       2  0  2025 ?        00:00:07 [migration/0]
+root          14       2  0  2025 ?        00:00:00 [cpuhp/0]
+root          15       2  0  2025 ?        00:00:00 [cpuhp/1]
+root          16       2  0  2025 ?        00:00:07 [migration/1]
+root          17       2  0  2025 ?        00:00:16 [ksoftirqd/1]
+root          19       2  0  2025 ?        00:00:00 [kworker/1:0H-events_highpri]
+root          21       2  0  2025 ?        00:00:00 [kdevtmpfs]
+root          22       2  0  2025 ?        00:00:00 [netns]
+root          23       2  0  2025 ?        00:00:00 [kauditd]
+root          26       2  0  2025 ?        00:00:02 [khungtaskd]
+root          27       2  0  2025 ?        00:00:00 [oom_reaper]
+root          28       2  0  2025 ?        00:00:00 [writeback]
+root          29       2  0  2025 ?        00:01:29 [kcompactd0]
+root          30       2  0  2025 ?        00:00:00 [ksmd]
+root          31       2  0  2025 ?        00:01:44 [khugepaged]
+root          32       2  0  2025 ?        00:00:00 [memcg_wmark]
+root          33       2  0  2025 ?        00:00:00 [memcg_pgcache_l]
+root          47       2  0  2025 ?        00:00:00 [cryptd]
+root          82       2  0  2025 ?        00:00:00 [kintegrityd]
+root          83       2  0  2025 ?        00:00:00 [kblockd]
+root          84       2  0  2025 ?        00:00:00 [blkcg_punt_bio]
+root          85       2  0  2025 ?        00:00:00 [tpm_dev_wq]
+root          86       2  0  2025 ?        00:00:00 [md]
+root          87       2  0  2025 ?        00:00:00 [edac-poller]
+root          88       2  0  2025 ?        00:00:00 [devfreq_wq]
+root          89       2  0  2025 ?        00:00:00 [watchdogd]
+...
+```
+
+| 字段    | 含义                                               | 备注 |
+| :------ | :------------------------------------------------- | ---- |
+| `PPID`  | 父进程PID                                          |      |
+| `C`     | CPU 利用率，整数百分比，也是进程生命周期内的平均值 |      |
+| `STIME` | 启动时间（`START` 的 UNIX 风格写法）               |      |
+
+> [!CAUTION]
+>
+> 使用 `ps -ef | grep xxx` 时，`grep` 自身也会被列出来。如果直接拿结果去 `kill`，可能杀错。正确做法：
+>
+> ```shell
+> ps -ef | grep nginx | grep -v grep
+> # 或者直接用
+> pgrep -a nginx
+> ```
+
+---
+
 ---
 
 [^1]:PAM 是 Linux 的认证框架（具体详情见下方）

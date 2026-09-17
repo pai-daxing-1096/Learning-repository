@@ -1267,36 +1267,6 @@ nohub ping baidu.com > baocun.txt 2>&1 &
 sort file.txt | uniq -i          # 忽略大小写
 sort file.txt | uniq -f 2        # 跳过前2个字段比较
 
-#### 3.head
-
-查看开头
-
-语法：
-
-`head [-n -c] 文件路径`
-
-head file.txt                    # 前10行
-head -n 20 file.txt              # 前20行
-head -c 100 file.txt             # 前100个字节
-
-#### 4.tail
-
-查看结尾
-
-语法：
-
-`tail [-n -f] 文件路径`
-
-tail file.txt                    # 后10行
-tail -n 20 file.txt              # 后20行
-tail -f /var/log/syslog          # 实时跟踪日志（重要！）
-
-##### (1)组合使用
-head -n 100 file.txt | tail -n 20  #
-查看第81-100行
-
-#### 5.cut
-
 剪切
 
 语法：
