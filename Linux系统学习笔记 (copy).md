@@ -300,40 +300,7 @@ ping -c 4 www.baidu.com
 
 ---
 
-### 二十六.网络请求和下载
-
-#### 1.ping命令
-
-主要用于监测主机网络状态
-
-语法:`ping [-c num] ip或主机名`
-
-- `-c`   设置检查的次数
-
-```shell
-[pai@iZ2zeit3hjref5eauvl6roZ ~]$ ping pythoncv.cn
-ping: pythoncv.cn: Name or service not known
-```
-
-> [!IMPORTANT]
->
-> 当出现以上情况时，有三种可能：
->
-> 1.域名错误
->
-> 2.机器无法上网
->
-> 3.无法进行DNS解析
->
-> > 检查linux的DNS客户端配置文件：`/etc/resolv.conf`，确保文件中有DNS服务器的地址
-> >
-> > `nameserver 114.114.114.114`
-> >
-> > `nameserver 223.5.5.5`
->
-> 当ping远程主机的时候，出现如下报错就是你自己的机器无法上外网了：
->
-> ping 123.206.16.61 # ping一个正确存在的公网主 p 地址，还是出现 "Destination Host UnreachabIe" 报错说明你的网络配置有问题了，得正确配置ip信息，以及路由网关地址
+### 二十六.网络请求和下载	
 
 #### 2.nslookup命令
 
