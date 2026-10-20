@@ -146,7 +146,9 @@ ls命令的作用是列出目录下的内容
 
 语法：
 
-`ls [OPTION]... [FILE]...`
+```
+ls [OPTION]... [FILE]...
+```
 
 - `[OPTION]`   选项（可连续使用多个选项）
 - `[FILE]`   文件/路径
@@ -166,9 +168,11 @@ ls命令的作用是列出目录下的内容
 
 cd命令可以更改当前的工作目录
 
-语法:
+语法：
 
-`cd [dir]`
+```
+cd [dir]
+```
 
 - `dir`   目标目录
 
@@ -185,7 +189,11 @@ cd命令可以更改当前的工作目录
 
 pwd命令可以查看当前所在的工作目录
 
-语法:`pwd`
+语法：
+
+```
+pwd
+```
 
 #### (4)tree命令
 
@@ -193,7 +201,9 @@ pwd命令可以查看当前所在的工作目录
 
 语法：
 
-`tree [OPTHON]... [FILE]`
+```
+tree [OPTHON]... [FILE]
+```
 
 - `[OPTION]`   选项（可连续使用多个选项）
 - `[FILE]`   文件/路径
@@ -218,7 +228,9 @@ pwd命令可以查看当前所在的工作目录
 
 语法：
 
-`mkdir [OPTION]... DIRECTORY...`
+```
+mkdir [OPTION]... DIRECTORY...
+```
 
 - `[OPTION]...`   选项（可连续使用多个选项）
 
@@ -235,7 +247,9 @@ pwd命令可以查看当前所在的工作目录
 
 语法：
 
-`touch [OPTION]... FILE...`
+```
+touch [OPTION]... FILE...
+```
 
 - `[OPTION]...`   选项（可连续使用多个选项）
 - `FILE...`   创建的文件的名称（可连续指定多个）
@@ -253,7 +267,9 @@ pwd命令可以查看当前所在的工作目录
 
 语法：
 
-`file [OPTION]... FILE...`
+```
+file [OPTION]... FILE...
+```
 
 - `[OPTION]...`   选项（可连续使用多个选项）
 - `FILE...`   需要查看的文件的名称（可连续指定多个）
@@ -271,7 +287,9 @@ pwd命令可以查看当前所在的工作目录
 
 语法：
 
-`stat [OPTION]... FILE...`
+```
+stat [OPTION]... FILE...
+```
 
 - `[OPTION]...`   选项（可连续使用多个选项）
 - `FILE...`   需要查看的文件的名称（可连续指定多个）
@@ -320,7 +338,10 @@ pwd命令可以查看当前所在的工作目录
 用于复制文件\文件夹
 
 语法：
- `cp [OPTION]... SOURCE... DIRECTORY`
+
+```
+cp [OPTION]... SOURCE... DIRECTORY
+```
 
 - `[OPTION]...`   选项（可连续使用多个选项）
 - `SOURCE...`   源文件路径（可连续指定多个文件）
@@ -352,7 +373,11 @@ pwd命令可以查看当前所在的工作目录
 
 用于移动文件\文件夹
 
-语法：`mv [OPTION]... SOURCE... DIRECTORY`
+语法：
+
+```
+mv [OPTION]... SOURCE... DIRECTORY
+```
 
 - `[OPTION]...`   选项（可连续使用多个选项）
 - `SOURCE...`   源文件路径（可连续指定多个文件）
@@ -387,7 +412,11 @@ pwd命令可以查看当前所在的工作目录
 
 用于删除文件\文件夹
 
-语法：`rm [OPTION]... [FILE]...`
+语法：
+
+```
+rm [OPTION]... [FILE]...
+```
 
 - `[OPTION]...`   选项（可连续使用多个选项）
 - `[FILE]...`   需要删除的文件的名称（可连续指定多个）
@@ -415,7 +444,9 @@ pwd命令可以查看当前所在的工作目录
 
 语法：
 
-`which command`
+```
+which command
+```
 
 #### (2)find命令
 
@@ -423,7 +454,9 @@ pwd命令可以查看当前所在的工作目录
 
 语法：
 
-`find [path...] [expression...]`
+```
+find [path...] [expression...]
+```
 
 - `[path...]`   起始路径（可连续使用多个）
 - `[expression]`   表达式（包含测试条件和动作）
@@ -698,7 +731,9 @@ find /path -type f -print0 | xargs -0 rm
 
 语法：
 
-`wc [OPTION]... [FILE]...`
+```
+wc [OPTION]... [FILE]...
+```
 
 - `[OPTION]...`   选项（可连续使用多个选项）
 - `FILE...`   需要查看的文件的名称（可连续指定多个）
@@ -725,7 +760,9 @@ find /path -type f -print0 | xargs -0 rm
 
 语法：
 
-` tail [OPTION]... [FILE]...`
+```
+tail [OPTION]... [FILE]...
+```
 
 - `[OPTION]...`   选项（可连续使用多个选项）
 - `FILE...`   需要查看的文件的名称（可连续指定多个）
@@ -746,7 +783,9 @@ find /path -type f -print0 | xargs -0 rm
 
 语法：
 
-`head [OPTION]... [FILE]...`
+```
+head [OPTION]... [FILE]...
+```
 
 - `[OPTION]...`   选项（可连续使用多个选项）
 - `FILE...`   需要查看的文件的名称（可连续指定多个）
@@ -763,7 +802,9 @@ find /path -type f -print0 | xargs -0 rm
 
 语法：
 
-`cat [OPTION]... FILE...`
+```
+cat [OPTION]... FILE...
+```
 
 - `[OPTION]...`   选项（可连续使用多个选项）
 - `FILE...`   需要查看的文件的名称（可连续指定多个）
@@ -779,7 +820,9 @@ find /path -type f -print0 | xargs -0 rm
 
 语法：
 
-`less FILE...`
+```
+less FILE...
+```
 
 - `FILE...`   需要查看的文件的名称（可连续指定多个）
 
@@ -868,7 +911,11 @@ echo $var   # 输出 hello
 
 在命令行中输出指定内容
 
-语法：`echo [OPTION]... [STRING]...`
+语法：
+
+```
+echo [OPTION]... [STRING]...
+```
 
 - `[OPTION]...`   选项（可连续使用多个选项）
 - `[STRING]...`   字符串（可连续使用多个）
@@ -893,7 +940,9 @@ echo $var   # 输出 hello
 
 语法：
 
-`printf [-v var] format [arguments]`
+```
+printf [-v var] format [arguments]
+```
 
 - `-v var`   赋值给变量
 - `format`   格式字符串
@@ -961,7 +1010,11 @@ echo $var   # 输出 hello
 
 #### (1)vi命令
 
-语法：`vi [OPTION]... FILE...`
+语法：
+
+```
+vi [OPTION]... FILE...
+```
 
 - `[OPTION]...`   选项（可连续使用多个选项）
 - `FILE...`   文件名（可连续指定多个文件）
@@ -974,7 +1027,9 @@ echo $var   # 输出 hello
 
 语法：
 
-`vim [OPTION]... FILE...`
+```
+vim [OPTION]... FILE...
+```
 
 - `[OPTION]...`   选项（可连续使用多个选项）
 - `FILE...`   文件名（可连续指定多个文件）
@@ -1113,7 +1168,11 @@ Swap file ".xxx.swp" already exists!
 
 创建用户组
 
-语法：`groupadd [OPTION]... GROUP`
+语法：
+
+```
+groupadd [OPTION]... GROUP
+```
 
 - `[OPTION]...`   选项（可连续使用多个选项）
 - `GROUP`   组名
@@ -1127,7 +1186,11 @@ Swap file ".xxx.swp" already exists!
 
 删除用户组
 
-语法：`groupdel [OPTION]... GROUP`
+语法：
+
+```
+groupdel [OPTION]... GROUP
+```
 
 - `[OPTION]...`   选项（可连续使用多个选项）
 - `GROUP`   组名
@@ -1144,7 +1207,11 @@ Swap file ".xxx.swp" already exists!
 
 创建用户
 
-语法：`useradd [OPTION]... LOGIN`
+语法：
+
+```
+useradd [OPTION]... LOGIN
+```
 
 - `[OPTION]...`   选项（可连续使用多个选项）
 - `LOGIN`   用户名
@@ -1169,7 +1236,11 @@ Swap file ".xxx.swp" already exists!
 
 删除用户
 
-语法：`userdel [OPTION]... LOGIN`
+语法：
+
+```
+userdel [OPTION]... LOGIN
+```
 
 - `[OPTION]...`   选项（可连续使用多个选项）
 - `LOGIN`   用户名
@@ -1188,7 +1259,11 @@ Swap file ".xxx.swp" already exists!
 
 修改用户属性
 
-语法：`usermod [OPTION]... LOGIN`
+语法：
+
+```
+usermod [OPTION]... LOGIN
+```
 
 - `[OPTION]...`   选项（可连续使用多个选项）
 - `LOGIN`   用户名
@@ -1226,7 +1301,9 @@ usermod -d /home/hai -m hai
 
 语法：
 
-`groupmod [OPTION]... GROUP`
+```
+groupmod [OPTION]... GROUP
+```
 
 - `[OPTION]...`   选项（可连续使用多个选项）
 - `LOGIN`   组名
@@ -1246,7 +1323,9 @@ usermod -d /home/hai -m hai
 
 语法：
 
-`gpasswd [OPTION]... GROUP`
+```
+gpasswd [OPTION]... GROUP
+```
 
 - `[OPTION]...`   选项（可连续使用多个选项）
 - `GROUP`   组名
@@ -1261,7 +1340,11 @@ usermod -d /home/hai -m hai
 
 修改用户密码
 
-语法：`passwd [OPTION]... <accountName>`
+语法：
+
+```
+passwd [OPTION]... <accountName>
+```
 
 - `[OPTION]...`   选项（可连续使用多个选项）
 - `accountNAME`   用户名
@@ -1290,7 +1373,11 @@ echo "NewPass123" | passwd --stdin pai
 
 设置密码有效期
 
-`chage [OPTION]... LOGIN`
+语法：
+
+```
+chage [OPTION]... LOGIN
+```
 
 - `[OPTION]...`   选项（可连续使用多个选项）
 - `LOGIN`   用户名
@@ -1314,7 +1401,11 @@ echo "NewPass123" | passwd --stdin pai
 
 查询用户信息
 
-语法：` id [OPTION]... [USER]`
+语法：
+
+```
+id [OPTION]... [USER]
+```
 
 - `[OPTION]...`   选项（可连续使用多个选项）
 - `[USER]`   用户名
@@ -1332,7 +1423,9 @@ echo "NewPass123" | passwd --stdin pai
 
 查询用户信息
 
-`getent [OPTION]... database [key]...`
+```
+getent [OPTION]... database [key]...
+```
 
 - `[OPTION]...`   选项（可连续使用多个选项）
 - `database`   数据库类型
@@ -1356,7 +1449,9 @@ echo "NewPass123" | passwd --stdin pai
 
 语法：
 
-`groups [OPTION]... [USER]...`
+```
+groups [OPTION]... [USER]...
+```
 
 - `[OPTION]...`   选项（可连续使用多个选项）
 - `[USER]`   用户名（可以连续使用多个）
@@ -1369,7 +1464,9 @@ echo "NewPass123" | passwd --stdin pai
 
 语法：
 
-`chown [OPTION]... [OWNER][:[GROUP]] FILE...`
+```
+chown [OPTION]... [OWNER][:[GROUP]] FILE...
+```
 
 - `[OPTION]...`   选项（可连续使用多个）
 - `[OWNER]`   新的所有者（用户名或 UID）
@@ -1410,7 +1507,9 @@ echo "NewPass123" | passwd --stdin pai
 
 语法：
 
-`su [OPTION]... [-] [<USER> [<argument>...]]`
+```
+su [OPTION]... [-] [<USER> [<argument>...]]
+```
 
 - `[OPTION]...`   选项（可连续使用多个选项）
 - `<USER>`   用户名
@@ -1445,7 +1544,9 @@ echo "NewPass123" | passwd --stdin pai
 
 语法：
 
-`sudo [OPTION]... argument...`
+```
+sudo [OPTION]... argument...
+```
 
 - `[OPTION]...`   选项（可连续使用多个选项）
 - `argument...`   参数（你具体要执行的命令）
@@ -1507,7 +1608,9 @@ sudo -k
 
 语法：
 
-`who am i`
+```
+who am i
+```
 
 示例：
 
@@ -1524,7 +1627,9 @@ pai         pts/1        2026-04-25 23:57 (49.95.193.74)
 
 语法：
 
-`whoami`
+```
+whoami
+```
 
 #### (4)exit命令
 
@@ -1532,7 +1637,9 @@ pai         pts/1        2026-04-25 23:57 (49.95.193.74)
 
 语法：
 
-`exit`
+```
+exit
+```
 
 | 场景                            | `exit` 的效果                |
 | :------------------------------ | :--------------------------- |
@@ -1551,7 +1658,9 @@ pai         pts/1        2026-04-25 23:57 (49.95.193.74)
 
 语法：
 
-`uname [OPTION]`
+```
+uname [OPTION]...
+```
 
 - `[OPTION]...`   选项（可连续使用多个选项）
 
@@ -1573,7 +1682,11 @@ pai         pts/1        2026-04-25 23:57 (49.95.193.74)
 
 修改权限信息
 
-语法：`chmod [OPTION]... FILE...`
+语法：
+
+```
+chmod [OPTION]... FILE...
+```
 
 - `[OPTION]...`   选项（可连续使用多个选项）
 - `FILE...`   目录或文件名称（可连续指定多个）
@@ -1657,10 +1770,12 @@ pai         pts/1        2026-04-25 23:57 (49.95.193.74)
 
 语法：
 
-`umask [OPTION]... [MODE]`
+```
+umask [OPTION]... [MODE]
+```
 
 - `[OPTION]...`   选项（可连续使用多个）
-- `[MODE]`：要设置的权限掩码，八进制（如 `022`）或符号形式（如 `u=rwx,g=rx,o=`）(省略时显示当前 umask)
+- `[MODE]`   要设置的权限掩码，八进制（如 `022`）或符号形式（如 `u=rwx,g=rx,o=`）(省略时显示当前 umask)
 
 | OPTION     | 作用                                       | 示例        | 结果                                |
 | :--------- | :----------------------------------------- | :---------- | :---------------------------------- |
@@ -1692,11 +1807,13 @@ pai         pts/1        2026-04-25 23:57 (49.95.193.74)
 
 语法：
 
-`yum [OPTION]... [COMMAND] [PACKAGE]...`
+```
+yum [OPTION]... [COMMAND] [PACKAGE]...
+```
 
-- `[OPTION]...`：选项（可连续使用多个）
-- `[COMMAND]`：操作命令（install/remove/update/search 等）
-- `[PACKAGE]...`：软件包名（可多个）
+- `[OPTION]...`   选项（可连续使用多个）
+- `[COMMAND]`   操作命令（install/remove/update/search 等）
+- `[PACKAGE]...`   软件包名（可多个）
 
 | OPTION               | 作用         | 备注                           |
 | :------------------- | :----------- | :----------------------------- |
@@ -1788,10 +1905,12 @@ yum makecache
 
 语法：
 
-`rpm [OPTION]... [PACKAGE]...`
+```
+rpm [OPTION]... [PACKAGE]...
+```
 
-- `[OPTION]...`：选项（可连续使用多个）
-- `[PACKAGE]...`：软件包名或文件名
+- `[OPTION]...`   选项（可连续使用多个）
+- `[PACKAGE]...`   软件包名或文件名
 
 | OPTION        | 作用                 | 示例                                      | 结果                                                    |
 | :------------ | :------------------- | :---------------------------------------- | :------------------------------------------------------ |
@@ -1923,7 +2042,11 @@ yum install gcc make pcre-devel openssl-devel zlib-devel -y
 
 服务管理
 
-语法：`systemctl [OPTION]... COMMAND [UNIT]...`
+语法：
+
+```
+systemctl [OPTION]... COMMAND [UNIT]...
+```
 
 - `[OPTION]...`   选项（可连续使用多个）
 - `COMMAND`   操作命令（start/stop/status/enable 等）
@@ -2134,10 +2257,12 @@ systemd-analyze verify /etc/systemd/system/myapp.service
 日志查看工具
 
 语法：
-`journalctl [OPTION]... [MATCH]...`
+```
+journalctl [OPTION]... [MATCH]...
+```
 
-- `[OPTION]...`：选项（可连续使用多个）
-- `[MATCH]...`：过滤条件，如 `_SYSTEMD_UNIT=nginx.service`
+- `[OPTION]...`   选项（可连续使用多个）
+- `[MATCH]...`   过滤条件，如 `_SYSTEMD_UNIT=nginx.service`
 
 > [!NOTE]
 >
@@ -2238,11 +2363,13 @@ systemctl restart systemd-journald
 创建软连接或者硬链接
 
 语法：
-`ln [OPTION]... TARGET LINK_NAME`
+```
+ln [OPTION]... TARGET LINK_NAME
+```
 
-- `[OPTION]...`：选项（可连续使用多个）
-- `TARGET`：目标文件或目录
-- `LINK_NAME`：链接名（省略时，在当前目录创建同名链接）
+- `[OPTION]...`   选项（可连续使用多个）
+- `TARGET`   目标文件或目录
+- `LINK_NAME`   链接名（省略时，在当前目录创建同名链接）
 
 > 这里的 `TARGET` 指“被指向的源文件”，`LINK_NAME` 指“新建的链接名”，与口语里“source/target”的用法相反，勿混淆
 
@@ -2304,9 +2431,11 @@ systemctl restart systemd-journald
 
 语法：
 
-`ps [OPTION]...`
+```
+ps [OPTION]...
+```
 
-- `[OPTION]...`：选项（可连续使用多个）
+- `[OPTION]...`   选项（可连续使用多个）
 
 > 不加任何选项时，只显示**当前终端**的进程
 
@@ -2490,10 +2619,12 @@ root          89       2  0  2025 ?        00:00:00 [watchdogd]
 获取进程PID
 
 语法：
-`pgrep [OPTION]... <pattern>`
+```
+pgrep [OPTION]... <pattern>
+```
 
-- `[OPTION]...`：选项（可连续使用多个）
-- `<pattern>`：匹配模式（默认匹配进程名，加 `-f` 匹配完整命令行）
+- `[OPTION]...`   选项（可连续使用多个）
+- `<pattern>`   匹配模式（默认匹配进程名，加 `-f` 匹配完整命令行）
 
 | OPTION    | 作用                                 | 示例                       | 结果                          |
 | :-------- | :----------------------------------- | :------------------------- | :---------------------------- |
@@ -2519,10 +2650,12 @@ root          89       2  0  2025 ?        00:00:00 [watchdogd]
 
 语法：
 
-`pidof [OPTION]... <pattern>`
+```
+pidof [OPTION]... <pattern>
+```
 
-- `[OPTION]...`：选项（可连续使用多个）
-- `<pattern>`：可执行文件名（必须精确匹配，只能有一个）
+- `[OPTION]...`   选项（可连续使用多个）
+- `<pattern>`   可执行文件名（必须精确匹配，只能有一个）
 
 | OPTION   | 作用               | 示例                  | 结果                         |
 | :------- | :----------------- | :-------------------- | :--------------------------- |
@@ -2537,7 +2670,11 @@ root          89       2  0  2025 ?        00:00:00 [watchdogd]
 
 语法：
 
-`pstree [OPTION]... [PID或用户]`
+```
+pstree [OPTION]... [PID或用户]
+```
+
+- `[OPTION]...`   选项（可连续使用多个）
 
 | OPTION | 作用                 | 示例             | 结果                        |
 | :----- | :------------------- | :--------------- | :-------------------------- |
@@ -2582,9 +2719,11 @@ pstree -p | head -n 10
 
 语法：
 
-`top [OPTION]...`
+```
+top [OPTION]...
+```
 
-- `[OPTION]...`：选项（可连续使用多个）
+- `[OPTION]...`   选项（可连续使用多个）
 - 不加选项时，进入交互界面，默认每 3 秒刷新一次
 
 | OPTION      | 作用            | 示例             | 结果                     |
@@ -2715,9 +2854,11 @@ KiB Swap:  2047 total,  2047 free,     0 used.   995 avail Mem
 
 语法：
 
-`htop [OPTION]...`
+```
+htop [OPTION]...
+```
 
-- `[OPTION]...`：选项（可连续使用多个）
+- `[OPTION]...`   选项（可连续使用多个）
 - 不加选项时，进入交互界面，比 `top` 更友好
 
 > [!NOTE]
@@ -2826,12 +2967,13 @@ PID USER       PRI  NI  VIRT   RES   SHR S  CPU%▽MEM%   TIME+  Command
 
 语法：
 
-`kill [OPTION]... PID...`
+```
+kill [OPTION]... PID...
+kill -信号 PID
+```
 
-`kill -信号 PID`
-
-- `[OPTION]...`：选项（可连续使用多个）
-- `PID...`：目标进程的 PID（可多个）
+- `[OPTION]...`   选项（可连续使用多个）
+- `PID...`   目标进程的 PID（可多个）
 - 默认发送 `SIGTERM`（15，即优雅退出）
 
 | OPTION    | 作用               | 示例                | 结果                     |
@@ -2870,10 +3012,12 @@ PID USER       PRI  NI  VIRT   RES   SHR S  CPU%▽MEM%   TIME+  Command
 
 语法：
 
-`killall [OPTION]... NAME...`
+```
+killall [OPTION]... NAME...
+```
 
-- `[OPTION]...`：选项（可连续使用多个）
-- `NAME...`：要杀掉的进程名（可多个，空格隔开）
+- `[OPTION]...`   选项（可连续使用多个）
+- `NAME...`   要杀掉的进程名（可多个，空格隔开）
 
 | OPTION    | 作用                       | 示例                   | 结果                            |
 | :-------- | :------------------------- | :--------------------- | :------------------------------ |
@@ -2898,10 +3042,12 @@ PID USER       PRI  NI  VIRT   RES   SHR S  CPU%▽MEM%   TIME+  Command
 
 语法：
 
+```
 `pkill [OPTION]... <pattern>`
+```
 
-- `[OPTION]...`：选项（可连续使用多个）
-- `<pattern>`：匹配模式（默认匹配进程名，加 `-f` 匹配完整命令行）
+- `[OPTION]...`   选项（可连续使用多个）
+- `<pattern>`   匹配模式（默认匹配进程名，加 `-f` 匹配完整命令行）
 
 > 选项和匹配规则与 `pgrep` 完全一致，区别是：`pgrep` 只查，`pkill` 直接杀
 
@@ -2974,7 +3120,9 @@ nohup yum install nginx -y &
 
 语法：
 
-`jobs [OPTION]...`
+```
+jobs [OPTION]...
+```
 
 - `[OPTION]...`   选项
 
@@ -3008,7 +3156,9 @@ jobs
 
 语法：
 
-`fg [job_spec]`
+```
+fg [job_spec]
+```
 
 - `[job_spec]`   指定作业
 
@@ -3027,7 +3177,9 @@ fg           # 不带参数，调当前作业（带 + 那个）
 
 语法：
 
-`bg [job_spec]...`
+```
+bg [job_spec]...
+```
 
 示例：
 
@@ -3050,7 +3202,9 @@ bg           # 不带参数，操作当前作业
 
 语法：
 
-`disown [OPTION]...`
+```
+disown [OPTION]...
+```
 
 - `[OPTION]...`   选项（可连续使用多个）
 
@@ -3528,6 +3682,8 @@ nameserver 8.8.8.8
 nameserver 114.114.114.114
 ```
 
+---
+
 ### 2.网络基础命令
 
 #### (1)ip命令
@@ -3536,7 +3692,9 @@ nameserver 114.114.114.114
 
 语法：
 
-`ip [OPTION]... OBJECT... COMMAND...`
+```
+ip [OPTION]... OBJECT... COMMAND...
+```
 
 - `[OPTION]`：选项（可连续使用多个）
 - `OBJECT`：对象（可连续使用多个）
@@ -3551,7 +3709,7 @@ nameserver 114.114.114.114
 | `-r`   | 解析域名       | `ip -r route` | 路由表里的 IP 尽量解析成域名         |
 | `-c`   | 彩色输出       | `ip -c addr`  | 用颜色区分状态、地址等               |
 | `-o`   | 单行输出       | `ip -o addr`  | 每个接口的信息压成一行               |
-| `-n`   | 不解析域名     | `ip -n route` | 只显示 IP，不做 DNS 解析             |
+| `-N`   | 不解析域名     | `ip -N route` | 只显示 IP，不做 DNS 解析             |
 
 **对象**
 
@@ -3566,17 +3724,17 @@ nameserver 114.114.114.114
 
 **执行操作**
 
-| COMMAND          | 作用                     | 适用对象                 |
-| :--------------- | :----------------------- | :----------------------- |
-| `show` / `list`  | 查看                     | 全部                     |
-| `add`            | 添加                     | addr、route、neigh、rule |
-| `del` / `delete` | 删除                     | addr、route、neigh、rule |
-| `flush`          | 清空                     | addr、route、neigh       |
-| `change`         | 修改                     | addr、route、link        |
-| `replace`        | 存在则替换，不存在则添加 | addr、route              |
-| `set`            | 设置属性                 | link                     |
-| `get`            | 查去某地址走哪条路由     | 仅 route                 |
-| `help`           | 查看帮助                 | 全部                     |
+| COMMAND          | 作用                     | 适用对象                              |
+| :--------------- | :----------------------- | :------------------------------------ |
+| `show` / `list`  | 查看                     | 全部                                  |
+| `add`            | 添加                     | addr、route、neigh、rule、link、netns |
+| `del` / `delete` | 删除                     | addr、route、neigh、rule、link、netns |
+| `flush`          | 清空                     | addr、route、neigh                    |
+| `change`         | 修改                     | addr、route、link、neigh              |
+| `replace`        | 存在则替换，不存在则添加 | addr、route、neigh                    |
+| `set`            | 设置属性                 | link                                  |
+| `get`            | 查去某地址走哪条路由     | 仅 route                              |
+| `help`           | 查看帮助                 | 全部                                  |
 
 ##### ①`ip -br a`示例
 
@@ -3617,7 +3775,9 @@ default via 172.27.111.253 dev eth0 proto dhcp src 172.27.108.103 metric 100
 
 语法：
 
-`ss [OPTION]... [FILTER]`
+```
+ss [OPTION]... [FILTER]
+```
 
 - `[OPTION]...`   选项（可连续使用多个）
 - `[FILTER]`   过滤条件，如 `sport = :80`、`dport = :443`、`state established`
@@ -3641,6 +3801,10 @@ default via 172.27.111.253 dev eth0 proto dhcp src 172.27.108.103 metric 100
 | `-r`   | 解析 IP 为主机名     | `ss -r`               | 反查 DNS，可能变慢                       |
 | `-K`   | 强制关闭匹配的套接字 | `ss -K dport = :8080` | 直接断开连接（需权限）                   |
 
+> [!WARNING]
+>
+> 强制销毁匹配的套接字，直接断开连接；通常需要 root/CAP_NET_ADMIN，且内核启用 `CONFIG_INET_DIAG_DESTROY`**生产环境慎用**
+
 > `-p` 要看到其他用户的进程，通常需要 root。普通用户只能看到自己的进程
 
 | 过滤条件        | 作用       | 示例                         |
@@ -3653,7 +3817,7 @@ default via 172.27.111.253 dev eth0 proto dhcp src 172.27.108.103 metric 100
 
 > 状态名可以用 `established`、`time-wait`、`close-wait`、`listen` 等，大小写不敏感
 
-**常用组合**
+##### ①常用组合
 
 | 命令                       | 作用                                      |
 | :------------------------- | :---------------------------------------- |
@@ -3667,7 +3831,7 @@ default via 172.27.111.253 dev eth0 proto dhcp src 172.27.108.103 metric 100
 | `ss -s`                    | 看套接字统计摘要                          |
 | `ss -ti`                   | 看 TCP 连接的 RTT、重传等细节             |
 
-##### ①`ss -tlnp`示例
+##### ②`ss -tlnp`示例
 
 ```
 State   Recv-Q  Send-Q  Local Address:Port   Peer Address:Port  Process
@@ -3676,16 +3840,18 @@ LISTEN  0       511     0.0.0.0:80           0.0.0.0:*          users:(("nginx",
 LISTEN  0       128     127.0.0.1:6379       0.0.0.0:*          users:(("redis-server",pid=950,fd=6))
 ```
 
-| 字段                 | 含义                                          |
-| :------------------- | :-------------------------------------------- |
-| `State`              | 套接字状态，`LISTEN`、`ESTAB`、`TIME-WAIT` 等 |
-| `Recv-Q`             | 接收队列里还没被应用读走的数据量（字节）      |
-| `Send-Q`             | 发送队列里还没被对方确认的数据量（字节）      |
-| `Local Address:Port` | 本机地址和端口                                |
-| `Peer Address:Port`  | 对端地址和端口，监听时是 `*`                  |
-| `Process`            | 使用该套接字的进程，需要 `-p`                 |
+| 字段                 | 含义                                                         |
+| :------------------- | :----------------------------------------------------------- |
+| `State`              | 套接字状态，`LISTEN`、`ESTAB`、`TIME-WAIT` 等                |
+| `Recv-Q`             | 非 `LISTEN`：接收队列中尚未被应用读取的数据字节数<br />`LISTEN`：已完成三次握手、等待应用 `accept` 的全连接队列当前长度 |
+| `Send-Q`             | 非 `LISTEN`：发送队列中尚未被对端确认的数据字节数<br />`LISTEN`：该全连接队列的最大长度 |
+| `Local Address:Port` | 本机地址和端口                                               |
+| `Peer Address:Port`  | 对端地址和端口，监听时是 `*`                                 |
+| `Process`            | 使用该套接字的进程，需要 `-p`                                |
 
 > `0.0.0.0:22` 表示监听所有 IPv4 接口；`127.0.0.1:6379` 表示只监听本机回环，外部连不上
+>
+> `ss -tlnp` 是监听状态，`Recv-Q/Send-Q` 表示全连接队列当前长度/最大长度，不是字节数，而是全连接队列长度/backlog
 
 **状态：**
 
@@ -3696,7 +3862,7 @@ LISTEN  0       128     127.0.0.1:6379       0.0.0.0:*          users:(("redis-s
 | `TIME-WAIT`  | 主动关闭方等待 2MSL  | 短连接多时大量出现，正常                 |
 | `CLOSE-WAIT` | 被动关闭方等应用关闭 | 大量出现说明应用没调 `close()`，可能泄漏 |
 
-##### (3)ping命令
+#### (3)ping命令
 
 测试网络连通性，发 ICMP Echo Request，等 Echo Reply
 
@@ -3707,24 +3873,24 @@ LISTEN  0       128     127.0.0.1:6379       0.0.0.0:*          users:(("redis-s
 - `[OPTION]...`：选项（可连续使用多个）
 - `DESTINATION`：目标 IP 或域名
 
-| OPTION     | 作用                 | 示例                   | 结果                             |
-| :--------- | :------------------- | :--------------------- | :------------------------------- |
-| `-c N`     | 发 N 个包后停止      | `ping -c 4 8.8.8.8`    | 发 4 个包就退出，适合脚本        |
-| `-i N`     | 发包间隔 N 秒        | `ping -i 0.5 8.8.8.8`  | 每 0.5 秒发一个，默认 1 秒       |
-| `-s N`     | 指定包大小（字节）   | `ping -s 1400 8.8.8.8` | 发 1400 字节的数据，测 MTU       |
-| `-W N`     | 等待回应的超时（秒） | `ping -W 2 8.8.8.8`    | 2 秒没回应就认为丢包             |
-| `-w N`     | 总共运行 N 秒后退出  | `ping -w 10 8.8.8.8`   | 不管发几个，10 秒后停            |
-| `-4`       | 强制 IPv4            | `ping -4 example.com`  | 只用 IPv4                        |
-| `-6`       | 强制 IPv6            | `ping -6 example.com`  | 只用 IPv6                        |
-| `-I IFACE` | 指定出口接口或源 IP  | `ping -I eth0 8.8.8.8` | 从 eth0 出去                     |
-| `-n`       | 不解析域名           | `ping -n 8.8.8.8`      | 输出里只显示 IP，不反查          |
-| `-q`       | 安静模式             | `ping -q -c 4 8.8.8.8` | 只显示汇总，不显示每个包         |
-| `-D`       | 显示时间戳           | `ping -D 8.8.8.8`      | 每个包前面带 Unix 时间戳         |
-| `-A`       | 自适应间隔           | `ping -A 8.8.8.8`      | 收到回应后立即发下一个，测延迟用 |
+| OPTION     | 作用                                            | 示例                   | 结果                                      |
+| :--------- | :---------------------------------------------- | :--------------------- | :---------------------------------------- |
+| `-c N`     | 发 N 个包后停止                                 | `ping -c 4 8.8.8.8`    | 发 4 个包就退出，适合脚本                 |
+| `-i N`     | 发包间隔 N 秒                                   | `ping -i 0.5 8.8.8.8`  | 每 0.5 秒发一个，默认 1 秒                |
+| `-s N`     | 指定 ICMP 数据载荷大小（字节，不含 ICMP/IP 头） | `ping -s 1400 8.8.8.8` | 发 1400 字节 ICMP 载荷，用于探测 MTU/分片 |
+| `-W N`     | 等待回应的超时（秒）                            | `ping -W 2 8.8.8.8`    | 2 秒没回应就认为丢包                      |
+| `-w N`     | 总共运行 N 秒后退出                             | `ping -w 10 8.8.8.8`   | 不管发几个，10 秒后停                     |
+| `-4`       | 强制 IPv4                                       | `ping -4 example.com`  | 只用 IPv4                                 |
+| `-6`       | 强制 IPv6                                       | `ping -6 example.com`  | 只用 IPv6                                 |
+| `-I IFACE` | 指定出口接口或源 IP                             | `ping -I eth0 8.8.8.8` | 从 eth0 出去                              |
+| `-n`       | 不解析域名                                      | `ping -n 8.8.8.8`      | 输出里只显示 IP，不反查                   |
+| `-q`       | 安静模式                                        | `ping -q -c 4 8.8.8.8` | 只显示汇总，不显示每个包                  |
+| `-D`       | 显示时间戳                                      | `ping -D 8.8.8.8`      | 每个包前面带 Unix 时间戳                  |
+| `-A`       | 自适应间隔                                      | `ping -A 8.8.8.8`      | 收到回应后立即发下一个，测延迟用          |
 
 > `-i` 小于 0.2 秒通常需要 root 权限
 
-##### ①`ping -c 8.8.8.8`示例
+##### ①`ping -c 4 8.8.8.8`示例
 
 输出：
 
@@ -3740,14 +3906,16 @@ PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
 rtt min/avg/max/mdev = 11.812/12.056/12.334/0.196 ms
 ```
 
-| 字段                   | 含义                                 |
-| :--------------------- | :----------------------------------- |
-| `56(84) bytes`         | 数据 56 字节，加 ICMP 头共 84 字节   |
-| `icmp_seq=1`           | 第几个包，按顺序递增                 |
-| `ttl=117`              | 剩余跳数，能粗略判断经过了多少路由器 |
-| `time=12.3 ms`         | 往返延迟                             |
-| `packet loss`          | 丢包率                               |
-| `rtt min/avg/max/mdev` | 最小/平均/最大/偏差，看稳定性        |
+| 字段                   | 含义                                                         |
+| :--------------------- | :----------------------------------------------------------- |
+| `56(84) bytes`         | 56 字节是 ICMP 数据载荷；加 8 字节 ICMP 头为 64 字节；再加 20 字节 IPv4 头共 84 字节 |
+| `icmp_seq=1`           | 第几个包，按顺序递增                                         |
+| `ttl=117`              | 剩余跳数，能粗略判断经过了多少路由器                         |
+| `time=12.3 ms`         | 往返延迟                                                     |
+| `packet loss`          | 丢包率                                                       |
+| `rtt min/avg/max/mdev` | 最小/平均/最大/偏差，看稳定性                                |
+
+> IPv4 下测 1500 MTU 可用：`ping -M do -s 1472 目标`。1472 + 8 字节 ICMP 头 + 20 字节 IPv4 头 = 1500
 
 **常见结果判断**
 
@@ -3756,10 +3924,430 @@ rtt min/avg/max/mdev = 11.812/12.056/12.334/0.196 ms
 | `Destination Host Unreachable` | 目标不可达，路由问题或对方没开机                            |
 | `Request timeout`              | 包发出去了，没回应，可能被防火墙丢、对方没回 ICMP、网络中断 |
 | `100% packet loss`             | 完全不通                                                    |
-| `ttl=64` 左右                  | 目标可能是 Linux，且离你较近                                |
-| `ttl=128` 左右                 | 目标可能是 Windows                                          |
+| `ttl=64` 左右                  | 常见初始 TTL 为 64，可能为 Linux/Unix，跳数较少             |
+| `ttl=128` 左右                 | 常见初始 TTL 为 128，可能为 Windows，跳数较少               |
 | `ttl` 很小                     | 经过了很多跳，或者目标系统 TTL 初始值小                     |
 | 延迟忽高忽低                   | 链路不稳定，`mdev` 会很大                                   |
+
+> [!NOTE]
+>
+> 常见初始 TTL：Linux/Unix 64、Windows 128、部分网络设备 255。实际 TTL = 初始 TTL − 经过路由跳数，只能粗略推测目标系统和距离；中间设备也可能修改 TTL
+
+#### (4)traceroute命令
+
+跟踪数据包从本机到目标经过的路由路径
+
+语法：
+
+```
+traceroute [OPTION]... HOST
+```
+
+- `[OPTION]...`：选项（可连续使用多个）
+- `HOST`：目标 IP 或域名
+
+> `traceroute` 利用 IP 头的 TTL 字段：TTL 从 1 开始递增，每跳路由器把 TTL 减到 0 时回一个 ICMP Time Exceeded，从而逐跳发现路径。Linux 默认发 UDP 探测包，Windows 的 `tracert` 默认发 ICMP
+
+| OPTION    | 作用                | 示例                               | 结果                       |
+| :-------- | :------------------ | :--------------------------------- | :------------------------- |
+| `-n`      | 不解析域名          | `traceroute -n 8.8.8.8`            | 只显示 IP，速度快          |
+| `-m N`    | 最大跳数            | `traceroute -m 15 8.8.8.8`         | 最多跟踪 15 跳，默认 30    |
+| `-q N`    | 每跳发几个探测包    | `traceroute -q 1 8.8.8.8`          | 每跳只发 1 个，默认 3 个   |
+| `-w N`    | 等待回应超时（秒）  | `traceroute -w 2 8.8.8.8`          | 每跳等 2 秒，默认 5 秒     |
+| `-I`      | 用 ICMP Echo 探测   | `traceroute -I 8.8.8.8`            | 类似 Windows `tracert`     |
+| `-T`      | 用 TCP SYN 探测     | `traceroute -T -p 80 8.8.8.8`      | 适合被 ICMP/UDP 拦截的环境 |
+| `-p PORT` | 指定探测端口        | `traceroute -T -p 443 example.com` | TCP 模式下指定目标端口     |
+| `-U`      | 用 UDP 探测（默认） | `traceroute -U 8.8.8.8`            | Linux 默认行为             |
+| `-4`      | 强制 IPv4           | `traceroute -4 example.com`        | 只用 IPv4                  |
+| `-6`      | 强制 IPv6           | `traceroute -6 example.com`        | 只用 IPv6                  |
+| `-A`      | 显示 AS 号          | `traceroute -A 8.8.8.8`            | 每跳显示所属自治系统       |
+
+> 很多网络禁 ICMP/UDP，`traceroute` 中间跳会显示 `* * *`。这时换 `-T`（TCP SYN）往往能穿过去
+
+**断点判断：**
+
+- 前几跳有 IP，后面全是 `* * *`：可能断在最后一个有 IP 的跳之后，也可能是后续路由器/防火墙不回应探测包。不能只凭 `* * *` 判定断开，应结合 `mtr` 看后续跳 Loss%、用 `-T` TCP 模式、再测目标端口连通性综合判断
+- 最后一跳是目标 IP：路径通了
+- 中间某跳 `* * *`，但后面又有 IP：那一跳只是不回探测包，路径没断
+- 从某一跳开始一直 `* * *` 到结束：大概率断在那里，或后面全禁 ICMP
+
+#### (5)mtr命令
+
+`traceroute` + `ping` 的结合体，持续探测每一跳的丢包和延迟
+
+语法：
+
+```
+mtr [OPTION]... HOST
+```
+
+- `[OPTION]...`：选项（可连续使用多个）
+- `HOST`：目标 IP 或域名
+
+> [!NOTE]
+>
+> 需要下载`yum install -y mtr`
+
+> `mtr` 会持续向每一跳发包，实时统计丢包率和延迟。比 `traceroute` 更适合判断“哪一跳开始丢包”
+
+| OPTION      | 作用                   | 示例                        | 结果             |
+| :---------- | :--------------------- | :-------------------------- | :--------------- |
+| `-r`        | 报告模式，跑完输出一次 | `mtr -r 8.8.8.8`            | 适合脚本和贴结果 |
+| `-c N`      | 发 N 个包后停止        | `mtr -c 10 -r 8.8.8.8`      | 每跳统计 10 个包 |
+| `-n`        | 不解析域名             | `mtr -n 8.8.8.8`            | 只显示 IP        |
+| `-w`        | 宽屏输出               | `mtr -w 8.8.8.8`            | 不截断字段       |
+| `-b`        | 同时显示 IP 和域名     | `mtr -b 8.8.8.8`            | 两列都有         |
+| `-T`        | 用 TCP SYN 探测        | `mtr -T -P 80 8.8.8.8`      | 绕过 ICMP 拦截   |
+| `-P PORT`   | TCP 模式指定端口       | `mtr -T -P 443 example.com` | 指定目标端口     |
+| `-4` / `-6` | 强制 IPv4 / IPv6       | `mtr -4 example.com`        | 只用指定协议     |
+| `-i N`      | 发包间隔（秒）         | `mtr -i 0.5 8.8.8.8`        | 默认 1 秒        |
+
+##### ①`mtr -r -c 10 8.8.8.8`示例
+
+输出：
+
+```
+Start: 2026-10-20T10:00:00+0800
+HOST: AliYunLinux                Loss%   Snt   Last   Avg  Best  Wrst StDev
+  1.|-- 172.27.111.253            0.0%    10    0.5   0.5   0.4   0.6   0.1
+  2.|-- ???                     100.0%    10    0.0   0.0   0.0   0.0   0.0
+  3.|-- 100.64.0.1                0.0%    10    1.2   1.3   1.1   1.5   0.1
+  4.|-- 203.0.113.9               0.0%    10    5.4   5.5   5.3   5.8   0.2
+  5.|-- 8.8.8.8                  10.0%    10   12.3  12.4  12.1  12.8   0.2
+```
+
+| 字段                    | 含义                     |
+| :---------------------- | :----------------------- |
+| `Loss%`                 | 该跳丢包率               |
+| `Snt`                   | 发出的探测包数量         |
+| `Last`                  | 最近一次的 RTT           |
+| `Avg` / `Best` / `Wrst` | 平均 / 最小 / 最大 RTT   |
+| `StDev`                 | 延迟标准差，越大越不稳定 |
+
+**问题判断：**
+
+- 中间某跳 `Loss%` 高，但后续跳 Loss% 是 0：那一跳只是不回探测包，不是真丢包
+- 从某一跳开始，后面所有跳 Loss% 都高：问题从那一跳开始
+- 最后一跳 Loss% 高：目标本身丢包，或目标禁 ICMP/TCP 探测
+- `StDev` 很大：链路抖动，延迟不稳定
+
+> `mtr` 的经典陷阱：某跳显示 100% loss，但最后一跳是 0%，说明那一跳只是不响应探测包，路径其实是通的
+
+#### (6)dig命令
+
+DNS 查询工具，查域名解析结果、DNS 记录类型、排查解析问题
+
+语法：
+
+```
+dig [@SERVER] NAME [TYPE] [OPTION]...
+```
+
+- `@SERVER`   指定 DNS 服务器，不写就用 `/etc/resolv.conf` 里的
+- `NAME`   要查询的域名
+- `TYPE`   记录类型，如 `A`、`AAAA`、`MX`、`NS`、`CNAME`、`TXT`、`PTR`，默认 `A`
+- `[OPTION]...`   选项（可以连续使用多个）
+
+> [!NOTE]
+>
+> 需要下载`yum install -y bind-utils`
+
+| OPTION           | 作用                       | 示例                                  | 结果                                                         |
+| :--------------- | :------------------------- | :------------------------------------ | :----------------------------------------------------------- |
+| `+short`         | 只输出结果，不显示详细信息 | `dig +short example.com`              | 只显示 IP 地址                                               |
+| `+noall +answer` | 只显示 ANSWER 段           | `dig +noall +answer example.com`      | 只保留解析结果部分                                           |
+| `+trace`         | 从根服务器开始逐级追踪     | `dig +trace example.com`              | 从根服务器开始逐级迭代查询，显示完整查询路径；不走本地递归解析器的递归过程 |
+| `+norecurse`     | 不递归查询                 | `dig +norecurse @8.8.8.8 example.com` | 不要求服务器递归，只问一次，不帮你去逐级查                   |
+| `+tcp`           | 用 TCP 查询                | `dig +tcp example.com`                | 默认 UDP，大响应或截断时用 TCP                               |
+| `+time=N`        | 查询超时（秒）             | `dig +time=3 example.com`             | 3 秒没回应就放弃                                             |
+| `+tries=N`       | 重试次数                   | `dig +tries=2 example.com`            | 最多重试 2 次                                                |
+| `-4` / `-6`      | 强制 IPv4 / IPv6           | `dig -4 example.com`                  | 只用指定协议查询                                             |
+| `+dnssec`        | 显示 DNSSEC 信息           | `dig +dnssec example.com`             | 多出 RRSIG 等记录                                            |
+
+##### ①`dig example.com`示例
+
+输出：
+
+```
+; <<>> DiG 9.16.23 <<>> example.com
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 12345
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; QUESTION SECTION:
+;example.com.            IN      A
+
+;; ANSWER SECTION:
+example.com.     3600    IN      A       93.184.216.34
+
+;; Query time: 12 msec
+;; SERVER: 172.27.111.253#53(172.27.111.253)
+;; WHEN: Mon Oct 20 10:00:00 CST 2026
+;; MSG SIZE  rcvd: 56
+```
+
+| 字段                                   | 含义                                            |
+| :------------------------------------- | :---------------------------------------------- |
+| `status: NOERROR`                      | 查询成功；`NXDOMAIN` 表示域名不存在             |
+| `flags: qr rd ra`                      | `qr` 是响应，`rd` 期望递归，`ra` 服务器支持递归 |
+| `QUESTION SECTION`                     | 你问了什么                                      |
+| `ANSWER SECTION`                       | 解析结果                                        |
+| `example.com. 3600 IN A 93.184.216.34` | 域名、TTL、类别、类型、值                       |
+| `Query time`                           | 查询耗时                                        |
+| `SERVER`                               | 实际用的是哪个 DNS 服务器                       |
+
+#### (7)nslookup命令
+
+DNS 查询工具，比 `dig` 老，输出更简洁，支持交互模式
+
+语法：
+
+```
+nslookup [OPTION]... NAME [SERVER]
+```
+
+- `[OPTION]...`   选项（可以连续使用多个）
+- `NAME`   要查询的域名或 IP
+- `SERVER`   指定 DNS 服务器，可选，不写就用 `/etc/resolv.conf` 里的
+
+> [!NOTE]
+>
+> 需要下载`yum install -y bind-utils`
+
+> `nslookup` 和 `dig` 查的是同一套 DNS 记录，只是输出格式不同。`dig` 更适合排障，`nslookup` 更适合快速看一眼，或者进交互模式连续查
+
+| OPTION                       | 作用                    | 示例                                      | 结果                                            |
+| :--------------------------- | :---------------------- | :---------------------------------------- | :---------------------------------------------- |
+| `-query=TYPE` / `-type=TYPE` | 指定查询的记录类型      | `nslookup -type=MX qq.com`                | 查询 `qq.com` 的邮件服务器记录                  |
+| `-timeout=N`                 | 设置查询超时时间（秒）  | `nslookup -timeout=3 example.com`         | 3 秒内无响应则超时                              |
+| `-retry=N`                   | 设置重试次数            | `nslookup -retry=2 example.com`           | 查询失败时最多重试 2 次                         |
+| `-all`                       | 列出当前所有配置设置    | `nslookup -all`                           | 显示当前使用的服务器、查询类型、超时等配置      |
+| `-class=CLASS`               | 指定查询的协议类别      | `nslookup -class=CH example.com`          | 查询 Chaosnet 类记录（默认是 `IN` 即 Internet） |
+| `-port=N`                    | 指定 DNS 服务器端口     | `nslookup -port=5353 example.com`         | 向 DNS 服务器的 5353 端口发起查询               |
+| `-vc` / `-novc`              | 强制使用 TCP / 使用 UDP | `nslookup -vc example.com`                | 强制通过 TCP 查询（默认 UDP，大响应或截断时用） |
+| `-recurse` / `-norecurse`    | 开启/关闭递归查询       | `nslookup -norecurse example.com 8.8.8.8` | 只问一次，不要求服务器代为逐级查询              |
+
+##### ①交互模式
+
+直接输入 `nslookup` 不带参数，进入交互模式：
+
+```
+> example.com
+> set type=MX
+> example.com
+> server 8.8.8.8
+> example.com
+> exit
+```
+
+| 交互命令         | 作用             |
+| :--------------- | :--------------- |
+| `set type=MX`    | 切换查询记录类型 |
+| `server 8.8.8.8` | 切换 DNS 服务器  |
+| `exit`           | 退出             |
+
+##### ②`nslookup example.com`示例
+
+输出：
+
+```
+Server:         172.27.111.253
+Address:        172.27.111.253#53
+
+Non-authoritative answer:
+Name:   example.com
+Address: 93.184.216.34
+```
+
+| 字段                       | 含义                                                         |
+| :------------------------- | :----------------------------------------------------------- |
+| `Server` / `Address`       | 实际用的哪个 DNS 服务器                                      |
+| `Non-authoritative answer` | 非权威回答，来自递归解析器而非该域名的权威 DNS；可能是缓存结果，也可能是递归查询结果 |
+| `Name` / `Address`         | 域名和解析结果                                               |
+
+> 如果域名不存在：
+>
+> `** server can't find example.invalid: NXDOMAIN`
+
+#### (8)host命令
+
+DNS 查询工具，输出极简，适合快速查和脚本里用
+
+语法：
+
+```
+host [OPTION]... NAME [SERVER]
+```
+
+- `[OPTION]...`   选项（可以连续使用多个）
+- `NAME`   要查询的域名或 IP
+- `SERVER`   指定 DNS 服务器，可选，不写就用 `/etc/resolv.conf` 里的
+
+> [!NOTE]
+>
+> 需要下载`yum install -y bind-utils`
+
+> `host` 是三个 DNS 工具里输出最简洁的，默认一行一个结果，适合 `grep`、`awk` 或脚本处理
+
+| OPTION      | 作用              | 示例                            | 结果                                                         |
+| :---------- | :---------------- | :------------------------------ | :----------------------------------------------------------- |
+| `-t TYPE`   | 指定记录类型      | `host -t MX qq.com`             | 查邮件服务器记录                                             |
+| `-t A`      | 查 IPv4 记录      | `host -t A example.com`         | 只显示 A 记录                                                |
+| `-t AAAA`   | 查 IPv6 记录      | `host -t AAAA example.com`      | 只显示 AAAA 记录                                             |
+| `-t NS`     | 查权威 DNS 服务器 | `host -t NS example.com`        | 显示该域名的 NS 记录                                         |
+| `-t CNAME`  | 查别名记录        | `host -t CNAME www.example.com` | 显示 CNAME 指向                                              |
+| `-t TXT`    | 查文本记录        | `host -t TXT example.com`       | 显示 SPF、验证等文本记录                                     |
+| `-a`        | 显示所有记录      | `host -a example.com`           | 等价于 `-v -t ANY`，但现代 DNS 中 `ANY` 查询可能被服务器限制，不保证返回所有类型 |
+| `-v`        | 详细输出          | `host -v example.com`           | 类似 `dig` 的详细格式                                        |
+| `-4` / `-6` | 强制 IPv4 / IPv6  | `host -4 example.com`           | 只用指定协议查询                                             |
+| `-W N`      | 超时（秒）        | `host -W 3 example.com`         | 3 秒没回应就放弃                                             |
+| `-R N`      | 重试次数          | `host -R 2 example.com`         | 最多重试 2 次                                                |
+| `-r`        | 关闭递归查询      | `host -r example.com`           | 只问一次，不要求逐级查                                       |
+
+> [!NOTE]
+>
+> `example.com mail is handled by 0 .` 是 Null MX，表示该域明确声明不接收邮件，不是普通 MX 记录
+
+##### ①反向查询
+
+示例：
+
+`host 8.8.8.8`
+
+输出：
+
+`8.8.8.8.in-addr.arpa domain name pointer dns.google.`
+
+域名不存在：
+
+`Host example.invalid not found: 3(NXDOMAIN)`
+
+##### ②`host example.com`示例
+
+输出：
+
+```
+example.com has address 93.184.216.34
+example.com has IPv6 address 2606:2800:220:1:248:1893:25c8:1946
+example.com mail is handled by 0 .
+```
+
+| 输出                 | 含义                     |
+| :------------------- | :----------------------- |
+| `has address`        | A 记录，IPv4 地址        |
+| `has IPv6 address`   | AAAA 记录，IPv6 地址     |
+| `mail is handled by` | MX 记录，邮件服务器      |
+| `is an alias for`    | CNAME 记录，别名指向     |
+| `name server`        | NS 记录，权威 DNS 服务器 |
+
+#### (9)curl命令
+
+用各种协议传输数据，最常用于 HTTP/HTTPS 请求、测接口、看响应头
+
+语法：
+
+```
+curl [OPTION]... URL...
+```
+
+- `[OPTION]...`   选项（可连续使用多个）
+- `URL...`   URL（可连续使用多个）
+
+| OPTION                | 作用                              | 示例                                           | 结果                            |
+| :-------------------- | :-------------------------------- | :--------------------------------------------- | :------------------------------ |
+| `-I`                  | 只发 HEAD 请求，只看响应头        | `curl -I https://example.com`                  | 只显示状态行和响应头            |
+| `-i`                  | 显示响应头和响应体                | `curl -i https://example.com`                  | 头和体都输出                    |
+| `-v`                  | 详细模式，显示请求和响应全过程    | `curl -v https://example.com`                  | 显示 DNS、TCP、TLS、HTTP 全过程 |
+| `-L`                  | 跟随重定向                        | `curl -L http://example.com`                   | 遇到 301/302 自动跳转           |
+| `-o FILE`             | 把响应体保存到文件                | `curl -o page.html https://example.com`        | 保存到 `page.html`              |
+| `-O`                  | 用 URL 里的文件名保存             | `curl -O https://example.com/file.zip`         | 保存为 `file.zip`               |
+| `-s`                  | 静默模式，不显示进度和错误        | `curl -s https://example.com`                  | 只输出响应体                    |
+| `-S`                  | 配合 `-s`，出错时仍显示错误       | `curl -sS https://example.com`                 | 静默但保留错误信息              |
+| `-f`                  | HTTP 错误时直接失败，不输出错误页 | `curl -f https://example.com/404`              | 4xx/5xx 时退出码非 0            |
+| `-X METHOD`           | 指定 HTTP 方法                    | `curl -X POST https://api.example.com`         | 用 POST 而不是 GET              |
+| `-d DATA`             | 发送请求体（自动用 POST）         | `curl -d "a=1&b=2" https://api.example.com`    | POST 表单数据                   |
+| `-H HEADER`           | 添加请求头                        | `curl -H "Content-Type: application/json" ...` | 自定义请求头                    |
+| `-u USER:PASS`        | 基本认证                          | `curl -u user:pass https://example.com`        | 带 `Authorization: Basic` 头    |
+| `-k`                  | 忽略证书校验                      | `curl -k https://self-signed.example.com`      | 跳过 TLS 证书验证               |
+| `--connect-timeout N` | 连接超时（秒）                    | `curl --connect-timeout 3 https://example.com` | 3 秒连不上就放弃                |
+| `-m N`                | 整个请求最大耗时（秒）            | `curl -m 10 https://example.com`               | 10 秒内没完成就退出             |
+| `-w FORMAT`           | 自定义输出格式                    | `curl -w "%{http_code}\n" -o /dev/null -s URL` | 只输出状态码                    |
+| `-4` / `-6`           | 强制 IPv4 / IPv6                  | `curl -4 https://example.com`                  | 只用指定协议                    |
+
+> 指定 HTTP 方法只改方法名，不自动改请求体和 `Content-Type`
+>
+> `-d` 默认用 POST 且 `Content-Type: application/x-www-form-urlencoded`
+>
+> 发 JSON 要配合 `-H "Content-Type: application/json"`
+>
+> 需要 GET 带查询参数时用 `-G`；不要以为 `-X GET` 会自动把 `-d` 数据放到 URL 里
+
+##### ①常用组合
+
+| 命令                                                        | 作用                              |
+| :---------------------------------------------------------- | :-------------------------------- |
+| `curl -I https://example.com`                               | 只看响应头，测服务是否活着        |
+| `curl -v https://example.com`                               | 看完整请求过程，排 TLS/重定向问题 |
+| `curl -L -o page.html https://example.com`                  | 跟随重定向并保存                  |
+| `curl -s -o /dev/null -w "%{http_code}" URL`                | 只拿 HTTP 状态码，脚本常用        |
+| `curl -s -o /dev/null -w "%{time_total}" URL`               | 只拿总耗时                        |
+| `curl -H "Content-Type: application/json" -d '{"a":1}' URL` | 发 JSON POST                      |
+| `curl -X DELETE https://api.example.com/item/1`             | 发 DELETE 请求                    |
+| `curl -k https://self-signed.example.com`                   | 忽略证书校验                      |
+| `curl --connect-timeout 3 -m 10 URL`                        | 设置连接和总超时                  |
+
+##### ②`curl -I https://example.com`示例
+
+输出：
+
+```
+HTTP/1.1 200 OK
+Content-Type: text/html; charset=UTF-8
+Content-Length: 1256
+Server: nginx
+Date: Tue, 20 Oct 2026 10:00:00 GMT
+```
+
+| 字段              | 含义                         |
+| :---------------- | :--------------------------- |
+| `HTTP/1.1 200 OK` | 协议版本 + 状态码 + 原因短语 |
+| `Content-Type`    | 响应体类型                   |
+| `Content-Length`  | 响应体长度                   |
+| `Server`          | 服务端软件                   |
+| `Date`            | 服务器时间                   |
+
+| 状态码        | 含义                  | 常见原因           |
+| :------------ | :-------------------- | :----------------- |
+| `200`         | OK                    | 正常               |
+| `301` / `302` | 重定向                | 需要 `-L` 跟随     |
+| `403`         | Forbidden             | 权限不够、IP 被封  |
+| `404`         | Not Found             | 路径不对           |
+| `500`         | Internal Server Error | 后端应用出错       |
+| `502`         | Bad Gateway           | 反向代理连不上后端 |
+| `503`         | Service Unavailable   | 后端过载或维护     |
+| `504`         | Gateway Timeout       | 反向代理等后端超时 |
+
+##### ③`curl -v https://example.com`示例
+
+输出：
+
+```
+*   Trying 93.184.216.34:443...         ← 连接阶段
+* Connected to example.com ...          ← TCP 建立
+* SSL connection using TLSv1.3 ...      ← TLS 握手
+> GET / HTTP/1.1                        ← 发出的请求（> 开头）
+> Host: example.com
+> User-Agent: curl/8.0.1
+< HTTP/1.1 200 OK                       ← 收到的响应（< 开头）
+< Content-Type: text/html
+```
+
+| 前缀 | 含义                                   |
+| :--- | :------------------------------------- |
+| `*`  | curl 自己的信息（连接、TLS、重定向等） |
+| `>`  | 客户端发出的请求                       |
+| `<`  | 服务端返回的响应                       |
 
 ---
 
