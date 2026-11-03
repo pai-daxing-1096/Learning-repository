@@ -3890,7 +3890,13 @@ LISTEN  0       128     127.0.0.1:6379       0.0.0.0:*          users:(("redis-s
 
 > `-i` 小于 0.2 秒通常需要 root 权限
 
-##### ①`ping -c 4 8.8.8.8`示例
+##### ①输出解读
+
+示例：
+
+```
+ping -c 4 8.8.8.8
+```
 
 输出：
 
@@ -4002,7 +4008,13 @@ mtr [OPTION]... HOST
 | `-4` / `-6` | 强制 IPv4 / IPv6       | `mtr -4 example.com`        | 只用指定协议     |
 | `-i N`      | 发包间隔（秒）         | `mtr -i 0.5 8.8.8.8`        | 默认 1 秒        |
 
-##### ①`mtr -r -c 10 8.8.8.8`示例
+##### ①输出解读
+
+示例：
+
+```
+mtr -r -c 10 8.8.8.8
+```
 
 输出：
 
@@ -4064,7 +4076,13 @@ dig [@SERVER] NAME [TYPE] [OPTION]...
 | `-4` / `-6`      | 强制 IPv4 / IPv6           | `dig -4 example.com`                  | 只用指定协议查询                                             |
 | `+dnssec`        | 显示 DNSSEC 信息           | `dig +dnssec example.com`             | 多出 RRSIG 等记录                                            |
 
-##### ①`dig example.com`示例
+##### ①输出解读
+
+示例：
+
+```
+dig example.com
+```
 
 输出：
 
@@ -4147,7 +4165,11 @@ nslookup [OPTION]... NAME [SERVER]
 | `server 8.8.8.8` | 切换 DNS 服务器  |
 | `exit`           | 退出             |
 
-##### ②`nslookup example.com`示例
+##### ②输出解读
+
+示例：
+
+`nslookup example.com`
 
 输出：
 
@@ -4223,7 +4245,11 @@ host [OPTION]... NAME [SERVER]
 
 `Host example.invalid not found: 3(NXDOMAIN)`
 
-##### ②`host example.com`示例
+##### ②输出解读
+
+示例：
+
+`host example.com`
 
 输出：
 
@@ -4297,7 +4323,13 @@ curl [OPTION]... URL...
 | `curl -k https://self-signed.example.com`                   | 忽略证书校验                      |
 | `curl --connect-timeout 3 -m 10 URL`                        | 设置连接和总超时                  |
 
-##### ②`curl -I https://example.com`示例
+##### ②输出解读1
+
+示例：
+
+```
+curl -I https://example.com
+```
 
 输出：
 
@@ -4328,7 +4360,13 @@ Date: Tue, 20 Oct 2026 10:00:00 GMT
 | `503`         | Service Unavailable   | 后端过载或维护     |
 | `504`         | Gateway Timeout       | 反向代理等后端超时 |
 
-##### ③`curl -v https://example.com`示例
+##### ③输出解读2
+
+示例：
+
+```
+curl -v https://example.com
+```
 
 输出：
 
@@ -4348,6 +4386,143 @@ Date: Tue, 20 Oct 2026 10:00:00 GMT
 | `*`  | curl 自己的信息（连接、TLS、重定向等） |
 | `>`  | 客户端发出的请求                       |
 | `<`  | 服务端返回的响应                       |
+
+#### (10)nc命令
+
+端口连通性测试、简单数据收发，常用来替代 `telnet` 测端口
+
+语法：
+
+```
+nc [OPTION]... HOST POST
+```
+
+- `[OPTION]...`   选项（可连续使用多个）
+- `HOST`   目标 IP 或域名
+- `PORT`   目标端口
+
+> 需要安装`yum -y install nc`
+
+| OPTION      | 作用                   | 示例                                  | 结果                     |
+| :---------- | :--------------------- | :------------------------------------ | :----------------------- |
+| `-z`        | 只扫描，不发数据       | `nc -z 192.168.1.1 80`                | 端口通退出码 0，不通非 0 |
+| `-v`        | 详细输出               | `nc -zv 192.168.1.1 80`               | 显示连接成功或失败信息   |
+| `-w N`      | 超时（秒）             | `nc -zv -w 3 192.168.1.1 80`          | 3 秒连不上就放弃         |
+| `-u`        | 用 UDP                 | `nc -zuv 8.8.8.8 53`                  | 测 UDP 端口              |
+| `-l`        | 监听模式               | `nc -l 8080`                          | 在本机 8080 端口监听     |
+| `-k`        | 监听模式下持续接受连接 | `nc -lk 8080`                         | 不退出，循环处理         |
+| `-n`        | 不解析域名             | `nc -zv 8.8.8.8 53`                   | 只显示 IP，不反查        |
+| `-4` / `-6` | 强制 IPv4 / IPv6       | `nc -4 -zv example.com 80`            | 只用指定协议             |
+| `-s ADDR`   | 指定源地址             | `nc -s 172.27.108.103 -zv 8.8.8.8 80` | 从指定源 IP 发出         |
+
+##### ①输出解读
+
+示例：
+
+```
+nc -zv -w 3 8.8.8.8 53
+```
+
+输出：
+
+```
+成功（端口开着）：
+Ncat: Connected to 8.8.8.8:53.
+Ncat: 0 bytes sent, 0 bytes received in 0.28 seconds.
+
+失败（端口没开，主机可达）：
+Ncat: Connection refused.
+
+失败（超时，包被丢弃）：
+Ncat: TIMEOUT.
+```
+
+| 结果       | Ncat 输出                | 经典 nc 输出                       | 含义                     |
+| :--------- | :----------------------- | :--------------------------------- | :----------------------- |
+| 端口开着   | `Connected to ...`       | `... port [tcp/xxx] succeeded!`    | TCP 三次握手成功         |
+| 端口没开   | `Connection refused`     | `... failed: Connection refused`   | 对方回 RST，端口无服务   |
+| 包被丢弃   | `TIMEOUT`                | `... failed: Connection timed out` | 防火墙 drop 或路由不通   |
+| 路由不可达 | `Network is unreachable` | 同左                               | 本机没有到目标网段的路由 |
+
+#### (11)tcpdump命令
+
+抓包工具，抓取经过网卡的流量，按协议、端口、主机过滤，用于排障和分析
+
+语法：
+
+```
+tcpdump [OPTION]... [EXPRESSION]
+```
+
+- `[OPTION]...`：选项（可连续使用多个）
+- `[EXPRESSION]`：过滤表达式，不写就抓所有包
+
+> 可能需要安装`yum -y install tcpdump`
+
+| OPTION                | 作用                | 示例                    | 结果                             |
+| :-------------------- | :------------------ | :---------------------- | :------------------------------- |
+| `-i IFACE`            | 指定网卡            | `tcpdump -i eth0`       | 只抓 eth0 的包                   |
+| `-i any`              | 抓所有网卡          | `tcpdump -i any`        | 不区分网卡                       |
+| `-n`                  | 不解析域名          | `tcpdump -n`            | 显示 IP，不反查                  |
+| `-nn`                 | 不解析域名和端口名  | `tcpdump -nn`           | 显示 `:80` 而不是 `:http`        |
+| `-c N`                | 抓 N 个包后停止     | `tcpdump -c 10`         | 抓 10 个就退出                   |
+| `-w FILE`             | 把原始包写入文件    | `tcpdump -w cap.pcap`   | 保存为 pcap，可用 Wireshark 打开 |
+| `-r FILE`             | 从文件读取包        | `tcpdump -r cap.pcap`   | 分析已保存的抓包                 |
+| `-A`                  | 以 ASCII 显示包内容 | `tcpdump -A`            | 适合看 HTTP 明文                 |
+| `-X`                  | 以 hex + ASCII 显示 | `tcpdump -X`            | 看二进制和文本                   |
+| `-v` / `-vv` / `-vvv` | 详细程度递增        | `tcpdump -vv`           | 显示更多协议字段                 |
+| `-e`                  | 显示链路层头部      | `tcpdump -e`            | 多出源/目的 MAC                  |
+| `-s N`                | 每个包抓 N 字节     | `tcpdump -s 0`          | `0` 表示抓完整包                 |
+| `-t`                  | 不显示时间戳        | `tcpdump -t`            | 输出更干净                       |
+| `-tttt`               | 显示可读时间戳      | `tcpdump -tttt`         | 带日期和时间                     |
+| `-q`                  | 简洁输出            | `tcpdump -q`            | 少显示一些协议细节               |
+| `-l`                  | 行缓冲              | `tcpdump -l | grep xxx` | 配合管道时实时输出               |
+
+| 过滤表达式             | 作用         | 示例                              |
+| :--------------------- | :----------- | :-------------------------------- |
+| `host IP`              | 源或目的 IP  | `tcpdump host 8.8.8.8`            |
+| `src host IP`          | 源 IP        | `tcpdump src host 172.27.108.103` |
+| `dst host IP`          | 目的 IP      | `tcpdump dst host 8.8.8.8`        |
+| `net 网段`             | 源或目的网段 | `tcpdump net 172.27.96.0/20`      |
+| `port 端口`            | 源或目的端口 | `tcpdump port 80`                 |
+| `src port 端口`        | 源端口       | `tcpdump src port 22`             |
+| `dst port 端口`        | 目的端口     | `tcpdump dst port 443`            |
+| `tcp` / `udp` / `icmp` | 按协议       | `tcpdump tcp`                     |
+| `and` / `or` / `not`   | 逻辑组合     | `tcpdump tcp and port 80`         |
+| `greater N`            | 包长度大于 N | `tcpdump greater 1000`            |
+| `less N`               | 包长度小于 N | `tcpdump less 100`                |
+
+##### ①输出解读
+
+示例：
+
+```
+tcpdump -nn -c 5 -i eth0
+```
+
+输出：
+
+```
+14:32:01.123456 IP 172.27.108.103.54321 > 8.8.8.8.53: UDP, length 32
+14:32:01.130000 IP 8.8.8.8.53 > 172.27.108.103.54321: UDP, length 48
+14:32:02.000000 IP 172.27.108.103.22 > 203.0.113.5.54321: Flags [P.], seq 1:52, ack 1, win 502, length 51
+14:32:02.010000 IP 203.0.113.5.54321 > 172.27.108.103.22: Flags [.], ack 52, win 502, length 0
+14:32:03.000000 IP 172.27.108.103 > 8.8.8.8: ICMP echo request, id 1234, seq 1, length 64
+```
+
+| 字段                   | 含义                               |
+| :--------------------- | :--------------------------------- |
+| `14:32:01.123456`      | 时间戳                             |
+| `IP`                   | 网络层协议                         |
+| `172.27.108.103.54321` | 源 IP + 源端口                     |
+| `>`                    | 方向                               |
+| `8.8.8.8.53`           | 目的 IP + 目的端口                 |
+| `UDP` / `TCP` / `ICMP` | 传输层协议                         |
+| `Flags [P.]`           | TCP 标志位，`P` 是 PSH，`.` 是 ACK |
+| `seq` / `ack`          | TCP 序号和确认号                   |
+| `length`               | 载荷长度                           |
+
+> `Flags` 常见组合：`[S]` SYN、`[S.]` SYN+ACK、`[.]` ACK、`[P.]` PSH+ACK、`[F.]` FIN+ACK、`[R]` RST
 
 ---
 
